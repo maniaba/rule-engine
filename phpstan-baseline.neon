@@ -1,0 +1,19 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#2 \$action of method Maniaba\\RuleEngine\\Factories\\ActionFactory\:\:registerAction\(\) expects class\-string\<Maniaba\\RuleEngine\\Actions\\ActionInterface\>\|\(Closure\(Maniaba\\RuleEngine\\Context\\ContextInterface\)\: mixed\)\|Maniaba\\RuleEngine\\Actions\\ActionInterface, Closure\(Maniaba\\RuleEngine\\Context\\ContextInterface, mixed, mixed\=\)\: string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Factories/ActionFactoryTest.php
+
+		-
+			message: '#^Parameter \#2 \$action of method Maniaba\\RuleEngine\\Factories\\ActionFactory\:\:registerAction\(\) expects class\-string\<Maniaba\\RuleEngine\\Actions\\ActionInterface\>\|\(Closure\(Maniaba\\RuleEngine\\Context\\ContextInterface\)\: mixed\)\|Maniaba\\RuleEngine\\Actions\\ActionInterface, Closure\(Maniaba\\RuleEngine\\Context\\ContextInterface, string, int\)\: non\-falsy\-string given\.$#'
+			identifier: argument.type
+			count: 3
+			path: tests/Factories/ActionFactoryTest.php
+
+		-
+			message: '#^Parameter \#2 \$action of method Maniaba\\RuleEngine\\Factories\\ActionFactory\:\:registerAction\(\) expects class\-string\<Maniaba\\RuleEngine\\Actions\\ActionInterface\>\|\(Closure\(Maniaba\\RuleEngine\\Context\\ContextInterface\)\: mixed\)\|Maniaba\\RuleEngine\\Actions\\ActionInterface, Closure\(Maniaba\\RuleEngine\\Context\\ContextInterface, string, int\=\)\: non\-falsy\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Factories/ActionFactoryTest.php

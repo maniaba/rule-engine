@@ -20,7 +20,7 @@ final class DummyArgumentsAction implements ActionInterface
 
     public function execute(ContextInterface $context): bool
     {
-        // Obavezno postavi argumente u configu gde se koristi ovaj action
+        // Make sure to set arguments in the config where this action is used
         assertEquals(['arguments' => ['arg1', 'arg2']], $this->arguments);
 
         return true;

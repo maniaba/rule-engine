@@ -138,7 +138,7 @@ final class FieldSelectorTest extends TestCase
     }
 
     /**
-     * Testira osnovni pristup indeksima u nizu.
+     * Tests basic index access in arrays.
      */
     #[DataProvider('provideBasicIndexAccess')]
     public function testBasicIndexAccess(string $selector, array $expected): void
