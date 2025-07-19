@@ -173,7 +173,8 @@ final class ActionFactory
                     $valid = false;
 
                     foreach ($parameterType->getTypes() as $type) {
-                        $validTypes   = [...array_map(static fn ($type) => $type->getName(), [$type]), 'mixed'];
+                        $typeName     = $type instanceof ReflectionUnionType ? 'mixed' : ($type->getName() ?? 'mixed');
+                        $validTypes   = [$typeName, 'mixed'];
                         $argumentType = self::gettype($arguments[$name]);
 
                         if (\in_array($argumentType, $validTypes, true)) {
@@ -183,7 +184,13 @@ final class ActionFactory
                     }
 
                     if (! $valid) {
-                        throw new InvalidArgumentException("Invalid type for argument: '{$name}'. Expected one of: " . implode(', ', array_map(static fn ($type) => $type->getName(), $parameterType->getTypes())) . ', got: ' . ($argumentType ?? \gettype($arguments[$name])));
+                        $typeNames = [];
+
+                        foreach ($parameterType->getTypes() as $type) {
+                            $typeNames[] = $type instanceof ReflectionUnionType ? 'mixed' : ($type->getName() ?? 'mixed');
+                        }
+
+                        throw new InvalidArgumentException("Invalid type for argument: '{$name}'. Expected one of: " . implode(', ', $typeNames) . ', got: ' . ($argumentType ?? \gettype($arguments[$name])));
                     }
                 } else {
                     $parameterTypeName = $parameterType?->getName();
