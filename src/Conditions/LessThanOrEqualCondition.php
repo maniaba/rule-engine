@@ -14,7 +14,8 @@ final class LessThanOrEqualCondition extends AbstractCondition
     public function __construct(
         private readonly string $contextName,
         private readonly mixed $value,
-    ) {}
+    ) {
+    }
 
     protected function evaluateCondition(ContextInterface $context): bool
     {

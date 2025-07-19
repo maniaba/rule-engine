@@ -25,7 +25,7 @@ interface ConditionInterface
     /**
      * Vraća poruku koja objašnjava zašto uslov nije zadovoljio.
      *
-     * @return null|list<string>|string poruka o neuspjehu
+     * @return list<string>|string|null poruka o neuspjehu
      */
-    public function getFailureMessage(): null|array|string;
+    public function getFailureMessage(): array|string|null;
 }

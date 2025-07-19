@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Builders;
 
 use CodeIgniter\Files\File;
+use JsonException;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Builders\JsonBuilder;
 use Maniaba\RuleEngine\Rules\RuleSet;
@@ -31,14 +32,14 @@ final class JsonBuilderTest extends TestCase
 
         $ruleSet = $builder->parseFile($file);
 
-        self::assertInstanceOf(RuleSet::class, $ruleSet);
+        $this->assertInstanceOf(RuleSet::class, $ruleSet);
     }
 
     // wrong json
 
     public function testParseFileThrowsExceptionOnInvalidJson(): void
     {
-        $this->expectException(\JsonException::class);
+        $this->expectException(JsonException::class);
 
         $builder = new JsonBuilder();
 
@@ -49,7 +50,7 @@ final class JsonBuilderTest extends TestCase
     {
         $builder = new JsonBuilder();
 
-        $dummyAction = new CallableAction(static fn(): null => null);
+        $dummyAction = new CallableAction(static fn (): null => null);
         $builder->actions()->registerAction('actionName1', $dummyAction);
         $builder->actions()->registerAction('actionName2', $dummyAction);
         $builder->actions()->registerAction('rejectDeposit', $dummyAction);
@@ -64,9 +65,9 @@ final class JsonBuilderTest extends TestCase
         $tempFile = tempnam(sys_get_temp_dir(), 'json');
         helper('filesystem');
         write_file($tempFile, json_encode([
-            'node' => 'action',
+            'node'       => 'action',
             'actionName' => 'actionName1',
-            'arguments' => [
+            'arguments'  => [
                 'arguments' => 'testField',
             ],
         ]));

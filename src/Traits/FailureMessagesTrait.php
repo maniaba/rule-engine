@@ -6,14 +6,14 @@ namespace Maniaba\RuleEngine\Traits;
 
 trait FailureMessagesTrait
 {
-    private null|array|string $failureMessage = null;
+    private array|string|null $failureMessage = null;
 
-    public function getFailureMessage(): null|array|string
+    public function getFailureMessage(): array|string|null
     {
         return $this->failureMessage;
     }
 
-    protected function setFailureMessage(null|array|string $message): void
+    protected function setFailureMessage(array|string|null $message): void
     {
         $this->failureMessage = $message;
     }

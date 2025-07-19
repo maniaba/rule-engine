@@ -8,6 +8,7 @@ use Maniaba\RuleEngine\Context\ArrayContext;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use stdClass;
 use Tests\Support\TestCase;
 
 /**
@@ -22,14 +23,14 @@ final class ArrayContextTest extends TestCase
     {
         $context = new ArrayContext([$field => $value]);
 
-        self::assertSame($expected, $context->getField($field), 'Field value mismatch.');
+        $this->assertSame($expected, $context->getField($field), 'Field value mismatch.');
 
-        self::assertTrue($context->hasField($field), 'Field not found.');
+        $this->assertTrue($context->hasField($field), 'Field not found.');
     }
 
     public static function provideGetField(): iterable
     {
-        $std = new \stdClass();
+        $std      = new stdClass();
         $std->foo = 'bar';
 
         yield 'foo -> bar' => ['foo', 'bar', 'bar'];
@@ -57,7 +58,7 @@ final class ArrayContextTest extends TestCase
     {
         $context = new ArrayContext(['foo' => 'bar']);
 
-        self::assertTrue($context->hasField('foo'));
-        self::assertFalse($context->hasField('baz'));
+        $this->assertTrue($context->hasField('foo'));
+        $this->assertFalse($context->hasField('baz'));
     }
 }

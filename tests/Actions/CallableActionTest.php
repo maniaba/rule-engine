@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Actions;
 
+use Error;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Context\ArrayContext;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use PHPUnit\Framework\Attributes\Group;
+use RuntimeException;
 use Tests\Support\TestCase;
 
 /**
@@ -20,8 +22,8 @@ final class CallableActionTest extends TestCase
 {
     public function testExecutesCallableWithContext(): void
     {
-        $context = self::createContext([]);
-        $var = 'foo';
+        $context  = self::createContext([]);
+        $var      = 'foo';
         $callable = static function (ContextInterface $ctx) use (&$var): bool {
             $var = 'result';
 
@@ -31,8 +33,8 @@ final class CallableActionTest extends TestCase
         $action = new CallableAction($callable);
         $result = $action->execute($context);
 
-        self::assertFalse($result, 'Expected result to be false');
-        self::assertSame('result', $var, 'Expected var to be "result"');
+        $this->assertFalse($result, 'Expected result to be false');
+        $this->assertSame('result', $var, 'Expected var to be "result"');
     }
 
     public function testExecutesCallableWithDifferentContext(): void
@@ -49,27 +51,27 @@ final class CallableActionTest extends TestCase
         });
         $result = $action->execute($context);
 
-        self::assertTrue($result, 'Expected result to be true');
-        self::assertSame('bar', $testValue, 'Expected testValue to be "bar"');
+        $this->assertTrue($result, 'Expected result to be true');
+        $this->assertSame('bar', $testValue, 'Expected testValue to be "bar"');
     }
 
     public function testHandlesCallableReturningNull(): void
     {
-        $context = self::createContext([]);
-        $callable = static fn(ContextInterface $ctx): bool => true;
+        $context  = self::createContext([]);
+        $callable = static fn (ContextInterface $ctx): bool => true;
 
         $action = new CallableAction($callable);
         $result = $action->execute($context);
 
-        self::assertTrue($result);
+        $this->assertTrue($result);
     }
 
     public function testHandlesCallableThrowingException(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
-        $context = self::createContext([]);
-        $callable = static fn(ContextInterface $ctx) => throw new \RuntimeException(\Error::class);
+        $context  = self::createContext([]);
+        $callable = static fn (ContextInterface $ctx) => throw new RuntimeException(Error::class);
 
         $action = new CallableAction($callable);
         $action->execute($context);

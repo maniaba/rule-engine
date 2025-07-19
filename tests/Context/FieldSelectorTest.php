@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Maniaba\RuleEngine\Context\FieldSelector;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
+use stdClass;
 use Tests\Support\Enums\EnumIntTest;
 use Tests\Support\Enums\SimpleEnum;
 use Tests\Support\TestCase;
@@ -26,7 +27,7 @@ final class FieldSelectorTest extends TestCase
      */
     private array $data;
 
-    private \stdClass $dataObject;
+    private stdClass $dataObject;
 
     protected function setUp(): void
     {
@@ -43,11 +44,11 @@ final class FieldSelectorTest extends TestCase
             ],
             'departments' => [
                 [
-                    'name' => 'Development',
+                    'name'  => 'Development',
                     'teams' => [
                         [
                             'teamName' => 'Backend',
-                            'members' => [
+                            'members'  => [
                                 ['id' => 101, 'name' => 'Eve', 'role' => 'Engineer'],
                                 ['id' => 102, 'name' => 'Frank', 'role' => 'Engineer'],
                                 ['id' => 103, 'name' => 'Grace', 'role' => 'Lead'],
@@ -55,7 +56,7 @@ final class FieldSelectorTest extends TestCase
                         ],
                         [
                             'teamName' => 'Frontend',
-                            'members' => [
+                            'members'  => [
                                 ['id' => 201, 'name' => 'Heidi', 'role' => 'Engineer'],
                                 ['id' => 202, 'name' => 'Ivan', 'role' => 'Engineer'],
                             ],
@@ -63,11 +64,11 @@ final class FieldSelectorTest extends TestCase
                     ],
                 ],
                 [
-                    'name' => 'Operations',
+                    'name'  => 'Operations',
                     'teams' => [
                         [
                             'teamName' => 'Infrastructure',
-                            'members' => [
+                            'members'  => [
                                 ['id' => 301, 'name' => 'Judy', 'role' => 'Ops'],
                                 ['id' => 302, 'name' => 'Ken', 'role' => 'Ops'],
                             ],
@@ -83,7 +84,7 @@ final class FieldSelectorTest extends TestCase
 
     public function testEvaluateConditionInvalidOperator(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->callEvaluateCondition(5, '<>', 3);
     }
 
@@ -91,48 +92,48 @@ final class FieldSelectorTest extends TestCase
     {
         // Testiranje BackedEnum vrijednosti
         $result = $this->callEvaluateCondition(EnumIntTest::ACTIVE, '=', 1);
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
         $result = $this->callEvaluateCondition(EnumIntTest::ACTIVE, '!=', 5);
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
         $result = $this->callEvaluateCondition(EnumIntTest::INACTIVE, '=', 0);
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
         $result = $this->callEvaluateCondition(EnumIntTest::INACTIVE, '!=', 5);
-        self::assertTrue($result);
+        $this->assertTrue($result);
     }
 
     public function testEvaluateConditionWithUnitEnum(): void
     {
         // Testiranje UnitEnum vrijednosti (koristi `name`)
         $result = $this->callEvaluateCondition(SimpleEnum::OPTION_ONE, '=', 'OPTION_ONE');
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
         $result = $this->callEvaluateCondition(SimpleEnum::OPTION_ONE, '!=', 'OPTION_TWO');
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
         $result = $this->callEvaluateCondition(SimpleEnum::OPTION_TWO, '=', 'OPTION_TWO');
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
         $result = $this->callEvaluateCondition(SimpleEnum::OPTION_TWO, '!=', 'OPTION_ONE');
-        self::assertTrue($result);
+        $this->assertTrue($result);
     }
 
     public function testEvaluateConditionWithStandardValues(): void
     {
         // Testiranje standardnih vrijednosti (brojevi, stringovi, itd.)
         $result = $this->callEvaluateCondition(5, '>', 3);
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
         $result = $this->callEvaluateCondition(3, '<', 5);
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
         $result = $this->callEvaluateCondition('apple', '=', 'apple');
-        self::assertTrue($result);
+        $this->assertTrue($result);
 
         $result = $this->callEvaluateCondition('apple', '!=', 'orange');
-        self::assertTrue($result);
+        $this->assertTrue($result);
     }
 
     /**
@@ -142,7 +143,7 @@ final class FieldSelectorTest extends TestCase
     public function testBasicIndexAccess(string $selector, array $expected): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        self::assertSame($expected, $fieldSelector->getField($selector));
+        $this->assertSame($expected, $fieldSelector->getField($selector));
     }
 
     /**
@@ -170,7 +171,7 @@ final class FieldSelectorTest extends TestCase
     public function testEqualityFilter(string $selector, array $expected): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        self::assertSame($expected, $fieldSelector->getField($selector));
+        $this->assertSame($expected, $fieldSelector->getField($selector));
     }
 
     /**
@@ -194,7 +195,7 @@ final class FieldSelectorTest extends TestCase
     public function testNumericComparisons(string $selector, array $expected): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        self::assertSame($expected, $fieldSelector->getField($selector));
+        $this->assertSame($expected, $fieldSelector->getField($selector));
     }
 
     /**
@@ -221,7 +222,7 @@ final class FieldSelectorTest extends TestCase
     public function testBooleanFilter(string $selector, array $expected): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        self::assertSame($expected, $fieldSelector->getField($selector));
+        $this->assertSame($expected, $fieldSelector->getField($selector));
     }
 
     /**
@@ -244,8 +245,8 @@ final class FieldSelectorTest extends TestCase
     public function testChainedSelectors(): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        $message = $fieldSelector->getField('logs[level:error]->message');
-        self::assertSame('Database connection failed.', $message);
+        $message       = $fieldSelector->getField('logs[level:error]->message');
+        $this->assertSame('Database connection failed.', $message);
     }
 
     /**
@@ -254,7 +255,7 @@ final class FieldSelectorTest extends TestCase
     #[DataProvider('provideInvalidSelectorsThrowExceptions')]
     public function testInvalidSelectorsThrowExceptions(string $selector): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $fieldSelector = new FieldSelector($this->data);
         $fieldSelector->getField($selector);
     }
@@ -280,35 +281,35 @@ final class FieldSelectorTest extends TestCase
     public function testDeepNestedAccess(): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        $name = $fieldSelector->getField('departments[0]->teams[0]->members[1]->name');
-        self::assertSame('Frank', $name);
+        $name          = $fieldSelector->getField('departments[0]->teams[0]->members[1]->name');
+        $this->assertSame('Frank', $name);
     }
 
     public function testDeepNestedFilterById(): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        $member = $fieldSelector->getField('departments[name:Development]->teams[teamName:Backend]->members[id:103]');
-        self::assertSame(['id' => 103, 'name' => 'Grace', 'role' => 'Lead'], $member);
+        $member        = $fieldSelector->getField('departments[name:Development]->teams[teamName:Backend]->members[id:103]');
+        $this->assertSame(['id' => 103, 'name' => 'Grace', 'role' => 'Lead'], $member);
     }
 
     public function testDeepNestedFilterByRole(): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        $member = $fieldSelector->getField('departments[name:Development]->teams[teamName:Frontend]->members[role:Engineer]');
+        $member        = $fieldSelector->getField('departments[name:Development]->teams[teamName:Frontend]->members[role:Engineer]');
         // Očekujemo prvog člana s role = Engineer, to je Heidi (id=201)
-        self::assertSame(['id' => 201, 'name' => 'Heidi', 'role' => 'Engineer'], $member);
+        $this->assertSame(['id' => 201, 'name' => 'Heidi', 'role' => 'Engineer'], $member);
     }
 
     public function testFilterOnHigherLevelThenDrillDown(): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        $name = $fieldSelector->getField('departments[name:Operations]->teams[teamName:Infrastructure]->members[id:301]->name');
-        self::assertSame('Judy', $name);
+        $name          = $fieldSelector->getField('departments[name:Operations]->teams[teamName:Infrastructure]->members[id:301]->name');
+        $this->assertSame('Judy', $name);
     }
 
     public function testDeepNestedFilterNoResult(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $fieldSelector = new FieldSelector($this->data);
         $fieldSelector->getField('departments[name:Development]->teams[teamName:Backend]->members[id:999]');
@@ -318,7 +319,7 @@ final class FieldSelectorTest extends TestCase
     public function testDeepNestedDataProvider(string $selector, array $expected): void
     {
         $fieldSelector = new FieldSelector($this->data);
-        self::assertSame($expected, $fieldSelector->getField($selector));
+        $this->assertSame($expected, $fieldSelector->getField($selector));
     }
 
     public static function provideDeepNestedDataProvider(): iterable
@@ -346,10 +347,10 @@ final class FieldSelectorTest extends TestCase
         $fieldSelector = new FieldSelector($this->dataObject);
 
         $user = $fieldSelector->getField('users[1]'); // Dohvaća drugog korisnika (Bob)
-        self::assertInstanceOf(\stdClass::class, $user);
-        self::assertSame(2, $user->id);
-        self::assertSame('Bob', $user->name);
-        self::assertFalse($user->active);
+        $this->assertInstanceOf(stdClass::class, $user);
+        $this->assertSame(2, $user->id);
+        $this->assertSame('Bob', $user->name);
+        $this->assertFalse($user->active);
     }
 
     public function testFilterUserByIdInObjects(): void
@@ -357,10 +358,10 @@ final class FieldSelectorTest extends TestCase
         $fieldSelector = new FieldSelector($this->dataObject);
 
         $user = $fieldSelector->getField('users[id:3]'); // Dohvaća korisnika s ID 3 (Charlie)
-        self::assertInstanceOf(\stdClass::class, $user);
-        self::assertSame(3, $user->id);
-        self::assertSame('Charlie', $user->name);
-        self::assertTrue($user->active);
+        $this->assertInstanceOf(stdClass::class, $user);
+        $this->assertSame(3, $user->id);
+        $this->assertSame('Charlie', $user->name);
+        $this->assertTrue($user->active);
     }
 
     public function testFilterUserByBooleanValueInObjects(): void
@@ -368,9 +369,9 @@ final class FieldSelectorTest extends TestCase
         $fieldSelector = new FieldSelector($this->dataObject);
 
         $user = $fieldSelector->getField('users[active:true]'); // Dohvaća prvog aktivnog korisnika (Alice)
-        self::assertInstanceOf(\stdClass::class, $user);
-        self::assertSame(1, $user->id);
-        self::assertSame('Alice', $user->name);
+        $this->assertInstanceOf(stdClass::class, $user);
+        $this->assertSame(1, $user->id);
+        $this->assertSame('Alice', $user->name);
     }
 
     public function testFilterLogByLevelInObjects(): void
@@ -378,7 +379,7 @@ final class FieldSelectorTest extends TestCase
         $fieldSelector = new FieldSelector($this->dataObject);
 
         $message = $fieldSelector->getField('logs[level:error]->message'); // Dohvaća poruku error loga
-        self::assertSame('Database connection failed.', $message);
+        $this->assertSame('Database connection failed.', $message);
     }
 
     public function testFilterNestedObject(): void
@@ -386,15 +387,15 @@ final class FieldSelectorTest extends TestCase
         $fieldSelector = new FieldSelector($this->dataObject);
 
         $member = $fieldSelector->getField('departments[name:Development]->teams[teamName:Backend]->members[id:103]');
-        self::assertInstanceOf(\stdClass::class, $member);
-        self::assertSame(103, $member->id);
-        self::assertSame('Grace', $member->name);
-        self::assertSame('Lead', $member->role);
+        $this->assertInstanceOf(stdClass::class, $member);
+        $this->assertSame(103, $member->id);
+        $this->assertSame('Grace', $member->name);
+        $this->assertSame('Lead', $member->role);
     }
 
     public function testUnsupportedOperatorWithObjects(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $fieldSelector = new FieldSelector($this->dataObject);
         $fieldSelector->getField('users[id:<>5]'); // Nepodržan operator '<>'
@@ -402,7 +403,7 @@ final class FieldSelectorTest extends TestCase
 
     public function testNonExistentPropertyInObjects(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
 
         $fieldSelector = new FieldSelector($this->dataObject);
         $fieldSelector->getField('users[nonexistentKey:xyz]'); // Nepostojeće svojstvo
@@ -413,15 +414,15 @@ final class FieldSelectorTest extends TestCase
         $fieldSelector = new FieldSelector($this->dataObject);
 
         $teamName = $fieldSelector->getField('departments[name:Development]->teams[0]->teamName');
-        self::assertSame('Backend', $teamName);
+        $this->assertSame('Backend', $teamName);
 
         $memberName = $fieldSelector->getField('departments[name:Development]->teams[0]->members[0]->name');
-        self::assertSame('Eve', $memberName);
+        $this->assertSame('Eve', $memberName);
     }
 
     private function callEvaluateCondition(mixed $itemValue, string $operator, mixed $value): bool
     {
-        $fs = new FieldSelector([]);
+        $fs            = new FieldSelector([]);
         $privateMethod = $this->getPrivateMethodInvoker($fs, 'evaluateCondition');
 
         return $privateMethod($itemValue, $operator, $value);

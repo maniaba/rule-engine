@@ -18,37 +18,37 @@ final class ArrayContainsConditionTest extends TestCase
 
     public function testConditionSatisfiedWhenFieldContainsValue(): void
     {
-        $context = $this->createMockContext(['field' => ['value1', 'value2', 'value3']]);
+        $context   = $this->createMockContext(['field' => ['value1', 'value2', 'value3']]);
         $condition = new ArrayContainsCondition('field', 'value2');
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotContainValue(): void
     {
-        $context = $this->createMockContext(['field' => ['value1', 'value3']]);
+        $context   = $this->createMockContext(['field' => ['value1', 'value3']]);
         $condition = new ArrayContainsCondition('field', 'value2');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" does not contain value.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" does not contain value.', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsNotArray(): void
     {
-        $context = $this->createMockContext(['field' => 'not_an_array']);
+        $context   = $this->createMockContext(['field' => 'not_an_array']);
         $condition = new ArrayContainsCondition('field', 'value1');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" is not an array.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" is not an array.', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotExist(): void
     {
-        $context = $this->createMockContext([]);
+        $context   = $this->createMockContext([]);
         $condition = new ArrayContainsCondition('field', 'value1');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" does not exist.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" does not exist.', $condition->getFailureMessage());
     }
 }

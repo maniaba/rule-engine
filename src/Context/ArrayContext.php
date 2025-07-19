@@ -4,15 +4,22 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Context;
 
+use Stringable;
 
 /**
  * @see ArrayContextTest
  */
-final class ArrayContext implements ContextInterface
+final class ArrayContext implements Stringable, ContextInterface
 {
     public function __construct(
         private array $data,
-    ) {}
+    ) {
+    }
+
+    public function __toString(): string
+    {
+        return json_encode($this->data, JSON_THROW_ON_ERROR);
+    }
 
     public function getField(string $field): mixed
     {
@@ -29,7 +36,7 @@ final class ArrayContext implements ContextInterface
         return $this->data;
     }
 
-    public function setField(string|int|float $field, mixed $value): void
+    public function setField(float|int|string $field, mixed $value): void
     {
         $this->data[$field] = $value;
     }
@@ -42,11 +49,6 @@ final class ArrayContext implements ContextInterface
     public function clear(): void
     {
         $this->data = [];
-    }
-
-    public function __toString(): string
-    {
-        return json_encode($this->data, JSON_THROW_ON_ERROR);
     }
 
     public function toArray(): array
@@ -71,17 +73,16 @@ final class ArrayContext implements ContextInterface
 
     public function count(): int
     {
-        return count($this->data);
+        return \count($this->data);
     }
 
     public function isEmpty(): bool
     {
-        return $this->data === [];
+        return [] === $this->data;
     }
 
     public function filter(callable $callback): array
     {
         return array_filter($this->data, $callback);
     }
-
 }

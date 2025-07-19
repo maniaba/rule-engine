@@ -22,13 +22,13 @@ final class LazyEvaluator extends AbstractEvaluator
 
     public function evaluate(RuleSet $ruleSet, ContextInterface $context): array
     {
-        $results = [];
+        $results     = [];
         $failedRules = [];
 
         foreach ($ruleSet->getRules() as $rule) {
-            $result = $rule->evaluate($context);
+            $result           = $rule->evaluate($context);
             $evaluationResult = new EvaluationResult($rule, $result, $rule->getFailureMessage());
-            $results[] = $evaluationResult;
+            $results[]        = $evaluationResult;
 
             if (! $result) {
                 $failedRules[] = $rule;

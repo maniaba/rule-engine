@@ -63,24 +63,22 @@ return static function (RectorConfig $rectorConfig): void {
 
     // The paths to refactor (can also be supplied with CLI arguments)
     $rectorConfig->paths([
-        __DIR__.'/src/',
-        __DIR__.'/tests/',
+        __DIR__ . '/src/',
+        __DIR__ . '/tests/',
     ]);
 
     // Include Composer's autoload - required for global execution, remove if running locally
     $rectorConfig->autoloadPaths([
-        __DIR__.'/vendor/autoload.php',
+        __DIR__ . '/vendor/autoload.php',
     ]);
 
     // Do you need to include constants, class aliases, or a custom autoloader?
-    $rectorConfig->bootstrapFiles([
-        realpath(getcwd()).'/vendor/codeigniter4/framework/system/Test/bootstrap.php',
-    ]);
+    $rectorConfig->bootstrapFiles([]);
 
-    if (is_file(__DIR__.'/phpstan.neon.dist')) {
-        $phpstanConfigs = [__DIR__.DIRECTORY_SEPARATOR.'phpstan.neon.dist'];
+    if (is_file(__DIR__ . '/phpstan.neon.dist')) {
+        $phpstanConfigs = [__DIR__ . DIRECTORY_SEPARATOR . 'phpstan.neon.dist'];
 
-        $strictRulesPath = __DIR__.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, ['vendor', 'phpstan', 'phpstan-strict-rules', 'rules.neon']);
+        $strictRulesPath = __DIR__ . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, ['vendor', 'phpstan', 'phpstan-strict-rules', 'rules.neon']);
 
         if (is_file($strictRulesPath)) {
             $phpstanConfigs[] = $strictRulesPath;
@@ -143,8 +141,7 @@ return static function (RectorConfig $rectorConfig): void {
              * Set to true for projects that allow BC break
              */
             TypedPropertyFromAssignsRector::INLINE_PUBLIC => true,
-        ])
-    ;
+        ]);
     $rectorConfig->rule(StringClassNameToClassConstantRector::class);
     $rectorConfig->rule(PrivatizeFinalClassPropertyRector::class);
     $rectorConfig->rule(CompleteDynamicPropertiesRector::class);

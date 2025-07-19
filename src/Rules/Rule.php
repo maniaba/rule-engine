@@ -19,7 +19,7 @@ use Maniaba\RuleEngine\Context\ContextInterface;
  */
 final class Rule implements RuleInterface
 {
-    private array $executionErrors = [];
+    private array $executionErrors  = [];
     private ?bool $evaluationResult = null;
 
     public function __construct(
@@ -29,7 +29,8 @@ final class Rule implements RuleInterface
         /** @var list<ActionInterface> $elseActions */
         private readonly array $elseActions = [],
         private int $priority = 0,
-    ) {}
+    ) {
+    }
 
     /**
      * Izvršava akcije na temelju rezultata evaluacije.
@@ -54,9 +55,9 @@ final class Rule implements RuleInterface
     }
 
     /**
-     * @return null|list<string>|string
+     * @return list<string>|string|null
      */
-    public function getFailureMessage(): null|array|string
+    public function getFailureMessage(): array|string|null
     {
         return $this->condition->getFailureMessage();
     }
@@ -93,7 +94,7 @@ final class Rule implements RuleInterface
             $errors = $action->getFailureMessage();
 
             if (null !== $errors) {
-                $errors = \is_array($errors) ? $errors : [$errors];
+                $errors                = \is_array($errors) ? $errors : [$errors];
                 $this->executionErrors = array_merge($this->executionErrors, $errors);
             }
         }

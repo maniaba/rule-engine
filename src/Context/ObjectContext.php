@@ -8,7 +8,8 @@ final readonly class ObjectContext implements ContextInterface
 {
     public function __construct(
         private object $object,
-    ) {}
+    ) {
+    }
 
     public function getField(string $field): mixed
     {

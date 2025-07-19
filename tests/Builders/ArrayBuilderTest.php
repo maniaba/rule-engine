@@ -42,10 +42,10 @@ final class ArrayBuilderTest extends TestCase
         // Nedostaje 'node' ključ
         $config = [
             'if' => [
-                'node' => 'context',
+                'node'        => 'context',
                 'contextName' => 'depositCount',
-                'operator' => 'equal',
-                'value' => 10,
+                'operator'    => 'equal',
+                'value'       => 10,
             ],
         ];
 
@@ -73,9 +73,9 @@ final class ArrayBuilderTest extends TestCase
 
         // context node bez contextName
         $config = [
-            'node' => 'context',
+            'node'     => 'context',
             'operator' => 'equal',
-            'value' => 10,
+            'value'    => 10,
         ];
 
         // U ConditionFactory očekujemo da se baca greška ako nema contextName.
@@ -111,15 +111,15 @@ final class ArrayBuilderTest extends TestCase
         $builder = new ArrayBuilder();
 
         $config = [
-            'node' => 'context',
+            'node'        => 'context',
             'contextName' => 'depositCount',
-            'operator' => 'equal',
-            'value' => 10,
+            'operator'    => 'equal',
+            'value'       => 10,
         ];
 
         $ruleSet = $builder->build($config);
-        self::assertInstanceOf(RuleSet::class, $ruleSet, 'build treba vratiti RuleSet za validnu konfiguraciju');
-        self::assertCount(1, $ruleSet->getRules(), 'Treba biti 1 rule u RuleSet-u');
+        $this->assertInstanceOf(RuleSet::class, $ruleSet, 'build treba vratiti RuleSet za validnu konfiguraciju');
+        $this->assertCount(1, $ruleSet->getRules(), 'Treba biti 1 rule u RuleSet-u');
     }
 
     public function testBuildRuleSetWithNotCondition(): void
@@ -128,17 +128,17 @@ final class ArrayBuilderTest extends TestCase
         $config = [
             [
                 'node' => 'condition',
-                'if' => [
-                    'node' => 'not',
+                'if'   => [
+                    'node'      => 'not',
                     'condition' => [
-                        'node' => 'context',
+                        'node'        => 'context',
                         'contextName' => 'depositCount',
-                        'operator' => 'greaterThanOrEqual',
-                        'value' => 5,
+                        'operator'    => 'greaterThanOrEqual',
+                        'value'       => 5,
                     ],
                 ],
                 'then' => [
-                    'node' => 'action',
+                    'node'       => 'action',
                     'actionName' => 'rejectDeposit',
                 ],
             ],
@@ -147,13 +147,13 @@ final class ArrayBuilderTest extends TestCase
         // Kreiramo RuleSet iz konfiguracije
         $builder = new ArrayBuilder();
         // dummy action
-        $builder->actions()->registerAction('rejectDeposit', new CallableAction(static fn(): null => null));
+        $builder->actions()->registerAction('rejectDeposit', new CallableAction(static fn (): null => null));
 
         $ruleSet = $builder->build($config);
 
         // Proveravamo da je kreiran RuleSet
-        self::assertInstanceOf(RuleSet::class, $ruleSet);
-        self::assertCount(1, $ruleSet->getRules());
+        $this->assertInstanceOf(RuleSet::class, $ruleSet);
+        $this->assertCount(1, $ruleSet->getRules());
 
         // Proveravamo prvu komponentu pravila
         $rule = $ruleSet->getRules()[0];
@@ -163,27 +163,27 @@ final class ArrayBuilderTest extends TestCase
         $condition = $this->getPrivateProperty($rule, 'condition');
 
         // Proveravamo da li je 'if' deo negacija
-        self::assertInstanceOf(IfElseCondition::class, $condition);
+        $this->assertInstanceOf(IfElseCondition::class, $condition);
 
         $conditionNot = $this->getPrivateProperty($condition, 'ifCondition');
-        self::assertInstanceOf(NotCondition::class, $conditionNot);
+        $this->assertInstanceOf(NotCondition::class, $conditionNot);
 
         // Proveravamo unutar NotCondition da li sadrži ispravan uslov
         $innerCondition = $this->getPrivateProperty($conditionNot, 'condition');
-        self::assertInstanceOf(GreaterThanOrEqualCondition::class, $innerCondition);
+        $this->assertInstanceOf(GreaterThanOrEqualCondition::class, $innerCondition);
 
         $contextName = $this->getPrivateProperty($innerCondition, 'contextName');
-        $value = $this->getPrivateProperty($innerCondition, 'value');
+        $value       = $this->getPrivateProperty($innerCondition, 'value');
 
-        self::assertSame('depositCount', $contextName);
-        self::assertSame(5, $value);
+        $this->assertSame('depositCount', $contextName);
+        $this->assertSame(5, $value);
 
         // Proveravamo da li je 'then' deo akcija
         /**
          * @var ActionInterface $action
          */
         $action = $this->getPrivateProperty($condition, 'thenAction');
-        self::assertInstanceOf(ActionInterface::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
     }
 
     public function testBuildActionWithArguments(): void
@@ -192,16 +192,16 @@ final class ArrayBuilderTest extends TestCase
         $builder->actions()->registerAction('dummy_args', DummyArgumentsAction::class);
 
         $config = [
-            'node' => 'action',
+            'node'       => 'action',
             'actionName' => 'dummy_args',
-            'arguments' => [
+            'arguments'  => [
                 'arguments' => ['arg1', 'arg2'],
             ],
         ];
 
         $ruleSet = $builder->build($config);
-        self::assertInstanceOf(RuleSet::class, $ruleSet, 'build treba vratiti RuleSet za validnu konfiguraciju');
-        self::assertCount(1, $ruleSet->getRules(), 'Treba biti 1 rule u RuleSet-u');
+        $this->assertInstanceOf(RuleSet::class, $ruleSet, 'build treba vratiti RuleSet za validnu konfiguraciju');
+        $this->assertCount(1, $ruleSet->getRules(), 'Treba biti 1 rule u RuleSet-u');
 
         $context = $this->createMock(ContextInterface::class);
 
@@ -212,7 +212,7 @@ final class ArrayBuilderTest extends TestCase
     {
         $builder = new ArrayBuilder();
 
-        $dummyAction = new CallableAction(static fn(): null => null);
+        $dummyAction = new CallableAction(static fn (): null => null);
         $builder->actions()->registerAction('actionName1', $dummyAction);
         $builder->actions()->registerAction('actionName2', $dummyAction);
         $builder->actions()->registerAction('rejectDeposit', $dummyAction);

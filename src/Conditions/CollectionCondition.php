@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Conditions;
 
+use InvalidArgumentException;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Enums\CollectionConditionType;
 
@@ -17,30 +18,31 @@ final class CollectionCondition implements ConditionInterface
     public function __construct(
         public readonly CollectionConditionType $type,
         private readonly array $conditions,
-    ) {}
+    ) {
+    }
 
     public static function factory(array $data): ConditionInterface
     {
         foreach (['type', 'nodes'] as $key) {
             if (! \array_key_exists($key, $data)) {
-                throw new \InvalidArgumentException("'{$key}' key is missing in 'collection' node.");
+                throw new InvalidArgumentException("'{$key}' key is missing in 'collection' node.");
             }
         }
 
         $type = CollectionConditionType::tryFrom($data['type']);
 
         if (null === $type) {
-            throw new \InvalidArgumentException("Invalid collection condition type: {$data['type']}");
+            throw new InvalidArgumentException("Invalid collection condition type: {$data['type']}");
         }
 
         if (! \is_array($data['nodes'])) {
-            throw new \InvalidArgumentException('Nodes must be an array.');
+            throw new InvalidArgumentException('Nodes must be an array.');
         }
 
         // check $data[nodes] must be all instances ConditionInterface
         foreach ($data['nodes'] as $node) {
             if (! $node instanceof ConditionInterface) {
-                throw new \InvalidArgumentException('Condition must implement ConditionInterface.');
+                throw new InvalidArgumentException('Condition must implement ConditionInterface.');
             }
         }
 
@@ -50,11 +52,11 @@ final class CollectionCondition implements ConditionInterface
     public function isSatisfied(ContextInterface $context): bool
     {
         $this->failureMessages = []; // Reset failure messages
-        $atLeastOnePassed = false;
+        $atLeastOnePassed      = false;
 
         foreach ($this->conditions as $condition) {
             if (! $condition instanceof ConditionInterface) {
-                throw new \InvalidArgumentException('Condition must implement ConditionInterface.');
+                throw new InvalidArgumentException('Condition must implement ConditionInterface.');
             }
 
             $result = $condition->isSatisfied($context);
@@ -91,7 +93,7 @@ final class CollectionCondition implements ConditionInterface
     /**
      * Returns the failure messages of conditions that failed.
      *
-     * @return null|array an array of failure messages or null if no failure
+     * @return array|null an array of failure messages or null if no failure
      */
     public function getFailureMessage(): ?array
     {

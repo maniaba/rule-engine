@@ -20,12 +20,12 @@ final class PriorityEvaluator extends AbstractEvaluator
         $rules = $ruleSet->getRules();
 
         // Sortiramo pravila po prioritetu (veći prioritet ide prvi)
-        usort($rules, static fn(RuleInterface $a, RuleInterface $b): int => $b->getPriority() <=> $a->getPriority());
+        usort($rules, static fn (RuleInterface $a, RuleInterface $b): int => $b->getPriority() <=> $a->getPriority());
 
         $results = [];
 
         foreach ($rules as $rule) {
-            $result = $rule->evaluate($context);
+            $result    = $rule->evaluate($context);
             $results[] = new EvaluationResult($rule, $result, $rule->getFailureMessage());
         }
 
@@ -39,7 +39,7 @@ final class PriorityEvaluator extends AbstractEvaluator
         $rules = $ruleSet->getRules();
 
         // Sortiramo pravila po prioritetu (veći prioritet ide prvi)
-        usort($rules, static fn(RuleInterface $a, RuleInterface $b): int => $b->getPriority() <=> $a->getPriority());
+        usort($rules, static fn (RuleInterface $a, RuleInterface $b): int => $b->getPriority() <=> $a->getPriority());
 
         foreach ($rules as $rule) {
             $rule->execute($context);

@@ -3,14 +3,14 @@
 declare(strict_types=1);
 
 use Nexus\CsConfig\Factory;
-use Nexus\CsConfig\Ruleset\Nexus81;
 use PhpCsFixer\Finder;
+use Utils\CodeStyle;
 
 $finder = Finder::create()
     ->files()
     ->in([
-        __DIR__.'/src/',
-        __DIR__.'/tests/',
+        __DIR__ . '/src/',
+        __DIR__ . '/tests/',
     ])
     ->exclude([
         'build',
@@ -18,9 +18,8 @@ $finder = Finder::create()
     ])
     ->append([
         __FILE__,
-        __DIR__.'/rector.php',
-    ])
-;
+        __DIR__ . '/rector.php',
+    ]);
 
 $overrides = [
     'declare_strict_types' => true,
@@ -29,8 +28,8 @@ $overrides = [
 ];
 
 $options = [
-    'finder' => $finder,
+    'finder'    => $finder,
     'cacheFile' => 'build/.php-cs-fixer.cache',
 ];
 
-return Factory::create(new Nexus81(), $overrides, $options)->forProjects();
+return Factory::create(new CodeStyle(), $overrides, $options)->forProjects();

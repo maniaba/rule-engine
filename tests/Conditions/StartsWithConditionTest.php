@@ -18,55 +18,55 @@ final class StartsWithConditionTest extends TestCase
 
     public function testConditionSatisfiedWhenStringStartsWithPrefix(): void
     {
-        $context = $this->createMockContext(['field' => 'prefix-value']);
+        $context   = $this->createMockContext(['field' => 'prefix-value']);
         $condition = new StartsWithCondition('field', 'prefix');
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenStringDoesNotStartWithPrefix(): void
     {
-        $context = $this->createMockContext(['field' => 'value']);
+        $context   = $this->createMockContext(['field' => 'value']);
         $condition = new StartsWithCondition('field', 'prefix');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('String does not start with the prefix "prefix".', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('String does not start with the prefix "prefix".', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotExist(): void
     {
-        $context = $this->createMockContext([]);
+        $context   = $this->createMockContext([]);
         $condition = new StartsWithCondition('nonexistentField', 'prefix');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "nonexistentField" does not exist.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "nonexistentField" does not exist.', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsNotString(): void
     {
-        $context = $this->createMockContext(['field' => 12345]);
+        $context   = $this->createMockContext(['field' => 12345]);
         $condition = new StartsWithCondition('field', 'prefix');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" is not a valid string.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" is not a valid string.', $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWhenStringEqualsPrefix(): void
     {
-        $context = $this->createMockContext(['field' => 'prefix']);
+        $context   = $this->createMockContext(['field' => 'prefix']);
         $condition = new StartsWithCondition('field', 'prefix');
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenStringIsEmpty(): void
     {
-        $context = $this->createMockContext(['field' => '']);
+        $context   = $this->createMockContext(['field' => '']);
         $condition = new StartsWithCondition('field', 'prefix');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('String does not start with the prefix "prefix".', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('String does not start with the prefix "prefix".', $condition->getFailureMessage());
     }
 }

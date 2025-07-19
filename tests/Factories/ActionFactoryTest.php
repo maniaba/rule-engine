@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Factories;
 
+use InvalidArgumentException;
 use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Context\ContextInterface;
@@ -35,17 +36,17 @@ final class ActionFactoryTest extends TestCase
         // Act
         $action = $this->actionFactory->create([
             'actionName' => 'testAction',
-            'arguments' => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'nulla' => null],
+            'arguments'  => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'nulla' => null],
         ]);
 
         // Assert
-        self::assertInstanceOf(ActionInterface::class, $action);
-        self::assertInstanceOf(TestAction::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
+        $this->assertInstanceOf(TestAction::class, $action);
     }
 
     public function testCreateWithInvalidActionName(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Action name is missing.');
 
         $this->actionFactory->create([]);
@@ -53,7 +54,7 @@ final class ActionFactoryTest extends TestCase
 
     public function testCreateWithNonExistentAction(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unsupported action: invalidAction');
 
         $this->actionFactory->create(['actionName' => 'invalidAction']);
@@ -62,35 +63,35 @@ final class ActionFactoryTest extends TestCase
     public function testCreateWithCallable(): void
     {
         // Arrange
-        $this->actionFactory->registerAction('callableAction', static fn(ContextInterface $context): string => 'test');
+        $this->actionFactory->registerAction('callableAction', static fn (ContextInterface $context): string => 'test');
 
         // Act
         $action = $this->actionFactory->create(['actionName' => 'callableAction']);
 
         // Assert
-        self::assertInstanceOf(CallableAction::class, $action);
+        $this->assertInstanceOf(CallableAction::class, $action);
     }
 
     public function testCreateCallableWithMixedArguments(): void
     {
         // Arrange
-        $this->actionFactory->registerAction('callableWithArgs', static fn(ContextInterface $context, mixed $arg1, mixed $arg2 = null): string => $arg1);
+        $this->actionFactory->registerAction('callableWithArgs', static fn (ContextInterface $context, mixed $arg1, mixed $arg2 = null): string => $arg1);
 
         // Act
         $action = $this->actionFactory->create([
             'actionName' => 'callableWithArgs',
-            'arguments' => [
+            'arguments'  => [
                 'arg1' => 'testArg',
             ],
         ]);
 
         // Assert
-        self::assertInstanceOf(CallableAction::class, $action);
+        $this->assertInstanceOf(CallableAction::class, $action);
     }
 
     public function testCreateWithNonStringActionName(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Action name must be a string.');
 
         $this->actionFactory->create(['actionName' => 123]);
@@ -104,44 +105,44 @@ final class ActionFactoryTest extends TestCase
         // Act
         $action = $this->actionFactory->create([
             'actionName' => 'testAction',
-            'arguments' => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'nulla' => null],
+            'arguments'  => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'nulla' => null],
         ]);
 
         // Assert
-        self::assertInstanceOf(ActionInterface::class, $action);
-        self::assertInstanceOf(TestAction::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
+        $this->assertInstanceOf(TestAction::class, $action);
     }
 
     public function testCreateCallableWithArguments(): void
     {
         // Arrange
-        $this->actionFactory->registerAction('callableWithArgs', static fn(ContextInterface $context, string $arg1, int $arg2): string => "{$arg1} - {$arg2}");
+        $this->actionFactory->registerAction('callableWithArgs', static fn (ContextInterface $context, string $arg1, int $arg2): string => "{$arg1} - {$arg2}");
 
         // Act
         $action = $this->actionFactory->create([
             'actionName' => 'callableWithArgs',
-            'arguments' => [
+            'arguments'  => [
                 'arg1' => 'testArg',
                 'arg2' => 123,
             ],
         ]);
 
         // Assert
-        self::assertInstanceOf(CallableAction::class, $action);
+        $this->assertInstanceOf(CallableAction::class, $action);
     }
 
     public function testCreateCallableWithMissingArguments(): void
     {
         // Arrange
-        $this->actionFactory->registerAction('callableWithArgs', static fn(ContextInterface $context, string $arg1, int $arg2): string => "{$arg1} - {$arg2}");
+        $this->actionFactory->registerAction('callableWithArgs', static fn (ContextInterface $context, string $arg1, int $arg2): string => "{$arg1} - {$arg2}");
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Missing required argument: 'arg2' for action: 'callableWithArgs'");
 
         // Act
         $this->actionFactory->create([
             'actionName' => 'callableWithArgs',
-            'arguments' => [
+            'arguments'  => [
                 'arg1' => 'testArg',
             ],
         ]);
@@ -150,15 +151,15 @@ final class ActionFactoryTest extends TestCase
     public function testCreateCallableWithInvalidTypeArguments(): void
     {
         // Arrange
-        $this->actionFactory->registerAction('callableWithArgs', static fn(ContextInterface $context, string $arg1, int $arg2): string => "{$arg1} - {$arg2}");
+        $this->actionFactory->registerAction('callableWithArgs', static fn (ContextInterface $context, string $arg1, int $arg2): string => "{$arg1} - {$arg2}");
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Invalid type for argument: 'arg2'. Expected: int, got: string");
 
         // Act
         $this->actionFactory->create([
             'actionName' => 'callableWithArgs',
-            'arguments' => [
+            'arguments'  => [
                 'arg1' => 'testArg',
                 'arg2' => 'invalid',
             ],
@@ -176,8 +177,8 @@ final class ActionFactoryTest extends TestCase
         ]);
 
         // Assert
-        self::assertInstanceOf(ActionInterface::class, $action);
-        self::assertInstanceOf(TestActionWithConstructorException::class, $action);
+        $this->assertInstanceOf(ActionInterface::class, $action);
+        $this->assertInstanceOf(TestActionWithConstructorException::class, $action);
     }
 
     // test action withoput constructor
@@ -195,8 +196,8 @@ final class ActionFactoryTest extends TestCase
         ]);
 
         // Assert
-        self::assertInstanceOf(ActionInterface::class, $createdAction);
-        self::assertInstanceOf(TestAction::class, $createdAction);
+        $this->assertInstanceOf(ActionInterface::class, $createdAction);
+        $this->assertInstanceOf(TestAction::class, $createdAction);
     }
 
     // test with instance of action
@@ -204,18 +205,18 @@ final class ActionFactoryTest extends TestCase
     public function testCreateCallableWithDefaultValue(): void
     {
         // Arrange
-        $this->actionFactory->registerAction('callableWithArgs', static fn(ContextInterface $context, string $arg1, int $arg2 = 42): string => "{$arg1} - {$arg2}");
+        $this->actionFactory->registerAction('callableWithArgs', static fn (ContextInterface $context, string $arg1, int $arg2 = 42): string => "{$arg1} - {$arg2}");
 
         // Act
         $action = $this->actionFactory->create([
             'actionName' => 'callableWithArgs',
-            'arguments' => [
+            'arguments'  => [
                 'arg1' => 'testArg',
             ],
         ]);
 
         // Assert
-        self::assertInstanceOf(CallableAction::class, $action);
+        $this->assertInstanceOf(CallableAction::class, $action);
     }
 
     public function testCreateWithMissingArguments(): void
@@ -223,13 +224,13 @@ final class ActionFactoryTest extends TestCase
         // Arrange
         $this->actionFactory->registerAction('testAction', TestAction::class);
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage("Missing required argument: 'nulla' for action: 'testAction'");
 
         // Act
         $this->actionFactory->create([
             'actionName' => 'testAction',
-            'arguments' => ['field' => 'testField'],
+            'arguments'  => ['field' => 'testField'],
         ]);
     }
 
@@ -241,14 +242,14 @@ final class ActionFactoryTest extends TestCase
         // Assert Registered
         $action = $this->actionFactory->create([
             'actionName' => 'testAction',
-            'arguments' => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'nulla' => null],
+            'arguments'  => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'nulla' => null],
         ]);
-        self::assertInstanceOf(TestAction::class, $action);
+        $this->assertInstanceOf(TestAction::class, $action);
 
         // Unregister
         $this->actionFactory->unregisterAction('testAction');
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unsupported action: testAction');
 
         $this->actionFactory->create(['actionName' => 'testAction']);
@@ -263,7 +264,7 @@ final class ActionFactoryTest extends TestCase
         $this->actionFactory->reset();
 
         // Assert
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unsupported action: testAction');
 
         $this->actionFactory->create(['actionName' => 'testAction']);

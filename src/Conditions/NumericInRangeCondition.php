@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Conditions;
 
+use InvalidArgumentException;
 use Maniaba\RuleEngine\Context\ContextInterface;
 
 final class NumericInRangeCondition extends AbstractCondition
@@ -19,17 +20,18 @@ final class NumericInRangeCondition extends AbstractCondition
         private readonly string $contextName,
         private readonly float|int $min,
         private readonly float|int $max,
-    ) {}
+    ) {
+    }
 
     public static function factory(array $data): ConditionInterface
     {
         if (! isset($data['min']) || ! isset($data['max']) || ! is_numeric($data['min']) || ! is_numeric($data['max'])) {
-            throw new \InvalidArgumentException('Min and max values are required.');
+            throw new InvalidArgumentException('Min and max values are required.');
         }
         $contextName = $data['contextName'] ?? null;
 
         if (null === $contextName) {
-            throw new \InvalidArgumentException('Context name is required.');
+            throw new InvalidArgumentException('Context name is required.');
         }
 
         return new self($contextName, $data['min'], $data['max']);

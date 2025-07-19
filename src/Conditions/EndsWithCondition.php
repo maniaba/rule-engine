@@ -14,7 +14,8 @@ final class EndsWithCondition extends AbstractCondition
     public function __construct(
         private readonly string $field,
         private readonly string $suffix,
-    ) {}
+    ) {
+    }
 
     protected function defaultFailureMessage(): string
     {

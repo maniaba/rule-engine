@@ -14,7 +14,8 @@ final class StringContainCondition extends AbstractCondition
     public function __construct(
         private readonly string $field,
         private readonly string $needle,
-    ) {}
+    ) {
+    }
 
     protected function defaultFailureMessage(): string
     {

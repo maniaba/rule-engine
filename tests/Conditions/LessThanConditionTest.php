@@ -18,82 +18,82 @@ final class LessThanConditionTest extends TestCase
 
     public function testConditionSatisfiedWhenFieldIsLessThanValue(): void
     {
-        $context = $this->createMockContext(['field' => 5]);
+        $context   = $this->createMockContext(['field' => 5]);
         $condition = new LessThanCondition('field', 10);
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsEqualToValue(): void
     {
-        $context = $this->createMockContext(['field' => 10]);
+        $context   = $this->createMockContext(['field' => 10]);
         $condition = new LessThanCondition('field', 10);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame("Field 'field' is not less than to the expected value '10'.", $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame("Field 'field' is not less than to the expected value '10'.", $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsGreaterThanValue(): void
     {
-        $context = $this->createMockContext(['field' => 15]);
+        $context   = $this->createMockContext(['field' => 15]);
         $condition = new LessThanCondition('field', 10);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame("Field 'field' is not less than to the expected value '10'.", $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame("Field 'field' is not less than to the expected value '10'.", $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotExist(): void
     {
-        $context = $this->createMockContext([]);
+        $context   = $this->createMockContext([]);
         $condition = new LessThanCondition('nonexistentField', 10);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "nonexistentField" does not exist.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "nonexistentField" does not exist.', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsNotComparable(): void
     {
-        $context = $this->createMockContext(['field' => 'string']);
+        $context   = $this->createMockContext(['field' => 'string']);
         $condition = new LessThanCondition('field', 10);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWithFloatingPointNumbers(): void
     {
-        $context = $this->createMockContext(['field' => 5.5]);
+        $context   = $this->createMockContext(['field' => 5.5]);
         $condition = new LessThanCondition('field', 10.1);
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsNull(): void
     {
-        $context = $this->createMockContext(['field' => null]);
+        $context   = $this->createMockContext(['field' => null]);
         $condition = new LessThanCondition('field', 10);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWithStringsWhenAlphabeticallyLess(): void
     {
-        $context = $this->createMockContext(['field' => 'apple']);
+        $context   = $this->createMockContext(['field' => 'apple']);
         $condition = new LessThanCondition('field', 'banana');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWithStringsWhenAlphabeticallyGreater(): void
     {
-        $context = $this->createMockContext(['field' => 'banana']);
+        $context   = $this->createMockContext(['field' => 'banana']);
         $condition = new LessThanCondition('field', 'apple');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
     }
 }

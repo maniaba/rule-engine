@@ -18,7 +18,8 @@ final class ArrayContainsAllCondition extends AbstractCondition
     public function __construct(
         private readonly string $field,
         private readonly array $values,
-    ) {}
+    ) {
+    }
 
     protected function defaultFailureMessage(): string
     {

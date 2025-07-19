@@ -6,6 +6,8 @@ namespace Maniaba\RuleEngine\Context;
 
 use App\Entities\BaseEntity;
 use BackedEnum;
+use InvalidArgumentException;
+use UnitEnum;
 
 /**
  * Field selector for accessing nested properties and filtering arrays.
@@ -18,7 +20,8 @@ final class FieldSelector
 
     public function __construct(
         private readonly array|object $data,
-    ) {}
+    ) {
+    }
 
     public function getField(string $selector): mixed
     {
@@ -27,7 +30,7 @@ final class FieldSelector
             return $this->cache[$selector];
         }
 
-        $parts = explode('->', $selector);
+        $parts   = explode('->', $selector);
         $current = $this->data;
 
         foreach ($parts as $part) {
@@ -49,7 +52,7 @@ final class FieldSelector
     {
         // Match array access pattern (e.g., key[index], key[id:>=2])
         if (preg_match('/^(\w+)(\[(.*?)\])?$/', $part, $matches)) {
-            $key = $matches[1];
+            $key    = $matches[1];
             $filter = $matches[3] ?? null;
 
             // Access object or array
@@ -57,12 +60,12 @@ final class FieldSelector
                 $data = $data[$key];
             } elseif (\is_object($data) && property_exists($data, $key)) {
                 $data = $data->{$key};
-            } elseif (\is_object($data) && method_exists($data, 'get'.ucfirst($key))) {
-                $data = $data->{'get'.ucfirst($key)}();
+            } elseif (\is_object($data) && method_exists($data, 'get' . ucfirst($key))) {
+                $data = $data->{'get' . ucfirst($key)}();
             } elseif ($data instanceof BaseEntity) {
                 $data = $data->{$key};
             } else {
-                throw new \InvalidArgumentException("Key '{$key}' does not exist.");
+                throw new InvalidArgumentException("Key '{$key}' does not exist.");
             }
 
             // Handle filter if present
@@ -73,26 +76,26 @@ final class FieldSelector
             return $data;
         }
 
-        throw new \InvalidArgumentException("Invalid selector part: '{$part}'.");
+        throw new InvalidArgumentException("Invalid selector part: '{$part}'.");
     }
 
     private static function resolveArray(array $array, string $filter): mixed
     {
         // Numeric index access
         if (is_numeric($filter)) {
-            return $array[(int) $filter] ?? throw new \InvalidArgumentException("Index '{$filter}' does not exist in array.");
+            return $array[(int) $filter] ?? throw new InvalidArgumentException("Index '{$filter}' does not exist in array.");
         }
 
         // Key-value filtering with custom operators
         if (preg_match('/^(\w+):(>=|<=|>|<(?!>)|=|!=)?(.+)$/', $filter, $matches)) {
-            $key = $matches[1];
+            $key      = $matches[1];
             $operator = '' !== $matches[2] ? $matches[2] : '=';
 
             // Provjera je li operator podržan
             $supportedOperators = ['=', '>=', '<=', '>', '<', '!='];
 
             if (! \in_array($operator, $supportedOperators, true)) {
-                throw new \InvalidArgumentException("Unsupported operator '{$operator}' in filter '{$filter}'");
+                throw new InvalidArgumentException("Unsupported operator '{$operator}' in filter '{$filter}'");
             }
 
             $value = self::castValue($matches[3]);
@@ -109,10 +112,10 @@ final class FieldSelector
                 }
             }
 
-            throw new \InvalidArgumentException("No matching element found for '{$filter}' in array.");
+            throw new InvalidArgumentException("No matching element found for '{$filter}' in array.");
         }
 
-        throw new \InvalidArgumentException("Invalid array filter '{$filter}'.");
+        throw new InvalidArgumentException("Invalid array filter '{$filter}'.");
     }
 
     private static function castValue(string $value): mixed
@@ -135,20 +138,20 @@ final class FieldSelector
     private static function evaluateCondition(mixed $itemValue, string $operator, mixed $value): bool
     {
         // Ako je $itemValue instanca BackedEnum, koristimo njegovu podloženu vrijednost
-        if ($itemValue instanceof \BackedEnum) {
+        if ($itemValue instanceof BackedEnum) {
             $itemValue = $itemValue->value;
-        } elseif ($itemValue instanceof \UnitEnum) {
+        } elseif ($itemValue instanceof UnitEnum) {
             $itemValue = $itemValue->name;
         }
 
         return match ($operator) {
-            '=' => $itemValue === $value,
-            '>' => $itemValue > $value,
-            '>=' => $itemValue >= $value,
-            '<' => $itemValue < $value,
-            '<=' => $itemValue <= $value,
-            '!=' => $itemValue !== $value,
-            default => throw new \InvalidArgumentException("Unsupported operator '{$operator}'"),
+            '='     => $itemValue === $value,
+            '>'     => $itemValue > $value,
+            '>='    => $itemValue >= $value,
+            '<'     => $itemValue < $value,
+            '<='    => $itemValue <= $value,
+            '!='    => $itemValue !== $value,
+            default => throw new InvalidArgumentException("Unsupported operator '{$operator}'"),
         };
     }
 }

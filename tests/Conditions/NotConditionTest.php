@@ -27,10 +27,10 @@ final class NotConditionTest extends TestCase
         $context = new ArrayContext(['depositCount' => 3]);
 
         $equalsCondition = new EqualsCondition('depositCount', 5);
-        $notCondition = new NotCondition($equalsCondition);
+        $notCondition    = new NotCondition($equalsCondition);
 
-        self::assertTrue($notCondition->isSatisfied($context), 'Negation failed');
-        self::assertFalse($equalsCondition->isSatisfied($context), 'EqualsCondition failed');
+        $this->assertTrue($notCondition->isSatisfied($context), 'Negation failed');
+        $this->assertFalse($equalsCondition->isSatisfied($context), 'EqualsCondition failed');
     }
 
     public function testConditionWithStringFailureMessage(): void
@@ -38,20 +38,18 @@ final class NotConditionTest extends TestCase
         $mockContext = $this->createMock(ContextInterface::class);
 
         $mockCondition = $this->createMock(ConditionInterface::class);
-        $mockCondition->expects(self::once())
+        $mockCondition->expects($this->once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true)
-        ;
-        $mockCondition->expects(self::once())
+            ->willReturn(true);
+        $mockCondition->expects($this->once())
             ->method('getFailureMessage')
-            ->willReturn('Original condition failed.')
-        ;
+            ->willReturn('Original condition failed.');
 
         $notCondition = new NotCondition($mockCondition);
 
-        self::assertFalse($notCondition->isSatisfied($mockContext));
-        self::assertSame('Negation of: Original condition failed.', $notCondition->getFailureMessage());
+        $this->assertFalse($notCondition->isSatisfied($mockContext));
+        $this->assertSame('Negation of: Original condition failed.', $notCondition->getFailureMessage());
     }
 
     public function testConditionWithArrayFailureMessage(): void
@@ -59,23 +57,21 @@ final class NotConditionTest extends TestCase
         $mockContext = $this->createMock(ContextInterface::class);
 
         $mockCondition = $this->createMock(ConditionInterface::class);
-        $mockCondition->expects(self::once())
+        $mockCondition->expects($this->once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true)
-        ;
-        $mockCondition->expects(self::once())
+            ->willReturn(true);
+        $mockCondition->expects($this->once())
             ->method('getFailureMessage')
             ->willReturn([
                 'Condition 1 failed.',
                 'Condition 2 failed.',
-            ])
-        ;
+            ]);
 
         $notCondition = new NotCondition($mockCondition);
 
-        self::assertFalse($notCondition->isSatisfied($mockContext));
-        self::assertSame([
+        $this->assertFalse($notCondition->isSatisfied($mockContext));
+        $this->assertSame([
             'Negation of: Condition 1 failed.',
             'Negation of: Condition 2 failed.',
         ], $notCondition->getFailureMessage());
@@ -86,20 +82,18 @@ final class NotConditionTest extends TestCase
         $mockContext = $this->createMock(ContextInterface::class);
 
         $mockCondition = $this->createMock(ConditionInterface::class);
-        $mockCondition->expects(self::once())
+        $mockCondition->expects($this->once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true)
-        ;
-        $mockCondition->expects(self::once())
+            ->willReturn(true);
+        $mockCondition->expects($this->once())
             ->method('getFailureMessage')
-            ->willReturn(null)
-        ;
+            ->willReturn(null);
 
         $notCondition = new NotCondition($mockCondition);
 
-        self::assertFalse($notCondition->isSatisfied($mockContext));
-        self::assertNull($notCondition->getFailureMessage());
+        $this->assertFalse($notCondition->isSatisfied($mockContext));
+        $this->assertNull($notCondition->getFailureMessage());
     }
 
     public function testComplexConditionWithNegationAndCollectionConditions(): void
@@ -108,23 +102,20 @@ final class NotConditionTest extends TestCase
 
         // Uslov 1 (prolazi)
         $condition1 = $this->createMock(ConditionInterface::class);
-        $condition1->expects(self::exactly(2))
+        $condition1->expects($this->exactly(2))
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(false)
-        ;
-        $condition1->expects(self::exactly(2))
+            ->willReturn(false);
+        $condition1->expects($this->exactly(2))
             ->method('getFailureMessage')
-            ->willReturn('Condition 1 failed.')
-        ;
+            ->willReturn('Condition 1 failed.');
 
         // Uslov 2 (ne prolazi)
         $condition2 = $this->createMock(ConditionInterface::class);
-        $condition2->expects(self::exactly(2))
+        $condition2->expects($this->exactly(2))
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true)
-        ;
+            ->willReturn(true);
 
         // AND Kolekcija
         $andCollection = new CollectionCondition(
@@ -134,7 +125,7 @@ final class NotConditionTest extends TestCase
 
         $andCollection->isSatisfied($mockContext);
 
-        self::assertSame([
+        $this->assertSame([
             'Condition 1 failed.',
         ], $andCollection->getFailureMessage());
 
@@ -142,6 +133,6 @@ final class NotConditionTest extends TestCase
         $negatedAndCollection = new NotCondition($andCollection);
         $negatedAndCollection->isSatisfied($mockContext);
 
-        self::assertNull($negatedAndCollection->getFailureMessage());
+        $this->assertNull($negatedAndCollection->getFailureMessage());
     }
 }

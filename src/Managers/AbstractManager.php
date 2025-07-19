@@ -34,7 +34,7 @@ abstract class AbstractManager implements WorkflowManagerInterface
     final public function evaluator(): EvaluatorInterface
     {
         if (! isset($this->evaluator)) {
-            $evaluatorClass = $this->evaluatorClass();
+            $evaluatorClass  = $this->evaluatorClass();
             $this->evaluator = new $evaluatorClass();
         }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Builders;
 
+use InvalidArgumentException;
 use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Conditions\AlwaysTrueCondition;
 use Maniaba\RuleEngine\Conditions\CollectionCondition;
@@ -15,6 +16,7 @@ use Maniaba\RuleEngine\Factories\ActionFactory;
 use Maniaba\RuleEngine\Factories\ConditionFactory;
 use Maniaba\RuleEngine\Rules\Rule;
 use Maniaba\RuleEngine\Rules\RuleSet;
+use ReflectionException;
 use Tests\Builders\ArrayBuilderTest;
 
 /**
@@ -94,7 +96,7 @@ class ArrayBuilder implements BuilderInterface
             case 'context':
                 try {
                     $context = $this->conditions()->create($config);
-                } catch (\InvalidArgumentException $e) {
+                } catch (InvalidArgumentException $e) {
                     throw new BuilderException("Invalid node structure: {$e->getMessage()}");
                 }
 
@@ -127,7 +129,7 @@ class ArrayBuilder implements BuilderInterface
             case 'collection':
                 // Build nodes
                 if (\array_key_exists('nodes', $config) && \is_array($config['nodes'])) {
-                    $config['nodes'] = array_map(fn(array $node): ConditionInterface => $this->buildCondition($node), $config['nodes']);
+                    $config['nodes'] = array_map(fn (array $node): ConditionInterface => $this->buildCondition($node), $config['nodes']);
                 }
                 $node = CollectionCondition::class;
                 break;
@@ -145,7 +147,7 @@ class ArrayBuilder implements BuilderInterface
             case 'context':
                 try {
                     return $this->conditions()->create($config);
-                } catch (\InvalidArgumentException $e) {
+                } catch (InvalidArgumentException $e) {
                     throw new BuilderException("Invalid node structure: {$e->getMessage()}");
                 }
 
@@ -155,7 +157,7 @@ class ArrayBuilder implements BuilderInterface
 
         try {
             return $node::factory($config);
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             throw new BuilderException("Invalid node structure: {$e->getMessage()}");
         }
     }
@@ -204,9 +206,9 @@ class ArrayBuilder implements BuilderInterface
 
                     try {
                         return $this->actions->create($config);
-                    } catch (\InvalidArgumentException $e) {
+                    } catch (InvalidArgumentException $e) {
                         throw new BuilderException("Invalid node structure: {$e->getMessage()}");
-                    } catch (\ReflectionException $e) {
+                    } catch (ReflectionException $e) {
                         throw new BuilderException("Generic error: {$e->getMessage()}");
                     }
 

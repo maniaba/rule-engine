@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Maniaba\RuleEngine\Builders;
 
 use CodeIgniter\Files\File;
+use JsonException;
 use Maniaba\RuleEngine\Rules\RuleSet;
+use Override;
 
 final class JsonBuilder extends ArrayBuilder
 {
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function parseFile(File $file): RuleSet
     {
@@ -20,13 +22,13 @@ final class JsonBuilder extends ArrayBuilder
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
-    #[\Override]
+    #[Override]
     public function build(mixed $config): RuleSet
     {
         if (! \is_string($config) || json_validate($config) === false) {
-            throw new \JsonException('Configuration must be a JSON.');
+            throw new JsonException('Configuration must be a JSON.');
         }
 
         $config = json_decode($config, true, 512, JSON_THROW_ON_ERROR);

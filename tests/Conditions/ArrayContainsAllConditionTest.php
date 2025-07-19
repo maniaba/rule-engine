@@ -23,7 +23,7 @@ final class ArrayContainsAllConditionTest extends TestCase
 
         $condition = new ArrayContainsAllCondition('field', ['value1', 'value2']);
 
-        self::assertTrue($condition->isSatisfied($context));
+        $this->assertTrue($condition->isSatisfied($context));
     }
 
     public function testConditionNotSatisfiedWhenSomeValuesAreMissing(): void
@@ -32,7 +32,7 @@ final class ArrayContainsAllConditionTest extends TestCase
 
         $condition = new ArrayContainsAllCondition('field', ['value1', 'value2']);
 
-        self::assertFalse($condition->isSatisfied($context));
+        $this->assertFalse($condition->isSatisfied($context));
     }
 
     public function testConditionNotSatisfiedWhenFieldIsNotArray(): void
@@ -41,7 +41,7 @@ final class ArrayContainsAllConditionTest extends TestCase
 
         $condition = new ArrayContainsAllCondition('field', ['value1', 'value2']);
 
-        self::assertFalse($condition->isSatisfied($context));
+        $this->assertFalse($condition->isSatisfied($context));
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotExist(): void
@@ -50,7 +50,7 @@ final class ArrayContainsAllConditionTest extends TestCase
 
         $condition = new ArrayContainsAllCondition('field', ['value1', 'value2']);
 
-        self::assertFalse($condition->isSatisfied($context));
+        $this->assertFalse($condition->isSatisfied($context));
     }
 
     public function testFailureMessage(): void
@@ -59,8 +59,8 @@ final class ArrayContainsAllConditionTest extends TestCase
 
         $condition = new ArrayContainsAllCondition('field', ['value1', 'value2']);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" does not contain all values.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" does not contain all values.', $condition->getFailureMessage());
     }
 
     public function testFieldContainsAllValues(): void
@@ -70,7 +70,7 @@ final class ArrayContainsAllConditionTest extends TestCase
         $context->method('getField')->with('testField')->willReturn(['value1', 'value2', 'value3']);
 
         $condition = new ArrayContainsAllCondition('testField', ['value1', 'value2']);
-        self::assertTrue($condition->isSatisfied($context));
+        $this->assertTrue($condition->isSatisfied($context));
     }
 
     public function testFieldDoesNotContainAllValues(): void
@@ -80,7 +80,7 @@ final class ArrayContainsAllConditionTest extends TestCase
         $context->method('getField')->with('testField')->willReturn(['value1', 'value3']);
 
         $condition = new ArrayContainsAllCondition('testField', ['value1', 'value2']);
-        self::assertFalse($condition->isSatisfied($context));
+        $this->assertFalse($condition->isSatisfied($context));
     }
 
     public function testFieldDoesNotExist(): void
@@ -89,7 +89,7 @@ final class ArrayContainsAllConditionTest extends TestCase
         $context->method('hasField')->with('testField')->willReturn(false);
 
         $condition = new ArrayContainsAllCondition('testField', ['value1', 'value2']);
-        self::assertFalse($condition->isSatisfied($context));
+        $this->assertFalse($condition->isSatisfied($context));
     }
 
     public function testFieldIsNotArray(): void
@@ -99,6 +99,6 @@ final class ArrayContainsAllConditionTest extends TestCase
         $context->method('getField')->with('testField')->willReturn('not an array');
 
         $condition = new ArrayContainsAllCondition('testField', ['value1', 'value2']);
-        self::assertFalse($condition->isSatisfied($context));
+        $this->assertFalse($condition->isSatisfied($context));
     }
 }

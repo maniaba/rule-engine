@@ -18,64 +18,64 @@ final class StringContainConditionTest extends TestCase
 
     public function testConditionSatisfiedWhenStringContainsSubstring(): void
     {
-        $context = $this->createMockContext(['field' => 'This is a test string.']);
+        $context   = $this->createMockContext(['field' => 'This is a test string.']);
         $condition = new StringContainCondition('field', 'test');
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenStringDoesNotContainSubstring(): void
     {
-        $context = $this->createMockContext(['field' => 'This is a test string.']);
+        $context   = $this->createMockContext(['field' => 'This is a test string.']);
         $condition = new StringContainCondition('field', 'missing');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('String does not contain the substring "missing".', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('String does not contain the substring "missing".', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotExist(): void
     {
-        $context = $this->createMockContext([]);
+        $context   = $this->createMockContext([]);
         $condition = new StringContainCondition('nonexistentField', 'test');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "nonexistentField" does not exist.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "nonexistentField" does not exist.', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsNotString(): void
     {
-        $context = $this->createMockContext(['field' => 12345]);
+        $context   = $this->createMockContext(['field' => 12345]);
         $condition = new StringContainCondition('field', 'test');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" is not a valid string.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" is not a valid string.', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenStringIsEmpty(): void
     {
-        $context = $this->createMockContext(['field' => '']);
+        $context   = $this->createMockContext(['field' => '']);
         $condition = new StringContainCondition('field', 'test');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('String does not contain the substring "test".', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('String does not contain the substring "test".', $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWhenSubstringIsEmpty(): void
     {
-        $context = $this->createMockContext(['field' => 'This is a test string.']);
+        $context   = $this->createMockContext(['field' => 'This is a test string.']);
         $condition = new StringContainCondition('field', '');
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsNull(): void
     {
-        $context = $this->createMockContext(['field' => null]);
+        $context   = $this->createMockContext(['field' => null]);
         $condition = new StringContainCondition('field', 'test');
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" is not a valid string.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" is not a valid string.', $condition->getFailureMessage());
     }
 }

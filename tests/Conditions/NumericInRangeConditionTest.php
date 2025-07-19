@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Conditions;
 
+use InvalidArgumentException;
 use Maniaba\RuleEngine\Conditions\NumericInRangeCondition;
 use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\TestCase;
@@ -18,70 +19,70 @@ final class NumericInRangeConditionTest extends TestCase
 
     public function testConditionSatisfiedWhenValueInRange(): void
     {
-        $context = $this->createMockContext(['field' => 15]);
+        $context   = $this->createMockContext(['field' => 15]);
         $condition = new NumericInRangeCondition('field', 10, 20);
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenValueBelowRange(): void
     {
-        $context = $this->createMockContext(['field' => 5]);
+        $context   = $this->createMockContext(['field' => 5]);
         $condition = new NumericInRangeCondition('field', 10, 20);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame("Field 'field' must be between 10.00 and 20.00.", $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame("Field 'field' must be between 10.00 and 20.00.", $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenValueAboveRange(): void
     {
-        $context = $this->createMockContext(['field' => 25]);
+        $context   = $this->createMockContext(['field' => 25]);
         $condition = new NumericInRangeCondition('field', 10, 20);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame("Field 'field' must be between 10.00 and 20.00.", $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame("Field 'field' must be between 10.00 and 20.00.", $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotExist(): void
     {
-        $context = $this->createMockContext([]);
+        $context   = $this->createMockContext([]);
         $condition = new NumericInRangeCondition('nonexistentField', 10, 20);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "nonexistentField" does not exist.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "nonexistentField" does not exist.', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsNotNumeric(): void
     {
-        $context = $this->createMockContext(['field' => 'string']);
+        $context   = $this->createMockContext(['field' => 'string']);
         $condition = new NumericInRangeCondition('field', 10, 20);
 
-        self::assertFalse($condition->isSatisfied($context));
-        self::assertSame('Field "field" is not numeric.', $condition->getFailureMessage());
+        $this->assertFalse($condition->isSatisfied($context));
+        $this->assertSame('Field "field" is not numeric.', $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWhenValueAtLowerBoundary(): void
     {
-        $context = $this->createMockContext(['field' => 10]);
+        $context   = $this->createMockContext(['field' => 10]);
         $condition = new NumericInRangeCondition('field', 10, 20);
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWhenValueAtUpperBoundary(): void
     {
-        $context = $this->createMockContext(['field' => 20]);
+        $context   = $this->createMockContext(['field' => 20]);
         $condition = new NumericInRangeCondition('field', 10, 20);
 
-        self::assertTrue($condition->isSatisfied($context));
-        self::assertNull($condition->getFailureMessage());
+        $this->assertTrue($condition->isSatisfied($context));
+        $this->assertNull($condition->getFailureMessage());
     }
 
     public function testFactoryThrowsExceptionForInvalidData(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Min and max values are required.');
 
         NumericInRangeCondition::factory(['contextName' => 'field']);
@@ -89,7 +90,7 @@ final class NumericInRangeConditionTest extends TestCase
 
     public function testFactoryThrowsExceptionWhenContextNameIsMissing(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Context name is required.');
 
         NumericInRangeCondition::factory(['min' => 10, 'max' => 20]);

@@ -13,6 +13,7 @@ use Maniaba\RuleEngine\Conditions\IfElseCondition;
 use Maniaba\RuleEngine\Conditions\LessThanOrEqualCondition;
 use Maniaba\RuleEngine\Enums\CollectionConditionType;
 use Maniaba\RuleEngine\Rules\RuleSet;
+use ReflectionException;
 
 trait BuilderTestDemoConfigTrait
 {
@@ -53,37 +54,37 @@ trait BuilderTestDemoConfigTrait
     {
         return [
             'node' => 'condition',
-            'if' => [
-                'node' => 'collection',
-                'type' => 'and',
+            'if'   => [
+                'node'  => 'collection',
+                'type'  => 'and',
                 'nodes' => [
                     [
-                        'node' => 'context',
+                        'node'        => 'context',
                         'contextName' => 'depositCount',
-                        'operator' => 'greaterThanOrEqual',
-                        'value' => 2,
+                        'operator'    => 'greaterThanOrEqual',
+                        'value'       => 2,
                     ],
                     [
-                        'node' => 'context',
+                        'node'        => 'context',
                         'contextName' => 'accountAge',
-                        'operator' => 'greaterThanOrEqual',
-                        'value' => 1,
+                        'operator'    => 'greaterThanOrEqual',
+                        'value'       => 1,
                     ],
                     [
-                        'node' => 'collection',
-                        'type' => 'or',
+                        'node'  => 'collection',
+                        'type'  => 'or',
                         'nodes' => [
                             [
-                                'node' => 'context',
+                                'node'        => 'context',
                                 'contextName' => 'hasVipStatus',
-                                'operator' => 'equal',
-                                'value' => true,
+                                'operator'    => 'equal',
+                                'value'       => true,
                             ],
                             [
-                                'node' => 'context',
+                                'node'        => 'context',
                                 'contextName' => 'withdrawalCount',
-                                'operator' => 'lessThanOrEqual',
-                                'value' => 5,
+                                'operator'    => 'lessThanOrEqual',
+                                'value'       => 5,
                             ],
                         ],
                     ],
@@ -91,71 +92,71 @@ trait BuilderTestDemoConfigTrait
             ],
             'then' => [
                 'node' => 'condition',
-                'if' => [
-                    'node' => 'collection',
-                    'type' => 'or',
+                'if'   => [
+                    'node'  => 'collection',
+                    'type'  => 'or',
                     'nodes' => [
                         [
-                            'node' => 'context',
+                            'node'        => 'context',
                             'contextName' => 'loanApproved',
-                            'operator' => 'equal',
-                            'value' => true,
+                            'operator'    => 'equal',
+                            'value'       => true,
                         ],
                         [
-                            'node' => 'collection',
-                            'type' => 'and',
+                            'node'  => 'collection',
+                            'type'  => 'and',
                             'nodes' => [
                                 [
-                                    'node' => 'context',
+                                    'node'        => 'context',
                                     'contextName' => 'monthlyIncome',
-                                    'operator' => 'greaterThanOrEqual',
-                                    'value' => 3000,
+                                    'operator'    => 'greaterThanOrEqual',
+                                    'value'       => 3000,
                                 ],
                                 [
-                                    'node' => 'context',
+                                    'node'        => 'context',
                                     'contextName' => 'creditScore',
-                                    'operator' => 'greaterThanOrEqual',
-                                    'value' => 700,
+                                    'operator'    => 'greaterThanOrEqual',
+                                    'value'       => 700,
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'then' => [
-                    'node' => 'action',
+                    'node'       => 'action',
                     'actionName' => 'actionName1',
                 ],
                 'else' => [
-                    'node' => 'action',
+                    'node'       => 'action',
                     'actionName' => 'actionName2',
                 ],
             ],
             'else' => [
                 'node' => 'condition',
-                'if' => [
-                    'node' => 'collection',
-                    'type' => 'and',
+                'if'   => [
+                    'node'  => 'collection',
+                    'type'  => 'and',
                     'nodes' => [
                         [
-                            'node' => 'context',
+                            'node'        => 'context',
                             'contextName' => 'accountBlocked',
-                            'operator' => 'equal',
-                            'value' => true,
+                            'operator'    => 'equal',
+                            'value'       => true,
                         ],
                         [
-                            'node' => 'context',
+                            'node'        => 'context',
                             'contextName' => 'fraudReported',
-                            'operator' => 'equal',
-                            'value' => true,
+                            'operator'    => 'equal',
+                            'value'       => true,
                         ],
                     ],
                 ],
                 'then' => [
-                    'node' => 'action',
+                    'node'       => 'action',
                     'actionName' => 'actionName3',
                 ],
                 'else' => [
-                    'node' => 'action',
+                    'node'       => 'action',
                     'actionName' => 'actionName4',
                 ],
             ],
@@ -167,13 +168,13 @@ trait BuilderTestDemoConfigTrait
     /**
      * @return array{array, mixed, mixed}
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function checkIfElseCondition(IfElseCondition $condition): array
     {
         $ifCondition = $this->getPrivateProperty($condition, 'ifCondition');
-        $thenAction = $this->getPrivateProperty($condition, 'thenAction');
-        $elseAction = $this->getPrivateProperty($condition, 'elseAction');
+        $thenAction  = $this->getPrivateProperty($condition, 'thenAction');
+        $elseAction  = $this->getPrivateProperty($condition, 'elseAction');
 
         return [$ifCondition, $thenAction, $elseAction];
     }
@@ -204,23 +205,23 @@ trait BuilderTestDemoConfigTrait
 
         $conditions = $this->getPrivateProperty($condition, 'conditions');
 
-        $this->assertCount($expectedCount, $conditions, 'Condition does not have '.$expectedCount.' conditions');
+        $this->assertCount($expectedCount, $conditions, 'Condition does not have ' . $expectedCount . ' conditions');
 
         return $conditions;
     }
 
     private function checkInstanceCondition(string $expectedClass, ConditionInterface $condition, string $expectedContextName, mixed $expectedValue): void
     {
-        $this->assertInstanceOf($expectedClass, $condition, 'Condition is not instance of '.$expectedClass);
+        $this->assertInstanceOf($expectedClass, $condition, 'Condition is not instance of ' . $expectedClass);
         $contextName = $this->getPrivateProperty($condition, 'contextName');
-        $value = $this->getPrivateProperty($condition, 'value');
+        $value       = $this->getPrivateProperty($condition, 'value');
 
-        $this->assertSame($expectedContextName, $contextName, 'Condition contextName is not equal to '.$expectedContextName.' like in config');
-        $this->assertSame($expectedValue, $value, 'Condition value is not equal to '.$expectedValue.' like in config');
+        $this->assertSame($expectedContextName, $contextName, 'Condition contextName is not equal to ' . $expectedContextName . ' like in config');
+        $this->assertSame($expectedValue, $value, 'Condition value is not equal to ' . $expectedValue . ' like in config');
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function ifElseConditionActionElseAction(IfElseCondition $conditionThenAction): void
     {

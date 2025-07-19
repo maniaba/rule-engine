@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Support;
 
+use Closure;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionObject;
+use ReflectionProperty;
+
 trait ReflectionHelper
 {
     /**
@@ -12,16 +19,16 @@ trait ReflectionHelper
      * @param object|string $obj    object or class name
      * @param string        $method method name
      *
-     * @return \Closure(mixed ...$args):mixed
+     * @return Closure(mixed ...$args):mixed
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public static function getPrivateMethodInvoker(object|string $obj, string $method): \Closure
+    public static function getPrivateMethodInvoker(object|string $obj, string $method): Closure
     {
-        $refMethod = new \ReflectionMethod($obj, $method);
-        $obj = (\gettype($obj) === 'object') ? $obj : null;
+        $refMethod = new ReflectionMethod($obj, $method);
+        $obj       = (\gettype($obj) === 'object') ? $obj : null;
 
-        return static fn(...$args): mixed => $refMethod->invokeArgs($obj, $args);
+        return static fn (...$args): mixed => $refMethod->invokeArgs($obj, $args);
     }
 
     /**
@@ -31,7 +38,7 @@ trait ReflectionHelper
      * @param string        $property property name
      * @param mixed         $value    value
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function setPrivateProperty(object|string $obj, string $property, mixed $value): void
     {
@@ -50,7 +57,7 @@ trait ReflectionHelper
      * @param object|string $obj      object or class name
      * @param string        $property property name
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function getPrivateProperty(object|string $obj, string $property): mixed
     {
@@ -62,11 +69,11 @@ trait ReflectionHelper
     /**
      * Find an accessible property.
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    private static function getAccessibleRefProperty(object|string $obj, string $property): \ReflectionProperty
+    private static function getAccessibleRefProperty(object|string $obj, string $property): ReflectionProperty
     {
-        $refClass = \is_object($obj) ? new \ReflectionObject($obj) : new \ReflectionClass($obj);
+        $refClass = \is_object($obj) ? new ReflectionObject($obj) : new ReflectionClass($obj);
 
         return $refClass->getProperty($property);
     }

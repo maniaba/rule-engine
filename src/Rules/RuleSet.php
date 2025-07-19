@@ -36,7 +36,7 @@ final class RuleSet implements RuleSetInterface
         $results = [];
 
         foreach ($this->rules as $rule) {
-            $result = $rule->evaluate($context);
+            $result    = $rule->evaluate($context);
             $results[] = new EvaluationResult($rule, $result, $rule->getFailureMessage());
 
             if (! $result) {

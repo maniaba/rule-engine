@@ -31,7 +31,7 @@ interface RuleInterface
      */
     public function getPriority(): int;
 
-    public function getFailureMessage(): null|array|string;
+    public function getFailureMessage(): array|string|null;
 
-    public function getExecutionErrors(): null|array|string;
+    public function getExecutionErrors(): array|string|null;
 }

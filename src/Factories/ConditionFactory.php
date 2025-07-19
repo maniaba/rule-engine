@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Factories;
 
+use InvalidArgumentException;
 use Maniaba\RuleEngine\Conditions\ArrayContainsAllCondition;
 use Maniaba\RuleEngine\Conditions\ArrayContainsAnyCondition;
 use Maniaba\RuleEngine\Conditions\ArrayContainsCondition;
@@ -24,18 +25,18 @@ final class ConditionFactory
      * @var array<string, class-string<ConditionInterface>>
      */
     private array $conditions = [
-        'equal' => EqualsCondition::class,
+        'equal'              => EqualsCondition::class,
         'greaterThanOrEqual' => GreaterThanOrEqualCondition::class,
-        'lessThanOrEqual' => LessThanOrEqualCondition::class,
-        'contains' => StringContainCondition::class,
-        'arrayContains' => ArrayContainsCondition::class,
-        'arrayContainsAll' => ArrayContainsAllCondition::class,
-        'arrayContainsAny' => ArrayContainsAnyCondition::class,
-        'endsWith' => EndsWithCondition::class,
-        'startsWith' => StartsWithCondition::class,
-        'greaterThan' => GreaterThanCondition::class,
-        'lessThan' => LessThanCondition::class,
-        'numericInRange' => NumericInRangeCondition::class,
+        'lessThanOrEqual'    => LessThanOrEqualCondition::class,
+        'contains'           => StringContainCondition::class,
+        'arrayContains'      => ArrayContainsCondition::class,
+        'arrayContainsAll'   => ArrayContainsAllCondition::class,
+        'arrayContainsAny'   => ArrayContainsAnyCondition::class,
+        'endsWith'           => EndsWithCondition::class,
+        'startsWith'         => StartsWithCondition::class,
+        'greaterThan'        => GreaterThanCondition::class,
+        'lessThan'           => LessThanCondition::class,
+        'numericInRange'     => NumericInRangeCondition::class,
     ];
 
     private array $customConditions = [];
@@ -47,18 +48,18 @@ final class ConditionFactory
      *
      * @return ConditionInterface the created condition instance
      *
-     * @throws \InvalidArgumentException if the 'operator' is missing or unsupported
+     * @throws InvalidArgumentException if the 'operator' is missing or unsupported
      */
     public function create(array $config): ConditionInterface
     {
         $operator = $config['operator'] ?? null;
 
         if (null === $operator) {
-            throw new \InvalidArgumentException('Operator is required.');
+            throw new InvalidArgumentException('Operator is required.');
         }
 
         if (! \array_key_exists($operator, $this->conditions) && ! \array_key_exists($operator, $this->customConditions)) {
-            throw new \InvalidArgumentException("Unsupported operator: {$operator}");
+            throw new InvalidArgumentException("Unsupported operator: {$operator}");
         }
 
         $class = $this->conditions[$operator] ?? $this->customConditions[$operator];
@@ -106,15 +107,15 @@ final class ConditionFactory
     public function registerCondition(string $operator, string $condition): void
     {
         if (! class_exists($condition)) {
-            throw new \InvalidArgumentException('Condition class does not exist.');
+            throw new InvalidArgumentException('Condition class does not exist.');
         }
 
         if (! is_subclass_of($condition, ConditionInterface::class)) {
-            throw new \InvalidArgumentException('Condition must implement '.ConditionInterface::class);
+            throw new InvalidArgumentException('Condition must implement ' . ConditionInterface::class);
         }
 
         if (\array_key_exists($operator, $this->customConditions)) {
-            throw new \InvalidArgumentException("Operator {$operator} is already registered.");
+            throw new InvalidArgumentException("Operator {$operator} is already registered.");
         }
 
         $this->customConditions[$operator] = $condition;

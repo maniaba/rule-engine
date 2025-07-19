@@ -32,9 +32,9 @@ final class FailFastEvaluator extends AbstractEvaluator
         $results = [];
 
         foreach ($ruleSet->getRules() as $rule) {
-            $result = $rule->evaluate($context);
+            $result           = $rule->evaluate($context);
             $evaluationResult = new EvaluationResult($rule, $result, $rule->getFailureMessage());
-            $results[] = $evaluationResult;
+            $results[]        = $evaluationResult;
 
             if (! $result) {
                 $this->failedRules[] = $rule;

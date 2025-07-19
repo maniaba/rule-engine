@@ -18,7 +18,8 @@ final class ArrayContainsCondition extends AbstractCondition
     public function __construct(
         private readonly string $field,
         private readonly mixed $value,
-    ) {}
+    ) {
+    }
 
     protected function defaultFailureMessage(): string
     {

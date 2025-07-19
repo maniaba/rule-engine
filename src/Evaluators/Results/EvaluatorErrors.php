@@ -10,7 +10,7 @@ final class EvaluatorErrors
 {
     private array $errors = [
         'evaluationErrors' => [],
-        'executionErrors' => [],
+        'executionErrors'  => [],
     ];
 
     public function __construct(
@@ -53,12 +53,12 @@ final class EvaluatorErrors
     private function addRuleError(RuleInterface $rule): void
     {
         if ($rule->getFailureMessage() !== null) {
-            $ruleErrors = \is_array($rule->getFailureMessage()) ? $rule->getFailureMessage() : [$rule->getFailureMessage()];
+            $ruleErrors                       = \is_array($rule->getFailureMessage()) ? $rule->getFailureMessage() : [$rule->getFailureMessage()];
             $this->errors['evaluationErrors'] = array_merge($this->errors['evaluationErrors'], $ruleErrors);
         }
 
         if ($rule->getExecutionErrors() !== null) {
-            $ruleErrors = \is_array($rule->getExecutionErrors()) ? $rule->getExecutionErrors() : [$rule->getExecutionErrors()];
+            $ruleErrors                      = \is_array($rule->getExecutionErrors()) ? $rule->getExecutionErrors() : [$rule->getExecutionErrors()];
             $this->errors['executionErrors'] = array_merge($this->errors['executionErrors'], $ruleErrors);
         }
     }

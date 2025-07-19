@@ -14,7 +14,8 @@ final class StartsWithCondition extends AbstractCondition
     public function __construct(
         private readonly string $field,
         private readonly string $prefix,
-    ) {}
+    ) {
+    }
 
     protected function evaluateCondition(ContextInterface $context): bool
     {
