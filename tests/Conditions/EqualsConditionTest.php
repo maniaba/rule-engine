@@ -31,10 +31,7 @@ final class EqualsConditionTest extends TestCase
         $condition = new EqualsCondition('field', 'value');
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            "Field 'field' does not equal the expected value 'value'.",
-            $condition->getFailureMessage(),
-        );
+        self::assertSame("Field 'field' does not equal the expected value 'value'.", $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotExist(): void
@@ -61,10 +58,7 @@ final class EqualsConditionTest extends TestCase
         $condition = new EqualsCondition('field', 123);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            "Field 'field' does not equal the expected value '123'.",
-            $condition->getFailureMessage(),
-        );
+        self::assertSame("Field 'field' does not equal the expected value '123'.", $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWithNullValue(): void
@@ -82,10 +76,7 @@ final class EqualsConditionTest extends TestCase
         $condition = new EqualsCondition('field', null);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            "Field 'field' does not equal the expected value ''.",
-            $condition->getFailureMessage(),
-        );
+        self::assertSame("Field 'field' does not equal the expected value ''.", $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWithArrayMatch(): void
@@ -103,9 +94,6 @@ final class EqualsConditionTest extends TestCase
         $condition = new EqualsCondition('field', ['key' => 'differentValue']);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            "Field 'field' does not equal the expected value 'Array'.",
-            $condition->getFailureMessage(),
-        );
+        self::assertSame("Field 'field' does not equal the expected value 'Array'.", $condition->getFailureMessage());
     }
 }

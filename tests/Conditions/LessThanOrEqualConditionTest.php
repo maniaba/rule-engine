@@ -40,10 +40,7 @@ final class LessThanOrEqualConditionTest extends TestCase
         $condition = new LessThanOrEqualCondition('field', 10);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            "Field 'field' is not less than or equal to the expected value '10'.",
-            $condition->getFailureMessage(),
-        );
+        self::assertSame("Field 'field' is not less than or equal to the expected value '10'.", $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotExist(): void
@@ -79,10 +76,7 @@ final class LessThanOrEqualConditionTest extends TestCase
         $condition = new LessThanOrEqualCondition('field', 10.1);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            "Field 'field' is not less than or equal to the expected value '10.1'.",
-            $condition->getFailureMessage(),
-        );
+        self::assertSame("Field 'field' is not less than or equal to the expected value '10.1'.", $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWhenFieldIsNullAndLessThan(): void
@@ -91,9 +85,6 @@ final class LessThanOrEqualConditionTest extends TestCase
         $condition = new LessThanOrEqualCondition('field', 0);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            'Field "field" is not comparable.',
-            $condition->getFailureMessage(),
-        );
+        self::assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
     }
 }

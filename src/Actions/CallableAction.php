@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Maniaba\RuleEngine\Actions;
 
 use Maniaba\RuleEngine\Context\ContextInterface;
-use Tests\Maniaba\RuleEngine\Actions\CallableActionTest;
+use Tests\Actions\CallableActionTest;
 
 /**
  * @see CallableActionTest

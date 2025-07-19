@@ -8,7 +8,7 @@ use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Evaluators\Results\EvaluationResult;
 use Maniaba\RuleEngine\Rules\RuleInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
-use Tests\Maniaba\RuleEngine\Evaluators\PriorityEvaluatorTest;
+use Tests\Evaluators\PriorityEvaluatorTest;
 
 /**
  * @see PriorityEvaluatorTest

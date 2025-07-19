@@ -11,7 +11,7 @@ use function PHPUnit\Framework\assertEquals;
 
 final class DummyArgumentsAction implements ActionInterface
 {
-    private array $arguments;
+    private readonly array $arguments;
 
     public function __construct(...$arguments)
     {

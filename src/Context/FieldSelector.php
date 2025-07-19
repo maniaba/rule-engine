@@ -67,7 +67,7 @@ final class FieldSelector
 
             // Handle filter if present
             if (null !== $filter) {
-                return $this->resolveArray($data, $filter);
+                return self::resolveArray($data, $filter);
             }
 
             return $data;
@@ -76,7 +76,7 @@ final class FieldSelector
         throw new \InvalidArgumentException("Invalid selector part: '{$part}'.");
     }
 
-    private function resolveArray(array $array, string $filter): mixed
+    private static function resolveArray(array $array, string $filter): mixed
     {
         // Numeric index access
         if (is_numeric($filter)) {

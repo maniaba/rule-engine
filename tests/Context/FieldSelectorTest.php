@@ -324,18 +324,18 @@ final class FieldSelectorTest extends TestCase
     public static function provideDeepNestedDataProvider(): iterable
     {
         yield 'Backend team, member Eve' => [
-            'selector' => 'departments[name:Development]->teams[teamName:Backend]->members[id:101]',
-            'expected' => ['id' => 101, 'name' => 'Eve', 'role' => 'Engineer'],
+            'departments[name:Development]->teams[teamName:Backend]->members[id:101]',
+            ['id' => 101, 'name' => 'Eve', 'role' => 'Engineer'],
         ];
 
         yield 'Frontend team, member Ivan' => [
-            'selector' => 'departments[name:Development]->teams[teamName:Frontend]->members[name:Ivan]',
-            'expected' => ['id' => 202, 'name' => 'Ivan', 'role' => 'Engineer'],
+            'departments[name:Development]->teams[teamName:Frontend]->members[name:Ivan]',
+            ['id' => 202, 'name' => 'Ivan', 'role' => 'Engineer'],
         ];
 
         yield 'Infrastructure team, member Ken by role' => [
-            'selector' => 'departments[name:Operations]->teams[teamName:Infrastructure]->members[role:Ops]',
-            'expected' => ['id' => 301, 'name' => 'Judy', 'role' => 'Ops'],
+            'departments[name:Operations]->teams[teamName:Infrastructure]->members[role:Ops]',
+            ['id' => 301, 'name' => 'Judy', 'role' => 'Ops'],
             // Primijetite da će vratiti prvog člana koji zadovoljava role:Ops, to je Judy, ne Ken,
             // pa ako želimo Ken-a, mogli bismo testirati neki drugi filter ili redoslijed.
         ];

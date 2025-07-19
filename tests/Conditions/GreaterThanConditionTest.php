@@ -46,10 +46,7 @@ final class GreaterThanConditionTest extends TestCase
         $result = $condition->isSatisfied($mockContext);
 
         self::assertFalse($result);
-        self::assertSame(
-            "Field 'testField' is not greater than to the expected value '20'.",
-            $condition->getFailureMessage(),
-        );
+        self::assertSame("Field 'testField' is not greater than to the expected value '20'.", $condition->getFailureMessage());
     }
 
     public function testEvaluateConditionFailsWhenFieldDoesNotExist(): void
@@ -64,10 +61,7 @@ final class GreaterThanConditionTest extends TestCase
         $result = $condition->isSatisfied($mockContext);
 
         self::assertFalse($result);
-        self::assertSame(
-            'Field "missingField" does not exist.',
-            $condition->getFailureMessage(),
-        );
+        self::assertSame('Field "missingField" does not exist.', $condition->getFailureMessage());
     }
 
     public function testEvaluateConditionFailsWhenValueIsNull(): void
@@ -84,9 +78,6 @@ final class GreaterThanConditionTest extends TestCase
         $result = $condition->isSatisfied($mockContext);
 
         self::assertFalse($result);
-        self::assertSame(
-            'Field "testField" is not comparable.',
-            $condition->getFailureMessage(),
-        );
+        self::assertSame('Field "testField" is not comparable.', $condition->getFailureMessage());
     }
 }

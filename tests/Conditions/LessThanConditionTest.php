@@ -31,10 +31,7 @@ final class LessThanConditionTest extends TestCase
         $condition = new LessThanCondition('field', 10);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            "Field 'field' is not less than to the expected value '10'.",
-            $condition->getFailureMessage(),
-        );
+        self::assertSame("Field 'field' is not less than to the expected value '10'.", $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldIsGreaterThanValue(): void
@@ -43,10 +40,7 @@ final class LessThanConditionTest extends TestCase
         $condition = new LessThanCondition('field', 10);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            "Field 'field' is not less than to the expected value '10'.",
-            $condition->getFailureMessage(),
-        );
+        self::assertSame("Field 'field' is not less than to the expected value '10'.", $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWhenFieldDoesNotExist(): void
@@ -64,10 +58,7 @@ final class LessThanConditionTest extends TestCase
         $condition = new LessThanCondition('field', 10);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            'Field "field" is not comparable.',
-            $condition->getFailureMessage(),
-        );
+        self::assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWithFloatingPointNumbers(): void
@@ -85,10 +76,7 @@ final class LessThanConditionTest extends TestCase
         $condition = new LessThanCondition('field', 10);
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            'Field "field" is not comparable.',
-            $condition->getFailureMessage(),
-        );
+        self::assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
     }
 
     public function testConditionSatisfiedWithStringsWhenAlphabeticallyLess(): void
@@ -97,10 +85,7 @@ final class LessThanConditionTest extends TestCase
         $condition = new LessThanCondition('field', 'banana');
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            'Field "field" is not comparable.',
-            $condition->getFailureMessage(),
-        );
+        self::assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
     }
 
     public function testConditionNotSatisfiedWithStringsWhenAlphabeticallyGreater(): void
@@ -109,9 +94,6 @@ final class LessThanConditionTest extends TestCase
         $condition = new LessThanCondition('field', 'apple');
 
         self::assertFalse($condition->isSatisfied($context));
-        self::assertSame(
-            'Field "field" is not comparable.',
-            $condition->getFailureMessage(),
-        );
+        self::assertSame('Field "field" is not comparable.', $condition->getFailureMessage());
     }
 }

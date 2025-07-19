@@ -15,7 +15,7 @@ use Maniaba\RuleEngine\Factories\ActionFactory;
 use Maniaba\RuleEngine\Factories\ConditionFactory;
 use Maniaba\RuleEngine\Rules\Rule;
 use Maniaba\RuleEngine\Rules\RuleSet;
-use Tests\Maniaba\RuleEngine\Builders\ArrayBuilderTest;
+use Tests\Builders\ArrayBuilderTest;
 
 /**
  * @see ArrayBuilderTest

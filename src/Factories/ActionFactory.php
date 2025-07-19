@@ -7,7 +7,7 @@ namespace Maniaba\RuleEngine\Factories;
 use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Context\ContextInterface;
-use Tests\Maniaba\RuleEngine\Factories\ActionFactoryTest;
+use Tests\Factories\ActionFactoryTest;
 
 /**
  * @see ActionFactoryTest
@@ -112,12 +112,12 @@ final class ActionFactory
         // remove 'context' name from  getParameters
         $parameters = array_filter($reflection->getParameters(), static fn($parameter): bool => $parameter->getName() !== 'context');
 
-        $arguments = $this->testParameters($parameters, $arguments, $actionName);
+        $arguments = self::testParameters($parameters, $arguments, $actionName);
 
         return new CallableAction($action, ...$arguments);
     }
 
-    private function testParameters(array $parameters, array $arguments, string $actionName): array
+    private static function testParameters(array $parameters, array $arguments, string $actionName): array
     {
         $arguments = array_intersect_key($arguments, array_flip(array_map(static fn($p) => $p->getName(), $parameters)));
 
@@ -196,7 +196,7 @@ final class ActionFactory
             return new $action();
         }
 
-        $arguments = $this->testParameters($constructor->getParameters(), $arguments, $actionName);
+        $arguments = self::testParameters($constructor->getParameters(), $arguments, $actionName);
 
         try {
             return new $action(...$arguments);

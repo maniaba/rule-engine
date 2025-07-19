@@ -75,13 +75,10 @@ final class NotConditionTest extends TestCase
         $notCondition = new NotCondition($mockCondition);
 
         self::assertFalse($notCondition->isSatisfied($mockContext));
-        self::assertSame(
-            [
-                'Negation of: Condition 1 failed.',
-                'Negation of: Condition 2 failed.',
-            ],
-            $notCondition->getFailureMessage(),
-        );
+        self::assertSame([
+            'Negation of: Condition 1 failed.',
+            'Negation of: Condition 2 failed.',
+        ], $notCondition->getFailureMessage());
     }
 
     public function testConditionWithNullFailureMessage(): void

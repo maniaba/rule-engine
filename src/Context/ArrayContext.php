@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Context;
 
-use Tests\Maniaba\RuleEngine\Context\ArrayContextTest;
+use Tests\Context\ArrayContextTest;
 
 /**
  * @see ArrayContextTest

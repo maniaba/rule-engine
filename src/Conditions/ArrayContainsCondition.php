@@ -6,7 +6,7 @@ namespace Maniaba\RuleEngine\Conditions;
 
 use Maniaba\RuleEngine\Conditions\FactoryTraits\ContextNameValueDefaultFactoryTrait;
 use Maniaba\RuleEngine\Context\ContextInterface;
-use Tests\Maniaba\RuleEngine\Conditions\ArrayContainsConditionTest;
+use Tests\Conditions\ArrayContainsConditionTest;
 
 /**
  * @see ArrayContainsConditionTest
