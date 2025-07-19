@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://maniaba.github.io/rule-engine/</loc>
+         <lastmod>2025-07-19</lastmod>
+    </url>
+    <url>
+         <loc>https://maniaba.github.io/rule-engine/advanced-usage/</loc>
+         <lastmod>2025-07-19</lastmod>
+    </url>
+    <url>
+         <loc>https://maniaba.github.io/rule-engine/basic-usage/</loc>
+         <lastmod>2025-07-19</lastmod>
+    </url>
+    <url>
+         <loc>https://maniaba.github.io/rule-engine/configuration/</loc>
+         <lastmod>2025-07-19</lastmod>
+    </url>
+    <url>
+         <loc>https://maniaba.github.io/rule-engine/examples/</loc>
+         <lastmod>2025-07-19</lastmod>
+    </url>
+    <url>
+         <loc>https://maniaba.github.io/rule-engine/installation/</loc>
+         <lastmod>2025-07-19</lastmod>
+    </url>
+    <url>
+         <loc>https://maniaba.github.io/rule-engine/troubleshooting/</loc>
+         <lastmod>2025-07-19</lastmod>
+    </url>
+    <url>
+         <loc>https://maniaba.github.io/rule-engine/validation/</loc>
+         <lastmod>2025-07-19</lastmod>
+    </url>
+</urlset>
