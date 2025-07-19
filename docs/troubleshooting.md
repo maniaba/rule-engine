@@ -34,17 +34,22 @@ This page provides solutions to common issues you might encounter when working w
    echo "Simple condition result: " . ($result ? 'true' : 'false') . "\n";
    ```
 
-4. **Use event listeners for debugging**: Add event listeners to track rule execution and identify where things go wrong.
+4. **Use debug output statements**: Add debug output statements at key points in your code to track rule execution and identify where things go wrong.
 
    ```php
-   use Maniaba\RuleEngine\Managers\EventManager;
+   // Add debug output before rule evaluation
+   echo "About to evaluate rule...\n";
 
-   $eventManager = EventManager::getInstance();
-   $eventManager->addListener('rule.before_evaluate', function(array $data) {
-       echo "Evaluating rule...\n";
-   });
-   $eventManager->addListener('rule.after_evaluate', function(array $data) {
-       echo "Rule evaluation result: " . ($data['result'] ? 'true' : 'false') . "\n";
+   // Execute the rule
+   $result = $evaluator->execute(clone $ruleSet, $context);
+
+   // Add debug output after rule evaluation
+   echo "Rule evaluation result: " . ($result ? 'true' : 'false') . "\n";
+
+   // You can also add debug output in your action callbacks
+   $builder->actions()->registerAction('debugAction', function(ArrayContext $context, string $message = '') {
+       echo "Debug: {$message}\n";
+       return true;
    });
    ```
 
@@ -152,8 +157,7 @@ Add logging to track rule execution and identify issues:
 ```php
 <?php
 
-use Maniaba\RuleEngine\Managers\EventManager;
-
+// Create a simple logging function
 function logMessage($message) {
     $timestamp = date('Y-m-d H:i:s');
     echo "[$timestamp] $message\n";
@@ -161,43 +165,61 @@ function logMessage($message) {
     // file_put_contents('rule_engine.log', "[$timestamp] $message\n", FILE_APPEND);
 }
 
-$eventManager = EventManager::getInstance();
+// Create a wrapper class to add logging to rule execution
+class LoggingEvaluator {
+    private $evaluator;
 
-$eventManager->addListener('ruleset.before_execute', function(array $data) {
-    logMessage("Starting rule set execution");
-});
+    public function __construct($evaluator) {
+        $this->evaluator = $evaluator;
+    }
 
-$eventManager->addListener('rule.before_evaluate', function(array $data) {
-    $rule = $data['rule'];
-    logMessage("Evaluating rule (priority: {$rule->getPriority()})");
-});
+    public function execute($ruleSet, $context) {
+        // Log before execution
+        logMessage("Starting rule set execution");
 
-$eventManager->addListener('rule.after_evaluate', function(array $data) {
-    $result = $data['result'] ? 'satisfied' : 'not satisfied';
-    logMessage("Rule evaluation result: $result");
-    if (!$data['result']) {
-        $failureMessage = $data['rule']->getFailureMessage();
-        if ($failureMessage) {
-            logMessage("Failure reason: " . (is_array($failureMessage) ? implode(', ', $failureMessage) : $failureMessage));
+        // Execute each rule with logging
+        foreach ($ruleSet->getRules() as $rule) {
+            // Log before rule evaluation
+            logMessage("Evaluating rule (priority: {$rule->getPriority()})");
+
+            // Check if condition is satisfied
+            $conditionResult = $rule->getCondition()->isSatisfied($context);
+
+            // Log condition result
+            $result = $conditionResult ? 'satisfied' : 'not satisfied';
+            logMessage("Rule evaluation result: $result");
+
+            // Log failure reason if condition not satisfied
+            if (!$conditionResult) {
+                $failureMessage = $rule->getCondition()->getFailureMessage();
+                if ($failureMessage) {
+                    logMessage("Failure reason: " . (is_array($failureMessage) ? implode(', ', $failureMessage) : $failureMessage));
+                }
+            }
+
+            // Log before action execution
+            logMessage("Executing rule actions");
+
+            // Execute the rule
+            $this->evaluator->execute(clone $rule, $context);
+
+            // Log after action execution
+            if ($errors = $rule->getExecutionErrors()) {
+                logMessage("Rule execution errors: " . implode(', ', $errors));
+            } else {
+                logMessage("Rule executed successfully");
+            }
         }
+
+        // Log after execution
+        logMessage("Rule set execution completed");
     }
-});
+}
 
-$eventManager->addListener('rule.before_execute', function(array $data) {
-    logMessage("Executing rule actions");
-});
-
-$eventManager->addListener('rule.after_execute', function(array $data) {
-    if ($errors = $data['rule']->getExecutionErrors()) {
-        logMessage("Rule execution errors: " . implode(', ', $errors));
-    } else {
-        logMessage("Rule executed successfully");
-    }
-});
-
-$eventManager->addListener('ruleset.after_execute', function(array $data) {
-    logMessage("Rule set execution completed");
-});
+// Usage example
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+$loggingEvaluator = new LoggingEvaluator($evaluator);
+$loggingEvaluator->execute($ruleSet, $context);
 ```
 
 ### Inspecting Rule Structure
