@@ -7,19 +7,32 @@ namespace Maniaba\RuleEngine\Rules;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Evaluators\Results\EvaluationResult;
 
+/**
+ * A collection of rules that can be evaluated and executed as a group.
+ *
+ * RuleSet manages a list of rules and tracks which ones have failed during
+ * evaluation or execution.
+ */
 final class RuleSet implements RuleSetInterface
 {
     /**
-     * Lista pravila u RuleSet-u.
+     * List of rules in the RuleSet.
      *
      * @var list<RuleInterface>
      */
     private array $rules = [];
 
+    /**
+     * List of rules that failed during evaluation or execution.
+     *
+     * @var list<RuleInterface>
+     */
     private array $failedRules = [];
 
     /**
-     * Dodaje pravilo u RuleSet.
+     * Adds a rule to the RuleSet.
+     *
+     * @param RuleInterface $rule The rule to add to the set
      */
     public function addRule(RuleInterface $rule): void
     {
@@ -27,9 +40,13 @@ final class RuleSet implements RuleSetInterface
     }
 
     /**
-     * Evaluira sva pravila u RuleSet-u.
+     * Evaluates all rules in the RuleSet against the provided context.
      *
-     * @return list<EvaluationResult> lista rezultata evaluacije pravila
+     * Rules that fail evaluation are added to the failedRules list.
+     *
+     * @param ContextInterface $context The context to evaluate rules against
+     *
+     * @return list<EvaluationResult> List of evaluation results for each rule
      */
     public function evaluate(ContextInterface $context): array
     {
@@ -48,7 +65,11 @@ final class RuleSet implements RuleSetInterface
     }
 
     /**
-     * Izvršava sva pravila u RuleSet-u.
+     * Executes all rules in the RuleSet against the provided context.
+     *
+     * Rules that encounter execution errors are added to the failedRules list.
+     *
+     * @param ContextInterface $context The context to execute rules against
      */
     public function execute(ContextInterface $context): void
     {
@@ -61,11 +82,21 @@ final class RuleSet implements RuleSetInterface
         }
     }
 
+    /**
+     * Gets all rules in this RuleSet.
+     *
+     * @return list<RuleInterface> List of all rules
+     */
     public function getRules(): array
     {
         return $this->rules;
     }
 
+    /**
+     * Gets all rules that failed during evaluation or execution.
+     *
+     * @return list<RuleInterface> List of failed rules
+     */
     public function getFailedRules(): array
     {
         return $this->failedRules;

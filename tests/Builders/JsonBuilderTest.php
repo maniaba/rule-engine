@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Builders;
 
-use CodeIgniter\Files\File;
 use JsonException;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Builders\JsonBuilder;
+use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
 use PHPUnit\Framework\Attributes\Group;
+use SplFileInfo;
 use Tests\Support\Actions\DummyArgumentsAction;
 use Tests\Support\TestCase;
 
 /**
- * Testiranje JsonBuilder klase.
+ * Testing the JsonBuilder class.
  *
  * @internal
  */
@@ -32,7 +33,8 @@ final class JsonBuilderTest extends TestCase
 
         $ruleSet = $builder->parseFile($file);
 
-        $this->assertInstanceOf(RuleSet::class, $ruleSet);
+        /** @phpstan-ignore-next-line  */
+        $this->assertInstanceOf(RuleSet::class, $ruleSet, 'RuleSet should be an instance of RuleSet');
     }
 
     // wrong json
@@ -50,7 +52,7 @@ final class JsonBuilderTest extends TestCase
     {
         $builder = new JsonBuilder();
 
-        $dummyAction = new CallableAction(static fn (): null => null);
+        $dummyAction = new CallableAction(static fn (ContextInterface $context): bool => true);
         $builder->actions()->registerAction('actionName1', $dummyAction);
         $builder->actions()->registerAction('actionName2', $dummyAction);
         $builder->actions()->registerAction('rejectDeposit', $dummyAction);
@@ -60,11 +62,11 @@ final class JsonBuilderTest extends TestCase
         return $builder->build(json_encode(self::configBuilder()));
     }
 
-    private static function createTempJsonFile(): File
+    private static function createTempJsonFile(): SplFileInfo
     {
         $tempFile = tempnam(sys_get_temp_dir(), 'json');
-        helper('filesystem');
-        write_file($tempFile, json_encode([
+
+        file_put_contents($tempFile, json_encode([
             'node'       => 'action',
             'actionName' => 'actionName1',
             'arguments'  => [
@@ -72,6 +74,6 @@ final class JsonBuilderTest extends TestCase
             ],
         ]));
 
-        return new File($tempFile);
+        return new SplFileInfo($tempFile);
     }
 }

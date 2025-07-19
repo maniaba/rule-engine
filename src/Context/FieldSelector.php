@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Context;
 
-use App\Entities\BaseEntity;
 use BackedEnum;
 use InvalidArgumentException;
+use stdClass;
 use UnitEnum;
 
 /**
@@ -62,7 +62,8 @@ final class FieldSelector
                 $data = $data->{$key};
             } elseif (\is_object($data) && method_exists($data, 'get' . ucfirst($key))) {
                 $data = $data->{'get' . ucfirst($key)}();
-            } elseif ($data instanceof BaseEntity) {
+            } elseif (($data instanceof stdClass || is_object($data)) && property_exists($data, $key)
+            ) {
                 $data = $data->{$key};
             } else {
                 throw new InvalidArgumentException("Key '{$key}' does not exist.");
@@ -101,7 +102,9 @@ final class FieldSelector
             $value = self::castValue($matches[3]);
 
             foreach ($array as $item) {
-                $itemValue = \is_array($item) ? $item[$key] ?? null : (property_exists($item, $key) ? $item->{$key} : ($item instanceof BaseEntity ? $item->{$key} : null));
+                $itemValue = \is_array($item)
+                    ? $item[$key] ?? null :
+                    (property_exists($item, $key) ? $item->{$key} : null);
 
                 if (null === $itemValue) {
                     continue;

@@ -19,6 +19,13 @@ use Maniaba\RuleEngine\Conditions\NumericInRangeCondition;
 use Maniaba\RuleEngine\Conditions\StartsWithCondition;
 use Maniaba\RuleEngine\Conditions\StringContainCondition;
 
+/**
+ * Factory for creating condition objects based on configuration.
+ *
+ * This factory manages a registry of condition types that can be created
+ * from configuration arrays. It supports both built-in conditions and
+ * custom registered conditions.
+ */
 final class ConditionFactory
 {
     /**
@@ -39,6 +46,9 @@ final class ConditionFactory
         'numericInRange'     => NumericInRangeCondition::class,
     ];
 
+    /**
+     * @var array<string, class-string<ConditionInterface>>
+     */
     private array $customConditions = [];
 
     /**
@@ -99,10 +109,12 @@ final class ConditionFactory
     }
 
     /**
-     * Registruje uslov za datog operatora sa odgovarajućom klasom uslova.
+     * Registers a condition for the given operator with the corresponding condition class.
      *
-     * @param string                           $operator  operator koji se registruje
-     * @param class-string<ConditionInterface> $condition naziv klase koja implementira uslov
+     * @param string                           $operator  the operator to register
+     * @param class-string<ConditionInterface> $condition the class name that implements the condition
+     *
+     * @throws InvalidArgumentException if the condition class doesn't exist, doesn't implement ConditionInterface, or the operator is already registered
      */
     public function registerCondition(string $operator, string $condition): void
     {

@@ -92,7 +92,8 @@ final class CollectionConditionTest extends TestCase
         $this->expectExceptionMessage('Condition must implement ConditionInterface.');
 
         $invalidCondition = new stdClass();
-        $collection       = new CollectionCondition(CollectionConditionType::AND, [$invalidCondition]);
+        // @phpstan-ignore-next-line - Intentionally passing invalid type to test error handling
+        $collection = new CollectionCondition(CollectionConditionType::AND, [$invalidCondition]);
 
         $context = $this->createMockContext([]);
         $collection->isSatisfied($context);

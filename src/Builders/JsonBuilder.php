@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Builders;
 
-use CodeIgniter\Files\File;
 use JsonException;
 use Maniaba\RuleEngine\Rules\RuleSet;
-use Override;
+use SplFileInfo;
 
 final class JsonBuilder extends ArrayBuilder
 {
     /**
      * @throws JsonException
      */
-    public function parseFile(File $file): RuleSet
+    public function parseFile(SplFileInfo $file): RuleSet
     {
         $config = file_get_contents($file->getRealPath());
 
@@ -24,7 +23,6 @@ final class JsonBuilder extends ArrayBuilder
     /**
      * @throws JsonException
      */
-    #[Override]
     public function build(mixed $config): RuleSet
     {
         if (! \is_string($config) || json_validate($config) === false) {

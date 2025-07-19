@@ -6,7 +6,6 @@ namespace Tests\Evaluators;
 
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Evaluators\PriorityEvaluator;
-use Maniaba\RuleEngine\Evaluators\Results\EvaluationResult;
 use Maniaba\RuleEngine\Rules\RuleInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
 use PHPUnit\Framework\Attributes\Group;
@@ -51,9 +50,6 @@ final class PriorityEvaluatorTest extends TestCase
         // Provjeravamo redoslijed: najveći prioritet treba biti evaluiran prvi
         // Prema usort logici, redoslijed treba biti: highPriorityRule(10), midPriorityRule(5), lowPriorityRule(1).
         $this->assertCount(3, $results, 'Treba biti 3 rezultata evaluacije');
-        $this->assertInstanceOf(EvaluationResult::class, $results[0]);
-        $this->assertInstanceOf(EvaluationResult::class, $results[1]);
-        $this->assertInstanceOf(EvaluationResult::class, $results[2]);
 
         $this->assertSame($highPriorityRule, $results[0]->rule, 'Prvo evaluirano pravilo treba imati najveći prioritet');
         $this->assertSame($midPriorityRule, $results[1]->rule, 'Drugo evaluirano pravilo treba biti srednjeg prioriteta');

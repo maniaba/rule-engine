@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Context;
 
-final readonly class ObjectContext implements ContextInterface
+use JsonException;
+use Stringable;
+
+final class ObjectContext implements ContextInterface, Stringable
 {
     public function __construct(
         private object $object,
@@ -19,5 +22,28 @@ final readonly class ObjectContext implements ContextInterface
     public function hasField(string $field): bool
     {
         return property_exists($this->object, $field);
+    }
+
+    public function getObject(): object
+    {
+        return $this->object;
+    }
+
+    public function setObject(object $object): void
+    {
+        $this->object = $object;
+    }
+
+    public function toArray(): array
+    {
+        return (array) $this->object;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function __toString(): string
+    {
+        return json_encode($this->toArray(), JSON_THROW_ON_ERROR);
     }
 }

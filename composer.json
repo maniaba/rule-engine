@@ -25,7 +25,8 @@
   ],
   "homepage": "https://github.com/maniaba/rule-engine",
   "require": {
-    "php": "^8.1"
+    "php": "^8.1",
+    "symfony/polyfill-php83": "^1.32"
   },
   "require-dev": {
     "icanhazstring/composer-unused": "dev-main",

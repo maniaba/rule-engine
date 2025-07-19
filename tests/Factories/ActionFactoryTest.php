@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Factories;
 
 use InvalidArgumentException;
-use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Factories\ActionFactory;
@@ -36,11 +35,10 @@ final class ActionFactoryTest extends TestCase
         // Act
         $action = $this->actionFactory->create([
             'actionName' => 'testAction',
-            'arguments'  => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'nulla' => null],
+            'arguments'  => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'null' => null],
         ]);
 
         // Assert
-        $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(TestAction::class, $action);
     }
 
@@ -105,11 +103,10 @@ final class ActionFactoryTest extends TestCase
         // Act
         $action = $this->actionFactory->create([
             'actionName' => 'testAction',
-            'arguments'  => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'nulla' => null],
+            'arguments'  => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'null' => null],
         ]);
 
         // Assert
-        $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(TestAction::class, $action);
     }
 
@@ -177,7 +174,6 @@ final class ActionFactoryTest extends TestCase
         ]);
 
         // Assert
-        $this->assertInstanceOf(ActionInterface::class, $action);
         $this->assertInstanceOf(TestActionWithConstructorException::class, $action);
     }
 
@@ -196,7 +192,6 @@ final class ActionFactoryTest extends TestCase
         ]);
 
         // Assert
-        $this->assertInstanceOf(ActionInterface::class, $createdAction);
         $this->assertInstanceOf(TestAction::class, $createdAction);
     }
 
@@ -225,7 +220,7 @@ final class ActionFactoryTest extends TestCase
         $this->actionFactory->registerAction('testAction', TestAction::class);
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage("Missing required argument: 'nulla' for action: 'testAction'");
+        $this->expectExceptionMessage("Missing required argument: 'null' for action: 'testAction'");
 
         // Act
         $this->actionFactory->create([
@@ -242,7 +237,7 @@ final class ActionFactoryTest extends TestCase
         // Assert Registered
         $action = $this->actionFactory->create([
             'actionName' => 'testAction',
-            'arguments'  => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'nulla' => null],
+            'arguments'  => ['field' => 'testField', 'value' => 42, 'valueNonSigned' => 'optional', 'null' => null],
         ]);
         $this->assertInstanceOf(TestAction::class, $action);
 

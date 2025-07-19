@@ -9,7 +9,6 @@
     cacheDirectory="build/psalm/"
     findUnusedBaselineEntry="true"
     findUnusedCode="false"
-    errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
         <directory name="src/" />
@@ -18,4 +17,8 @@
             <directory name="vendor" />
         </ignoreFiles>
     </projectFiles>
+
+    <issueHandlers>
+        <MissingOverrideAttribute errorLevel="suppress" />
+    </issueHandlers>
 </psalm>

@@ -68,7 +68,7 @@ final class CollectionCondition implements ConditionInterface
 
                 if (\is_array($failureMessage)) {
                     $this->failureMessages = array_merge($this->failureMessages, $failureMessage);
-                } elseif ('' !== $failureMessage && '0' !== $failureMessage && [] !== $failureMessage) {
+                } elseif (null !== $failureMessage && '' !== $failureMessage) {
                     $this->failureMessages[] = $failureMessage;
                 }
             }
@@ -93,7 +93,7 @@ final class CollectionCondition implements ConditionInterface
     /**
      * Returns the failure messages of conditions that failed.
      *
-     * @return array|null an array of failure messages or null if no failure
+     * @return list<string>|null an array of failure messages or null if no failure
      */
     public function getFailureMessage(): ?array
     {

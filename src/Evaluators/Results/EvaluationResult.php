@@ -6,15 +6,15 @@ namespace Maniaba\RuleEngine\Evaluators\Results;
 
 use Maniaba\RuleEngine\Rules\RuleInterface;
 
-final readonly class EvaluationResult
+final class EvaluationResult
 {
     /**
      * Konstruktor za kreiranje EvaluationResult.
      */
     public function __construct(
-        public RuleInterface $rule,
-        public bool $result,
-        public array|string|null $failureMessage,
+        public readonly RuleInterface $rule,
+        public readonly bool $result,
+        public readonly array|string|null $failureMessage,
     ) {
     }
 }

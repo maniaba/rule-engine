@@ -20,22 +20,48 @@ use ReflectionException;
 use Tests\Builders\ArrayBuilderTest;
 
 /**
+ * Builder that constructs rule sets from array configurations.
+ *
+ * This builder is responsible for:
+ * - Creating rule sets from array configurations
+ * - Building individual rules with conditions and actions
+ * - Managing factories for conditions and actions
+ *
+ * The array configuration format supports nested structures for complex rules,
+ * conditions, and actions.
+ *
  * @see ArrayBuilderTest
  */
 class ArrayBuilder implements BuilderInterface
 {
+    /**
+     * Factory for creating actions from configuration.
+     */
     private ActionFactory $actions;
+
+    /**
+     * Factory for creating conditions from configuration.
+     */
     private ConditionFactory $conditions;
 
+    /**
+     * Builds a rule set from the provided configuration.
+     *
+     * @param mixed $config The configuration to build from (must be an array)
+     *
+     * @return RuleSet The constructed rule set
+     *
+     * @throws BuilderException If the configuration is invalid
+     */
     public function build(mixed $config): RuleSet
     {
         if (! \is_array($config)) {
             throw new BuilderException('Configuration must be an array.');
         }
 
-        // check if we have multiple rules or just one or kex is not numeric
+        // Check if we have multiple rules or just one or key is not numeric
         if (\array_key_exists('node', $config) || ! is_numeric(key($config))) {
-            // creating array of rules
+            // Creating array of rules
             $config = [$config];
         }
 
@@ -49,6 +75,13 @@ class ArrayBuilder implements BuilderInterface
         return $ruleSet;
     }
 
+    /**
+     * Gets the condition factory used by this builder.
+     *
+     * Creates a new factory instance if one doesn't exist yet.
+     *
+     * @return ConditionFactory The condition factory
+     */
     public function conditions(): ConditionFactory
     {
         if (! isset($this->conditions)) {
@@ -58,6 +91,13 @@ class ArrayBuilder implements BuilderInterface
         return $this->conditions;
     }
 
+    /**
+     * Gets the action factory used by this builder.
+     *
+     * Creates a new factory instance if one doesn't exist yet.
+     *
+     * @return ActionFactory The action factory
+     */
     public function actions(): ActionFactory
     {
         if (! isset($this->actions)) {
@@ -68,9 +108,13 @@ class ArrayBuilder implements BuilderInterface
     }
 
     /**
-     * Kreira Rule na osnovu konfiguracije.
+     * Creates a Rule from the provided configuration.
      *
-     * @param array $config konfiguracija za pravilo
+     * @param array $config The rule configuration array
+     *
+     * @return Rule The created rule
+     *
+     * @throws BuilderException If the configuration is invalid
      */
     private function buildRule(array $config): Rule
     {
@@ -108,9 +152,13 @@ class ArrayBuilder implements BuilderInterface
     }
 
     /**
-     * Kreira ConditionInterface na osnovu konfiguracije.
+     * Creates a ConditionInterface from the provided configuration.
      *
-     * @param array $config konfiguracija uslova
+     * @param array $config The condition configuration array
+     *
+     * @return ConditionInterface The created condition
+     *
+     * @throws BuilderException If the configuration is invalid
      */
     private function buildCondition(array $config): ConditionInterface
     {
@@ -162,10 +210,23 @@ class ArrayBuilder implements BuilderInterface
         }
     }
 
+    /**
+     * Builds either an action or a condition based on the configuration.
+     *
+     * This method is used for processing 'then' and 'else' branches in conditional nodes.
+     * It determines whether to build an action or a condition based on the node type.
+     *
+     * @param array  &$config The configuration array to process (passed by reference)
+     * @param string $key     The key to process ('then' or 'else')
+     *
+     * @return array The updated configuration array
+     *
+     * @throws BuilderException If multiple actions are found in a single action node
+     */
     private function buildActionOrCondition(array &$config, string $key): array
     {
         if (\array_key_exists($key, $config)) {
-            // Ako je '$key' čvor akcija, inače je uslov
+            // If '$key' is an action node, otherwise it's a condition
             if (isset($config[$key]['node']) && 'action' === $config[$key]['node']) {
                 $config[$key] = $this->buildActions($config[$key]);
 
@@ -182,9 +243,16 @@ class ArrayBuilder implements BuilderInterface
     }
 
     /**
-     * Kreira niz ActionInterface ili ConditionInterface na osnovu konfiguracije.
+     * Creates a list of ActionInterface instances from the provided configuration.
      *
-     * @return list<ActionInterface>
+     * This method processes action configurations and creates the corresponding action objects.
+     * If a single action node is provided, it's converted to an array for uniform processing.
+     *
+     * @param mixed $actionsConfig The actions configuration (must be an array)
+     *
+     * @return list<ActionInterface> The list of created action instances
+     *
+     * @throws BuilderException If the configuration is invalid
      */
     private function buildActions(mixed $actionsConfig): array
     {
@@ -192,7 +260,7 @@ class ArrayBuilder implements BuilderInterface
             throw new BuilderException('Actions configuration must be an array.');
         }
 
-        // Ako je jedan čvor, pretvaramo ga u niz za uniformnost
+        // If it's a single node, convert it to an array for uniform processing
         if (isset($actionsConfig['node'])) {
             $actionsConfig = [$actionsConfig];
         }

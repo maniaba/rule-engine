@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Context;
 
+use Generator;
 use InvalidArgumentException;
 use Maniaba\RuleEngine\Context\FieldSelector;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -20,10 +21,10 @@ use Tests\Support\TestCase;
 final class FieldSelectorTest extends TestCase
 {
     /**
-     * Podaci za testiranje.
+     * Test data.
      *
-     * Struktura podataka je slična onoj iz primjera u objašnjenju, ali proširena
-     * dodatnim poljima kako bismo testirali više slučajeva.
+     * The data structure is similar to the one from the examples in the explanation, but expanded
+     * with additional fields to test more cases.
      */
     private array $data;
 
@@ -90,7 +91,7 @@ final class FieldSelectorTest extends TestCase
 
     public function testEvaluateConditionWithBackedEnum(): void
     {
-        // Testiranje BackedEnum vrijednosti
+        // Testing BackedEnum values
         $result = $this->callEvaluateCondition(EnumIntTest::ACTIVE, '=', 1);
         $this->assertTrue($result);
 
@@ -106,7 +107,7 @@ final class FieldSelectorTest extends TestCase
 
     public function testEvaluateConditionWithUnitEnum(): void
     {
-        // Testiranje UnitEnum vrijednosti (koristi `name`)
+        // Testing UnitEnum values (uses `name`)
         $result = $this->callEvaluateCondition(SimpleEnum::OPTION_ONE, '=', 'OPTION_ONE');
         $this->assertTrue($result);
 
@@ -122,7 +123,7 @@ final class FieldSelectorTest extends TestCase
 
     public function testEvaluateConditionWithStandardValues(): void
     {
-        // Testiranje standardnih vrijednosti (brojevi, stringovi, itd.)
+        // Testing standard values (numbers, strings, etc.)
         $result = $this->callEvaluateCondition(5, '>', 3);
         $this->assertTrue($result);
 
@@ -137,7 +138,7 @@ final class FieldSelectorTest extends TestCase
     }
 
     /**
-     * Testira osnovni pristup indeksima u nizu.
+     * Tests basic index access in arrays.
      */
     #[DataProvider('provideBasicIndexAccess')]
     public function testBasicIndexAccess(string $selector, array $expected): void
@@ -149,23 +150,23 @@ final class FieldSelectorTest extends TestCase
     /**
      * Data provider za testiranje osnovnog pristupa poljima preko numeričkog indeksa.
      *
-     * @return list<array>
+     * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideBasicIndexAccess(): iterable
     {
-        yield 'prvi korisnik' => ['users[0]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'first user' => ['users[0]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
 
-        yield 'drugi korisnik' => ['users[1]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'second user' => ['users[1]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
 
-        yield 'treci korisnik' => ['users[2]', ['id' => 3, 'name' => 'Charlie', 'age' => 35, 'active' => true]];
+        yield 'third user' => ['users[2]', ['id' => 3, 'name' => 'Charlie', 'age' => 35, 'active' => true]];
 
-        yield 'prvi log' => ['logs[0]', ['id' => 1, 'level' => 'info', 'message' => 'Initialization successful.']];
+        yield 'first log' => ['logs[0]', ['id' => 1, 'level' => 'info', 'message' => 'Initialization successful.']];
 
-        yield 'drugi log' => ['logs[1]', ['id' => 2, 'level' => 'error', 'message' => 'Database connection failed.']];
+        yield 'second log' => ['logs[1]', ['id' => 2, 'level' => 'error', 'message' => 'Database connection failed.']];
     }
 
     /**
-     * Testira filtriranje jednakosti (`=`).
+     * Tests equality filtering (`=`).
      */
     #[DataProvider('provideEqualityFilter')]
     public function testEqualityFilter(string $selector, array $expected): void
@@ -177,19 +178,19 @@ final class FieldSelectorTest extends TestCase
     /**
      * Data provider za testiranje filtriranja po ključu i vrijednosti (operator `=`).
      *
-     * @return list<array>
+     * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideEqualityFilter(): iterable
     {
-        yield 'korisnik s id=2' => ['users[id:2]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'user with id=2' => ['users[id:2]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
 
-        yield 'korisnik s imenom Alice' => ['users[name:Alice]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'user with name Alice' => ['users[name:Alice]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
 
-        yield 'log s level=error' => ['logs[level:error]', ['id' => 2, 'level' => 'error', 'message' => 'Database connection failed.']];
+        yield 'log with level=error' => ['logs[level:error]', ['id' => 2, 'level' => 'error', 'message' => 'Database connection failed.']];
     }
 
     /**
-     * Testira numerička filtriranja (>, >=, <, <=).
+     * Tests numeric filtering (>, >=, <, <=).
      */
     #[DataProvider('provideNumericComparisons')]
     public function testNumericComparisons(string $selector, array $expected): void
@@ -199,24 +200,24 @@ final class FieldSelectorTest extends TestCase
     }
 
     /**
-     * Data provider za testiranje filtriranja po numeričkim usporedbama.
-     * Testiramo `>`, `>=`, `<`, `<=`.
+     * Data provider for testing filtering by numeric comparisons.
+     * We test `>`, `>=`, `<`, `<=`.
      *
-     * @return list<array>
+     * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideNumericComparisons(): iterable
     {
-        yield 'prvi korisnik s age>=30' => ['users[age:>=30]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'first user with age>=30' => ['users[age:>=30]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
 
-        yield 'prvi korisnik s age>25' => ['users[age:>25]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'first user with age>25' => ['users[age:>25]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
 
-        yield 'prvi korisnik s age<30' => ['users[age:<30]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'first user with age<30' => ['users[age:<30]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
 
-        yield 'prvi korisnik s age<=35' => ['users[age:<=35]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'first user with age<=35' => ['users[age:<=35]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
     }
 
     /**
-     * Testira filtriranje po boolean vrijednostima.
+     * Tests filtering by boolean values.
      */
     #[DataProvider('provideBooleanFilter')]
     public function testBooleanFilter(string $selector, array $expected): void
@@ -226,21 +227,21 @@ final class FieldSelectorTest extends TestCase
     }
 
     /**
-     * Data provider za testiranje filtriranja po boolean vrijednostima.
+     * Data provider for testing filtering by boolean values.
      *
-     * @return list<array>
+     * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideBooleanFilter(): iterable
     {
-        yield 'prvi korisnik s active=true' => ['users[active:true]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'first user with active=true' => ['users[active:true]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
 
-        yield 'prvi korisnik s active=false' => ['users[active:false]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'first user with active=false' => ['users[active:false]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
     }
 
     /**
-     * Testira dohvaćanje duboko ugniježđenih vrijednosti (chaining).
+     * Tests retrieving deeply nested values (chaining).
      *
-     * Primjer: Dohvaćamo poruku loga s level=error.
+     * Example: We retrieve the message of a log with level=error.
      */
     public function testChainedSelectors(): void
     {
@@ -261,21 +262,21 @@ final class FieldSelectorTest extends TestCase
     }
 
     /**
-     * Data provider za negativne slučajeve gdje očekujemo iznimku.
+     * Data provider for negative cases where we expect an exception.
      *
-     * @return list<array>
+     * @return Generator<string, array{string}, mixed, void>
      */
     public static function provideInvalidSelectorsThrowExceptions(): iterable
     {
-        yield 'nepostojeći indeks' => ['users[99]'];
+        yield 'non-existent index' => ['users[99]'];
 
-        yield 'nepostojeći ključ' => ['users[id:9999]'];
+        yield 'non-existent key' => ['users[id:9999]'];
 
-        yield 'neispravan filter' => ['users[invalidFilter]']; // Nepoznat format
+        yield 'invalid filter' => ['users[invalidFilter]']; // Unknown format
 
-        yield 'nepoznati operator' => ['users[id:<>5]']; // Operator <> nije podržan
+        yield 'unknown operator' => ['users[id:<>5]']; // Operator <> is not supported
 
-        yield 'nepostojeći property' => ['nonexistent[key:value]'];
+        yield 'non-existent property' => ['nonexistent[key:value]'];
     }
 
     public function testDeepNestedAccess(): void
