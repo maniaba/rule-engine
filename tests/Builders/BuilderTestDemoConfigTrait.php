@@ -38,16 +38,16 @@ trait BuilderTestDemoConfigTrait
         $this->ifElseConditionActionElseAction($ifElseConditionAction);
 
         /**
-         * @var array{GreaterThanOrEqualCondition, GreaterThanOrEqualCondition, CollectionCondition} $conditions
+         * @var array{0: GreaterThanOrEqualCondition, 1: GreaterThanOrEqualCondition, 2: CollectionCondition} $conditions
          */
         $conditions = $this->checkCollectionCondition($collection, CollectionConditionType::AND, 3);
 
         $this->checkInstanceCondition(GreaterThanOrEqualCondition::class, $conditions[0], 'depositCount', 2);
         $this->checkInstanceCondition(GreaterThanOrEqualCondition::class, $conditions[1], 'accountAge', 1);
 
-        $conditions = $this->checkCollectionCondition($conditions[2], CollectionConditionType::OR, 2);
-        $this->checkInstanceCondition(EqualsCondition::class, $conditions[0], 'hasVipStatus', true);
-        $this->checkInstanceCondition(LessThanOrEqualCondition::class, $conditions[1], 'withdrawalCount', 5);
+        $nestedConditions = $this->checkCollectionCondition($conditions[2], CollectionConditionType::OR, 2);
+        $this->checkInstanceCondition(EqualsCondition::class, $nestedConditions[0], 'hasVipStatus', true);
+        $this->checkInstanceCondition(LessThanOrEqualCondition::class, $nestedConditions[1], 'withdrawalCount', 5);
     }
 
     protected static function configBuilder(): mixed

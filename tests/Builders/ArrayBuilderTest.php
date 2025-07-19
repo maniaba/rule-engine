@@ -151,7 +151,6 @@ final class ArrayBuilderTest extends TestCase
         $ruleSet = $builder->build($config);
 
         // Check that RuleSet is created
-        $this->assertInstanceOf(RuleSet::class, $ruleSet);
         $this->assertCount(1, $ruleSet->getRules());
 
         // Check the first component of the rule

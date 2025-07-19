@@ -154,19 +154,19 @@ final class FieldSelectorTest extends TestCase
      */
     public static function provideBasicIndexAccess(): iterable
     {
-        yield 'prvi korisnik' => ['users[0]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'first user' => ['users[0]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
 
-        yield 'drugi korisnik' => ['users[1]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'second user' => ['users[1]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
 
-        yield 'treci korisnik' => ['users[2]', ['id' => 3, 'name' => 'Charlie', 'age' => 35, 'active' => true]];
+        yield 'third user' => ['users[2]', ['id' => 3, 'name' => 'Charlie', 'age' => 35, 'active' => true]];
 
-        yield 'prvi log' => ['logs[0]', ['id' => 1, 'level' => 'info', 'message' => 'Initialization successful.']];
+        yield 'first log' => ['logs[0]', ['id' => 1, 'level' => 'info', 'message' => 'Initialization successful.']];
 
-        yield 'drugi log' => ['logs[1]', ['id' => 2, 'level' => 'error', 'message' => 'Database connection failed.']];
+        yield 'second log' => ['logs[1]', ['id' => 2, 'level' => 'error', 'message' => 'Database connection failed.']];
     }
 
     /**
-     * Testira filtriranje jednakosti (`=`).
+     * Tests equality filtering (`=`).
      */
     #[DataProvider('provideEqualityFilter')]
     public function testEqualityFilter(string $selector, array $expected): void

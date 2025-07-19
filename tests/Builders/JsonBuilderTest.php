@@ -7,6 +7,7 @@ namespace Tests\Builders;
 use JsonException;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Builders\JsonBuilder;
+use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
 use PHPUnit\Framework\Attributes\Group;
 use SplFileInfo;
@@ -32,7 +33,8 @@ final class JsonBuilderTest extends TestCase
 
         $ruleSet = $builder->parseFile($file);
 
-        $this->assertInstanceOf(RuleSet::class, $ruleSet);
+        /** @phpstan-ignore-next-line  */
+        $this->assertInstanceOf(RuleSet::class, $ruleSet, 'RuleSet should be an instance of RuleSet');
     }
 
     // wrong json
@@ -50,7 +52,7 @@ final class JsonBuilderTest extends TestCase
     {
         $builder = new JsonBuilder();
 
-        $dummyAction = new CallableAction(static fn (): null => null);
+        $dummyAction = new CallableAction(static fn (ContextInterface $context): bool => true);
         $builder->actions()->registerAction('actionName1', $dummyAction);
         $builder->actions()->registerAction('actionName2', $dummyAction);
         $builder->actions()->registerAction('rejectDeposit', $dummyAction);

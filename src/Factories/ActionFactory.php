@@ -12,6 +12,7 @@ use Maniaba\RuleEngine\Context\ContextInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
+use ReflectionNamedType;
 use ReflectionParameter;
 use ReflectionUnionType;
 use Tests\Factories\ActionFactoryTest;
@@ -193,11 +194,11 @@ final class ActionFactory
                         throw new InvalidArgumentException("Invalid type for argument: '{$name}'. Expected one of: " . implode(', ', $typeNames) . ', got: ' . ($argumentType ?? \gettype($arguments[$name])));
                     }
                 } else {
-                    $parameterTypeName = $parameterType?->getName();
+                    $parameterTypeName = $parameterType instanceof ReflectionNamedType ? $parameterType->getName() : null;
                     $argumentType      = self::gettype($arguments[$name]);
 
                     // Check if the type is nullable or matches the argument type
-                    if (! \in_array($parameterTypeName, [null, 'mixed'], true) && (! ($parameterType?->allowsNull() && null === $arguments[$name]) && $parameterTypeName !== $argumentType)) {
+                    if (! \in_array($parameterTypeName, [null, 'mixed'], true) && (! ($parameterType && $parameterType->allowsNull() && null === $arguments[$name]) && $parameterTypeName !== $argumentType)) {
                         throw new InvalidArgumentException("Invalid type for argument: '{$name}'. Expected: {$parameterTypeName}, got: " . $argumentType);
                     }
                 }
