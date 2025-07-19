@@ -14,7 +14,7 @@ use Tests\Support\Actions\DummyArgumentsAction;
 use Tests\Support\TestCase;
 
 /**
- * Testiranje JsonBuilder klase.
+ * Testing the JsonBuilder class.
  *
  * @internal
  */

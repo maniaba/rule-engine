@@ -20,10 +20,10 @@ use Tests\Support\TestCase;
 final class FieldSelectorTest extends TestCase
 {
     /**
-     * Podaci za testiranje.
+     * Test data.
      *
-     * Struktura podataka je slična onoj iz primjera u objašnjenju, ali proširena
-     * dodatnim poljima kako bismo testirali više slučajeva.
+     * The data structure is similar to the one from the examples in the explanation, but expanded
+     * with additional fields to test more cases.
      */
     private array $data;
 
@@ -90,7 +90,7 @@ final class FieldSelectorTest extends TestCase
 
     public function testEvaluateConditionWithBackedEnum(): void
     {
-        // Testiranje BackedEnum vrijednosti
+        // Testing BackedEnum values
         $result = $this->callEvaluateCondition(EnumIntTest::ACTIVE, '=', 1);
         $this->assertTrue($result);
 
@@ -106,7 +106,7 @@ final class FieldSelectorTest extends TestCase
 
     public function testEvaluateConditionWithUnitEnum(): void
     {
-        // Testiranje UnitEnum vrijednosti (koristi `name`)
+        // Testing UnitEnum values (uses `name`)
         $result = $this->callEvaluateCondition(SimpleEnum::OPTION_ONE, '=', 'OPTION_ONE');
         $this->assertTrue($result);
 

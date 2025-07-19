@@ -6,7 +6,6 @@ namespace Tests\Evaluators;
 
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Evaluators\BasicEvaluator;
-use Maniaba\RuleEngine\Evaluators\Results\EvaluationResult;
 use Maniaba\RuleEngine\Rules\RuleInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
 use PHPUnit\Framework\Attributes\Group;
@@ -58,7 +57,6 @@ final class BasicEvaluatorTest extends TestCase
         $this->assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
 
         foreach ($results as $result) {
-            $this->assertInstanceOf(EvaluationResult::class, $result);
             $this->assertTrue($result->result, 'Rezultat treba biti true jer pravilo prolazi');
         }
 

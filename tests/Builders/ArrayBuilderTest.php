@@ -71,17 +71,17 @@ final class ArrayBuilderTest extends TestCase
     {
         $builder = new ArrayBuilder();
 
-        // context node bez contextName
+        // context node without contextName
         $config = [
             'node'     => 'context',
             'operator' => 'equal',
             'value'    => 10,
         ];
 
-        // U ConditionFactory očekujemo da se baca greška ako nema contextName.
-        // Ako ConditionFactory ne baca, ArrayBuilder treba baciti jer config nije validan.
-        // U ovom slučaju, ArrayBuilder će pokušati kreirati ConditionConfig i najvjerovatnije dobiti error jer
-        // contextName nije definisan.
+        // In ConditionFactory we expect an error to be thrown if contextName is missing.
+        // If ConditionFactory doesn't throw, ArrayBuilder should throw because the config is invalid.
+        // In this case, ArrayBuilder will try to create ConditionConfig and most likely get an error because
+        // contextName is not defined.
 
         $this->expectException(BuilderException::class);
         $this->expectExceptionMessage('Invalid node structure: Context name is required.');
@@ -92,17 +92,17 @@ final class ArrayBuilderTest extends TestCase
     {
         $builder = new ArrayBuilder();
 
-        // condition node bez 'if'
+        // condition node without 'if'
         $config = [
             'node' => 'condition',
-            // 'if' nedostaje
+            // 'if' is missing
         ];
 
         $this->expectException(BuilderException::class);
         $this->expectExceptionMessage("Invalid node structure: 'if' key is missing in 'condition' node.");
-        // Poruka bi trebala doći iz buildCondition metode kad se pokuša pristupiti $config['if'] koji ne postoji
-        // ili iz nepostojanja validnog condition.
-        // Možete prilagoditi poruku u kodu ako želite specifičniju.
+        // The message should come from the buildCondition method when trying to access $config['if'] which doesn't exist
+        // or from the absence of a valid condition.
+        // You can adjust the message in the code if you want it to be more specific.
         $builder->build($config);
     }
 
@@ -118,12 +118,12 @@ final class ArrayBuilderTest extends TestCase
         ];
 
         $ruleSet = $builder->build($config);
-        $this->assertCount(1, $ruleSet->getRules(), 'Treba biti 1 rule u RuleSet-u');
+        $this->assertCount(1, $ruleSet->getRules(), 'There should be 1 rule in the RuleSet');
     }
 
     public function testBuildRuleSetWithNotCondition(): void
     {
-        // Konfiguracija pravila
+        // Rule configuration
         $config = [
             [
                 'node' => 'condition',
@@ -143,31 +143,31 @@ final class ArrayBuilderTest extends TestCase
             ],
         ];
 
-        // Kreiramo RuleSet iz konfiguracije
+        // Create RuleSet from configuration
         $builder = new ArrayBuilder();
         // dummy action
         $builder->actions()->registerAction('rejectDeposit', new CallableAction(static fn (ContextInterface $context): bool => true));
 
         $ruleSet = $builder->build($config);
 
-        // Proveravamo da je kreiran RuleSet
+        // Check that RuleSet is created
         $this->assertInstanceOf(RuleSet::class, $ruleSet);
         $this->assertCount(1, $ruleSet->getRules());
 
-        // Proveravamo prvu komponentu pravila
+        // Check the first component of the rule
         $rule = $ruleSet->getRules()[0];
         /**
          * @var IfElseCondition $condition
          */
         $condition = $this->getPrivateProperty($rule, 'condition');
 
-        // Proveravamo da li je 'if' deo negacija
+        // Check if the 'if' part is a negation
         $this->assertInstanceOf(IfElseCondition::class, $condition);
 
         $conditionNot = $this->getPrivateProperty($condition, 'ifCondition');
         $this->assertInstanceOf(NotCondition::class, $conditionNot);
 
-        // Proveravamo unutar NotCondition da li sadrži ispravan uslov
+        // Check inside NotCondition if it contains the correct condition
         $innerCondition = $this->getPrivateProperty($conditionNot, 'condition');
         $this->assertInstanceOf(GreaterThanOrEqualCondition::class, $innerCondition);
 
@@ -177,7 +177,7 @@ final class ArrayBuilderTest extends TestCase
         $this->assertSame('depositCount', $contextName);
         $this->assertSame(5, $value);
 
-        // Proveravamo da li je 'then' deo akcija
+        // Check if the 'then' part is an action
         /**
          * @var ActionInterface $action
          */
@@ -199,7 +199,7 @@ final class ArrayBuilderTest extends TestCase
         ];
 
         $ruleSet = $builder->build($config);
-        $this->assertCount(1, $ruleSet->getRules(), 'Treba biti 1 rule u RuleSet-u');
+        $this->assertCount(1, $ruleSet->getRules(), 'There should be 1 rule in the RuleSet');
 
         $context = $this->createMock(ContextInterface::class);
 
