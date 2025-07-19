@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Builders;
 
-use CodeIgniter\Files\File;
 use JsonException;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Builders\JsonBuilder;
 use Maniaba\RuleEngine\Rules\RuleSet;
 use PHPUnit\Framework\Attributes\Group;
+use SplFileInfo;
 use Tests\Support\Actions\DummyArgumentsAction;
 use Tests\Support\TestCase;
 
@@ -60,7 +60,7 @@ final class JsonBuilderTest extends TestCase
         return $builder->build(json_encode(self::configBuilder()));
     }
 
-    private static function createTempJsonFile(): File
+    private static function createTempJsonFile(): SplFileInfo
     {
         $tempFile = tempnam(sys_get_temp_dir(), 'json');
 
@@ -72,6 +72,6 @@ final class JsonBuilderTest extends TestCase
             ],
         ]));
 
-        return new File($tempFile);
+        return new SplFileInfo($tempFile);
     }
 }

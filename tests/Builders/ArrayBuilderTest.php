@@ -118,7 +118,6 @@ final class ArrayBuilderTest extends TestCase
         ];
 
         $ruleSet = $builder->build($config);
-        $this->assertInstanceOf(RuleSet::class, $ruleSet, 'build treba vratiti RuleSet za validnu konfiguraciju');
         $this->assertCount(1, $ruleSet->getRules(), 'Treba biti 1 rule u RuleSet-u');
     }
 
@@ -147,7 +146,7 @@ final class ArrayBuilderTest extends TestCase
         // Kreiramo RuleSet iz konfiguracije
         $builder = new ArrayBuilder();
         // dummy action
-        $builder->actions()->registerAction('rejectDeposit', new CallableAction(static fn (): null => null));
+        $builder->actions()->registerAction('rejectDeposit', new CallableAction(static fn (ContextInterface $context): bool => true));
 
         $ruleSet = $builder->build($config);
 
@@ -200,7 +199,6 @@ final class ArrayBuilderTest extends TestCase
         ];
 
         $ruleSet = $builder->build($config);
-        $this->assertInstanceOf(RuleSet::class, $ruleSet, 'build treba vratiti RuleSet za validnu konfiguraciju');
         $this->assertCount(1, $ruleSet->getRules(), 'Treba biti 1 rule u RuleSet-u');
 
         $context = $this->createMock(ContextInterface::class);
@@ -212,7 +210,7 @@ final class ArrayBuilderTest extends TestCase
     {
         $builder = new ArrayBuilder();
 
-        $dummyAction = new CallableAction(static fn (): null => null);
+        $dummyAction = new CallableAction(static fn (ContextInterface $context): bool => true);
         $builder->actions()->registerAction('actionName1', $dummyAction);
         $builder->actions()->registerAction('actionName2', $dummyAction);
         $builder->actions()->registerAction('rejectDeposit', $dummyAction);

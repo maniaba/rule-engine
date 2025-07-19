@@ -104,8 +104,7 @@ final class FieldSelector
             foreach ($array as $item) {
                 $itemValue = \is_array($item)
                     ? $item[$key] ?? null :
-                    (property_exists($item, $key) ? $item->{$key} :
-                        ($item instanceof stdClass ? $item->{$key} : null));
+                    (property_exists($item, $key) ? $item->{$key} : null);
 
                 if (null === $itemValue) {
                     continue;
