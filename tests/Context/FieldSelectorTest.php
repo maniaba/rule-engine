@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Context;
 
+use Generator;
 use InvalidArgumentException;
 use Maniaba\RuleEngine\Context\FieldSelector;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -149,7 +150,7 @@ final class FieldSelectorTest extends TestCase
     /**
      * Data provider za testiranje osnovnog pristupa poljima preko numeričkog indeksa.
      *
-     * @return list<array>
+     * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideBasicIndexAccess(): iterable
     {
@@ -177,7 +178,7 @@ final class FieldSelectorTest extends TestCase
     /**
      * Data provider za testiranje filtriranja po ključu i vrijednosti (operator `=`).
      *
-     * @return list<array>
+     * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideEqualityFilter(): iterable
     {
@@ -202,7 +203,7 @@ final class FieldSelectorTest extends TestCase
      * Data provider za testiranje filtriranja po numeričkim usporedbama.
      * Testiramo `>`, `>=`, `<`, `<=`.
      *
-     * @return list<array>
+     * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideNumericComparisons(): iterable
     {
@@ -228,7 +229,7 @@ final class FieldSelectorTest extends TestCase
     /**
      * Data provider za testiranje filtriranja po boolean vrijednostima.
      *
-     * @return list<array>
+     * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideBooleanFilter(): iterable
     {
@@ -238,7 +239,7 @@ final class FieldSelectorTest extends TestCase
     }
 
     /**
-     * Testira dohvaćanje duboko ugniježđenih vrijednosti (chaining).
+     * Testira dohvaćanje duboko ugniježdenih vrijednosti (chaining).
      *
      * Primjer: Dohvaćamo poruku loga s level=error.
      */
@@ -263,7 +264,7 @@ final class FieldSelectorTest extends TestCase
     /**
      * Data provider za negativne slučajeve gdje očekujemo iznimku.
      *
-     * @return list<array>
+     * @return Generator<string, array{string}, mixed, void>
      */
     public static function provideInvalidSelectorsThrowExceptions(): iterable
     {
