@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Rules;
 
 use Maniaba\RuleEngine\Context\ContextInterface;
-use Maniaba\RuleEngine\Evaluators\Results\EvaluationResult;
 use Maniaba\RuleEngine\Rules\RuleInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
 use PHPUnit\Framework\Attributes\Group;

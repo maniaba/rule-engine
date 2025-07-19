@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Factories;
 
 use InvalidArgumentException;
-use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Factories\ActionFactory;

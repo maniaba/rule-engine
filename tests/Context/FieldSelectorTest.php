@@ -122,7 +122,7 @@ final class FieldSelectorTest extends TestCase
 
     public function testEvaluateConditionWithStandardValues(): void
     {
-        // Testiranje standardnih vrijednosti (brojevi, stringovi, itd.)
+        // Testing standard values (numbers, strings, etc.)
         $result = $this->callEvaluateCondition(5, '>', 3);
         $this->assertTrue($result);
 
