@@ -1,0 +1,96 @@
+{
+  "name": "maniaba/rule-engine",
+  "description": "A flexible and extensible framework for defining and evaluating rules and conditions, and executing corresponding actions based on specified conditions",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "rule-engine",
+    "rules",
+    "conditions",
+    "actions",
+    "business-rules",
+    "workflow",
+    "decision-engine",
+    "conditional-logic",
+    "rule-evaluation",
+    "rule-execution"
+  ],
+  "authors": [
+    {
+      "name": "Amel Junuzović",
+      "email": "maniaba@outlook.com",
+      "homepage": "https://github.com/maniaba",
+      "role": "Developer"
+    }
+  ],
+  "homepage": "https://github.com/maniaba/rule-engine",
+  "require": {
+    "php": "^8.1"
+  },
+  "require-dev": {
+    "icanhazstring/composer-unused": "dev-main",
+    "fakerphp/faker": "^1.9",
+    "mikey179/vfsstream": "^1.6",
+    "nexusphp/cs-config": "^3.6",
+    "nexusphp/tachycardia": "^2.0",
+    "phpstan/extension-installer": "^1.1",
+    "phpstan/phpstan": "^2.0",
+    "phpstan/phpstan-deprecation-rules": "^2.0",
+    "phpstan/phpstan-phpunit": "^2.0",
+    "phpunit/phpunit": "^10.5 || ^11.5 || ^12.0",
+    "rector/rector": "^2.0",
+    "roave/security-advisories": "dev-latest",
+    "vimeo/psalm": "^5.0 || ^6.0",
+    "phpstan/phpstan-strict-rules": "^2.0",
+    "dg/bypass-finals": "^1.9"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Maniaba\\RuleEngine\\": "src"
+    },
+    "exclude-from-classmap": [
+      "**/Database/Migrations/**"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests",
+      "Tests\\Support\\": "tests/_support"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "phpstan/extension-installer": true
+    }
+  },
+  "scripts": {
+    "analyze": [
+      "Composer\\Config::disableProcessTimeout",
+      "phpstan analyze",
+      "psalm",
+      "rector process --dry-run"
+    ],
+    "ci": [
+      "Composer\\Config::disableProcessTimeout",
+      "@cs",
+      "@deduplicate",
+      "@inspect",
+      "@analyze",
+      "@test"
+    ],
+    "cs": "php-cs-fixer fix --ansi --verbose --dry-run --diff",
+    "cs-fix": "php-cs-fixer fix --ansi --verbose --diff",
+    "deduplicate": "phpcpd tests/ src/",
+    "inspect": "deptrac analyze --cache-file=build/deptrac.cache",
+    "mutate": "infection --threads=2 --skip-initial-tests --coverage=build/phpunit",
+    "sa": "@analyze",
+    "style": "@cs-fix",
+    "test": "phpunit",
+    "phpstan-gb": "phpstan analyze --generate-baseline=phpstan-baseline.neon",
+    "rector": "rector process --dry-run",
+    "rector-fix": "rector process",
+    "psalm": "psalm --alter --issues=MissingOverrideAttribute"
+  }
+}
