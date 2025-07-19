@@ -140,13 +140,18 @@ $eventManager->addListener('ruleset.after_execute', function(array $data) {
 $builder = new ArrayBuilder();
 
 // Register actions
-$builder->actions()->registerAction('approveUser', function() {
+$builder->actions()->registerAction('approveUser', function(ArrayContext $context) {
     echo "User approved!\n";
     return true;
 });
 
-$builder->actions()->registerAction('rejectUser', function() {
+$builder->actions()->registerAction('rejectUser', function(ArrayContext $context) {
     echo "User rejected!\n";
+    return true;
+});
+
+$builder->actions()->registerAction('log', function(ArrayContext $context, string $message) {
+    echo "Log: {$message}\n";
     return true;
 });
 
@@ -177,8 +182,11 @@ $context = new ArrayContext([
     'age' => 25,
 ]);
 
+// Create an evaluator
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
 // Execute the rule set
-$ruleSet->execute($context);
+$evaluator->execute(clone $ruleSet, $context);
 
 // Output will include log messages for each event
 ```
@@ -194,12 +202,13 @@ use Maniaba\RuleEngine\Managers\EventManager;
 
 class CustomAction implements ActionInterface
 {
-    public function execute(ContextInterface $context, array $arguments = []): bool
+    public function execute(ArrayContext $context, string $param1 = '', int $param2 = 0): bool
     {
         // Emit a custom event before performing the action
         EventManager::getInstance()->emit('custom_action.before_execute', [
             'context' => $context,
-            'arguments' => $arguments,
+            'param1' => $param1,
+            'param2' => $param2,
         ]);
 
         // Perform the action
@@ -208,7 +217,8 @@ class CustomAction implements ActionInterface
         // Emit a custom event after performing the action
         EventManager::getInstance()->emit('custom_action.after_execute', [
             'context' => $context,
-            'arguments' => $arguments,
+            'param1' => $param1,
+            'param2' => $param2,
             'result' => $result,
         ]);
 

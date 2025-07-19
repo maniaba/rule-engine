@@ -52,7 +52,7 @@ $config = [
 $builder = new ArrayBuilder();
 
 // Register a test action
-$builder->actions()->registerAction('testAction', function (ContextInterface $context, string $message) {
+$builder->actions()->registerAction('testAction', function (ArrayContext $context, string $message) {
     $testValueFromContext = $context->getField('testValue') ? 'true' : 'false';
     echo "Action executed with message: {$message}\n";
     echo "Test value from context: {$testValueFromContext}\n";
@@ -65,8 +65,11 @@ $ruleSet = $builder->build($config);
 // Create a context
 $context = new ArrayContext(['testValue' => true]);
 
+// Create an evaluator
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
 // Execute the rule set
-$ruleSet->execute($context);
+$evaluator->execute(clone $ruleSet, $context);
 ```
 
 If you see the messages "Action executed with message: Rule Engine is working correctly!" and "Test value from context: true" when running this script, the Rule Engine is installed and functioning properly.

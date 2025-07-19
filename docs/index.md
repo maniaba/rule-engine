@@ -163,7 +163,10 @@ $config = [
     'then' => [
         'node'       => 'action',
         'actionName' => 'actionName1',
-        'arguments'  => ['arg1', 'arg2'],
+        'arguments'  => [
+            'param1' => 'arg1',
+            'param2' => 'arg2',
+        ],
     ],
     'else' => [
         'node'       => 'action',
@@ -198,7 +201,11 @@ $config = [
        'withdrawalCount' => 0,
    ]);
 
-   $ruleSet->execute($context);
+   // Create an evaluator
+   $evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
+   // Execute the rule set
+   $evaluator->execute(clone $ruleSet, $context);
    ```
 
 ### Customizing Actions
@@ -244,9 +251,9 @@ Custom actions can be implemented by extending the `ActionInterface`. For exampl
 ```php
 final class NotifyAction implements ActionInterface
 {
-    public function execute(ContextInterface $context, array $arguments = []): bool
+    public function execute(ArrayContext $context, string $message = '', string $channel = 'email'): bool
     {
-        echo "Notification sent with arguments: " . implode(', ', $arguments);
+        echo "Notification sent to {$channel} with message: {$message}";
         return true;
     }
 }

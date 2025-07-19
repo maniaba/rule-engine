@@ -57,7 +57,7 @@ This page provides solutions to common issues you might encounter when working w
 1. **Register all required actions**: Make sure all actions referenced in your rule configurations are registered with the action factory.
 
    ```php
-   $builder->actions()->registerAction('actionName', function(ContextInterface $context, array $arguments = []) {
+   $builder->actions()->registerAction('actionName', function(ArrayContext $context, string $param1 = '', int $param2 = 0) {
        // Action implementation
        return true;
    });
@@ -93,8 +93,12 @@ This page provides solutions to common issues you might encounter when working w
 4. **Profile rule execution**: Use profiling tools to identify which rules or conditions are taking the most time to evaluate.
 
    ```php
+   // Create an evaluator
+   $evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
+   // Profile execution time
    $startTime = microtime(true);
-   $ruleSet->execute($context);
+   $evaluator->execute(clone $ruleSet, $context);
    $endTime = microtime(true);
    echo "Execution time: " . ($endTime - $startTime) . " seconds\n";
    ```
@@ -273,10 +277,11 @@ function printRuleStructure(array $config, int $indent = 0) {
         case 'action':
             echo "{$indentStr}Action name: " . ($config['actionName'] ?? 'missing') . "\n";
             if (isset($config['arguments']) && is_array($config['arguments'])) {
-                $argStr = implode(', ', array_map(function($arg) {
-                    return is_array($arg) ? json_encode($arg) : $arg;
-                }, $config['arguments']));
-                echo "{$indentStr}Arguments: [$argStr]\n";
+                echo "{$indentStr}Arguments:\n";
+                foreach ($config['arguments'] as $key => $value) {
+                    $valueStr = is_array($value) ? json_encode($value) : (is_bool($value) ? ($value ? 'true' : 'false') : $value);
+                    echo "{$indentStr}  {$key}: {$valueStr}\n";
+                }
             }
             break;
 

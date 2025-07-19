@@ -16,13 +16,18 @@ use Maniaba\RuleEngine\Context\ArrayContext;
 $builder = new ArrayBuilder();
 
 // 2. Register actions
-$builder->actions()->registerAction('approveUser', function() {
+$builder->actions()->registerAction('approveUser', function(ArrayContext $context) {
     echo "User approved!\n";
     return true;
 });
 
-$builder->actions()->registerAction('rejectUser', function() {
+$builder->actions()->registerAction('rejectUser', function(ArrayContext $context) {
     echo "User rejected!\n";
+    return true;
+});
+
+$builder->actions()->registerAction('log', function(ArrayContext $context, string $message) {
+    echo "Log: {$message}\n";
     return true;
 });
 
@@ -53,8 +58,9 @@ $context = new ArrayContext([
     'age' => 25,
 ]);
 
-// 6. Execute the rule set
-$ruleSet->execute($context);
+// 6. Create an evaluator and execute the rule set
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+$evaluator->execute(clone $ruleSet, $context);
 // Output: User approved!
 ```
 
@@ -75,7 +81,7 @@ The `ArrayBuilder` class allows you to build rules from array configurations.
 Before using actions in your rules, you need to register them with the action factory:
 
 ```php
-$builder->actions()->registerAction('actionName', function(ContextInterface $context, array $arguments = []) {
+$builder->actions()->registerAction('actionName', function(ArrayContext $context, string $param1 = '', int $param2 = 0) {
     // Action logic here
     return true; // Return true for success, false for failure
 });
@@ -205,7 +211,11 @@ This rule will allow access if the user is NOT blacklisted.
 When executing rules, it's important to check for errors:
 
 ```php
-$ruleSet->execute($context);
+// Create an evaluator
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
+// Execute the rule set
+$evaluator->execute(clone $ruleSet, $context);
 
 // Check for execution errors
 foreach ($ruleSet->getRules() as $rule) {

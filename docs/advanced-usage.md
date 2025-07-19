@@ -16,7 +16,7 @@ To create a custom condition, implement the `ConditionInterface`:
 namespace YourNamespace\Conditions;
 
 use Maniaba\RuleEngine\Conditions\ConditionInterface;
-use Maniaba\RuleEngine\Context\ContextInterface;
+use Maniaba\RuleEngine\Context\ArrayContext;
 
 class CustomBusinessCondition implements ConditionInterface
 {
@@ -38,7 +38,7 @@ class CustomBusinessCondition implements ConditionInterface
         );
     }
 
-    public function isSatisfied(ContextInterface $context): bool
+    public function isSatisfied(ArrayContext $context): bool
     {
         if (!$context->hasField($this->contextField)) {
             $this->failureMessage = "Field '{$this->contextField}' not found in context";
@@ -103,7 +103,7 @@ Implement the `ActionInterface` to create a custom action:
 namespace YourNamespace\Actions;
 
 use Maniaba\RuleEngine\Actions\ActionInterface;
-use Maniaba\RuleEngine\Context\ContextInterface;
+use Maniaba\RuleEngine\Context\ArrayContext;
 
 class LogAction implements ActionInterface
 {
@@ -116,10 +116,10 @@ class LogAction implements ActionInterface
         $this->logLevel = $logLevel;
     }
 
-    public function execute(ContextInterface $context, array $arguments = []): bool
+    public function execute(ArrayContext $context, string $extraParam = ''): bool
     {
         // Replace with your actual logging implementation
-        $message = $this->formatMessage($this->logMessage, $context, $arguments);
+        $message = $this->formatMessage($this->logMessage, $context, $extraParam);
 
         // Example logging
         echo "[{$this->logLevel}] {$message}\n";
@@ -127,7 +127,7 @@ class LogAction implements ActionInterface
         return true;
     }
 
-    private function formatMessage(string $template, ContextInterface $context, array $arguments): string
+    private function formatMessage(string $template, ArrayContext $context, string $extraParam = ''): string
     {
         // Replace placeholders with context values
         $message = preg_replace_callback('/\{(\w+)\}/', function($matches) use ($context) {
@@ -135,9 +135,9 @@ class LogAction implements ActionInterface
             return $context->hasField($field) ? (string)$context->getField($field) : $matches[0];
         }, $template);
 
-        // Add arguments if any
-        if (!empty($arguments)) {
-            $message .= ' ' . json_encode($arguments);
+        // Add extra parameter if provided
+        if (!empty($extraParam)) {
+            $message .= ' ' . $extraParam;
         }
 
         return $message;
@@ -154,16 +154,19 @@ use Maniaba\RuleEngine\Builders\ArrayBuilder;
 use YourNamespace\Actions\LogAction;
 
 $builder = new ArrayBuilder();
-$builder->actions()->registerAction('log', function(ContextInterface $context, array $arguments = []) {
-    $action = new LogAction($arguments[0] ?? 'No message', $arguments[1] ?? 'info');
-    return $action->execute($context, array_slice($arguments, 2));
+$builder->actions()->registerAction('log', function(ArrayContext $context, string $message = 'No message', string $logLevel = 'info') {
+    $action = new LogAction($message, $logLevel);
+    return $action->execute($context);
 });
 
 // Now you can use it in your configuration
 $config = [
     'node' => 'action',
     'actionName' => 'log',
-    'arguments' => ['User {username} processed', 'info'],
+    'arguments' => [
+        'message' => 'User {username} processed',
+        'logLevel' => 'info',
+    ],
 ];
 ```
 
@@ -236,27 +239,91 @@ $config = [
 When working with multiple rules, you can set priorities to control the order of execution:
 
 ```php
-use Maniaba\RuleEngine\Rules\Rule;
-use Maniaba\RuleEngine\Rules\RuleSet;
+use Maniaba\RuleEngine\Builders\ArrayBuilder;
+use Maniaba\RuleEngine\Context\ArrayContext;
 
-// Create rules
-$rule1 = new Rule($condition1, $actions1);
-$rule2 = new Rule($condition2, $actions2);
-$rule3 = new Rule($condition3, $actions3);
+// Create a builder
+$builder = new ArrayBuilder();
 
-// Set priorities (higher number = higher priority)
-$rule1->setPriority(10);
-$rule2->setPriority(20); // This will execute first
-$rule3->setPriority(5);  // This will execute last
+// Register necessary actions
+$builder->actions()->registerAction('action1', function(ArrayContext $context) {
+    echo "Executing action 1\n";
+    return true;
+});
 
-// Add to rule set
-$ruleSet = new RuleSet();
-$ruleSet->addRule($rule1);
-$ruleSet->addRule($rule2);
-$ruleSet->addRule($rule3);
+$builder->actions()->registerAction('action2', function(ArrayContext $context) {
+    echo "Executing action 2\n";
+    return true;
+});
 
-// Rules will execute in order of priority: rule2, rule1, rule3
-$ruleSet->execute($context);
+$builder->actions()->registerAction('action3', function(ArrayContext $context) {
+    echo "Executing action 3\n";
+    return true;
+});
+
+// Define rules with different conditions
+$rule1 = [
+    'node' => 'condition',
+    'if' => [
+        'node' => 'context',
+        'contextName' => 'field1',
+        'operator' => 'equal',
+        'value' => true,
+    ],
+    'then' => [
+        'node' => 'action',
+        'actionName' => 'action1',
+    ],
+];
+
+$rule2 = [
+    'node' => 'condition',
+    'if' => [
+        'node' => 'context',
+        'contextName' => 'field2',
+        'operator' => 'equal',
+        'value' => true,
+    ],
+    'then' => [
+        'node' => 'action',
+        'actionName' => 'action2',
+    ],
+];
+
+$rule3 = [
+    'node' => 'condition',
+    'if' => [
+        'node' => 'context',
+        'contextName' => 'field3',
+        'operator' => 'equal',
+        'value' => true,
+    ],
+    'then' => [
+        'node' => 'action',
+        'actionName' => 'action3',
+    ],
+];
+
+// Build individual rule sets
+$ruleSet1 = $builder->build($rule1);
+$ruleSet2 = $builder->build($rule2);
+$ruleSet3 = $builder->build($rule3);
+
+// Create a context
+$context = new ArrayContext([
+    'field1' => true,
+    'field2' => true,
+    'field3' => true,
+]);
+
+// Create an evaluator
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
+// Execute rules in a specific order
+echo "Executing rules in specific order:\n";
+$evaluator->execute(clone $ruleSet2, $context); // Execute rule2 first
+$evaluator->execute(clone $ruleSet1, $context); // Execute rule1 second
+$evaluator->execute(clone $ruleSet3, $context); // Execute rule3 last
 ```
 
 ## Dynamic Rule Generation
@@ -280,7 +347,9 @@ function generateRules(array $userRoles): array
             'then' => [
                 'node' => 'action',
                 'actionName' => 'assignPermissions',
-                'arguments' => [$permissions],
+                'arguments' => [
+                    'permissions' => $permissions,
+                ],
             ],
         ];
     }
@@ -298,6 +367,15 @@ $userRoles = [
 $rules = generateRules($userRoles);
 $builder = new ArrayBuilder();
 $ruleSet = $builder->build($rules);
+
+// Create an evaluator to execute the rules
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
+// Create a context
+$context = new ArrayContext(['role' => 'editor']);
+
+// Execute the rules
+$evaluator->execute(clone $ruleSet, $context);
 ```
 
 ## Performance Optimization

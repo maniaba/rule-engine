@@ -313,7 +313,11 @@ function validateActionNames(array $config, ArrayBuilder $builder): array
 
 // Usage
 $builder = new ArrayBuilder();
-$builder->actions()->registerAction('approveUser', function() { return true; });
+$builder->actions()->registerAction('approveUser', function(ArrayContext $context) { return true; });
+$builder->actions()->registerAction('log', function(ArrayContext $context, string $message) {
+    echo "Log: {$message}\n";
+    return true;
+});
 
 $config = [
     'node' => 'condition',

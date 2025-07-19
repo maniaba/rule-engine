@@ -163,7 +163,7 @@ You can register custom actions with the ActionFactory:
 
 ```php
 $builder = new ArrayBuilder();
-$builder->actions()->registerAction('customAction', function(ContextInterface $context, array $arguments = []) {
+$builder->actions()->registerAction('customAction', function(ArrayContext $context, string $param1 = '', int $param2 = 0) {
     // Your custom action logic here
     return true;
 });

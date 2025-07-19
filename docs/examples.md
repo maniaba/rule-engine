@@ -16,13 +16,18 @@ use Maniaba\RuleEngine\Context\ArrayContext;
 $builder = new ArrayBuilder();
 
 // Register actions
-$builder->actions()->registerAction('grantAccess', function() {
+$builder->actions()->registerAction('grantAccess', function(ArrayContext $context) {
     echo "Access granted\n";
     return true;
 });
 
-$builder->actions()->registerAction('denyAccess', function() {
+$builder->actions()->registerAction('denyAccess', function(ArrayContext $context) {
     echo "Access denied\n";
+    return true;
+});
+
+$builder->actions()->registerAction('log', function(ArrayContext $context, string $message) {
+    echo "Log: {$message}\n";
     return true;
 });
 
@@ -78,8 +83,14 @@ $config = [
     ],
 ];
 
+// Evaluate the rule set with the contexts
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
 // Build the rule set
 $ruleSet = $builder->build($config);
+$ruleSet1 = $builder->build($config);
+$ruleSet2 = $builder->build($config);
+$ruleSet3 = $builder->build($config);
 
 // Test with different contexts
 $adminContext = new ArrayContext([
@@ -108,16 +119,16 @@ $guestContext = new ArrayContext([
 
 // Execute the rule set with different contexts
 echo "Admin: ";
-$ruleSet->execute($adminContext); // Output: Admin: Access granted
+$evaluator->execute(clone $ruleSet, $adminContext); // Output: Admin: Access granted
 
 echo "Editor: ";
-$ruleSet->execute($editorContext); // Output: Editor: Access granted
+$evaluator->execute(clone $ruleSet1, $editorContext); // Output: Editor: Access granted
 
 echo "User: ";
-$ruleSet->execute($userContext); // Output: User: Access granted
+$evaluator->execute(clone $ruleSet2, $userContext); // Output: User: Access granted
 
 echo "Guest: ";
-$ruleSet->execute($guestContext); // Output: Guest: Access denied
+$evaluator->execute(clone $ruleSet3, $guestContext); // Output: Guest: Access denied
 ```
 
 ## E-commerce Discount Rules
@@ -340,11 +351,13 @@ use Maniaba\RuleEngine\Context\ArrayContext;
 $builder = new ArrayBuilder();
 
 // Register actions
-$builder->actions()->registerAction('addError', function(ContextInterface $context, array $arguments = []) {
-    $field = $arguments[0] ?? '';
-    $message = $arguments[1] ?? 'Invalid value';
-
+$builder->actions()->registerAction('addError', function(ArrayContext $context, string $field = '', string $message = 'Invalid value') {
     echo "Validation error: {$field} - {$message}\n";
+    return true;
+});
+
+$builder->actions()->registerAction('log', function(ArrayContext $context, string $message) {
+    echo "Log: {$message}\n";
     return true;
 });
 
@@ -378,7 +391,17 @@ $config = [
         'then' => [
             'node' => 'action',
             'actionName' => 'addError',
-            'arguments' => ['username', 'Username must be 3-20 characters and contain only letters, numbers, and underscores'],
+            'arguments' => [
+                'field' => 'username',
+                'message' => 'Username must be 3-20 characters and contain only letters, numbers, and underscores'
+            ],
+        ],
+        'else' => [
+            'node' => 'action',
+            'actionName' => 'log',
+            'arguments' => [
+                'message' => 'Username validation passed',
+            ],
         ],
     ],
 
@@ -397,7 +420,17 @@ $config = [
         'then' => [
             'node' => 'action',
             'actionName' => 'addError',
-            'arguments' => ['email', 'Please enter a valid email address'],
+            'arguments' => [
+                'field' => 'email',
+                'message' => 'Please enter a valid email address'
+            ],
+        ],
+        'else' => [
+            'node' => 'action',
+            'actionName' => 'log',
+            'arguments' => [
+                'message' => 'Email validation passed',
+            ],
         ],
     ],
 
@@ -434,13 +467,27 @@ $config = [
         'then' => [
             'node' => 'action',
             'actionName' => 'addError',
-            'arguments' => ['password', 'Password must be at least 8 characters and include at least one uppercase letter and one number'],
+            'arguments' => [
+                'field' => 'password',
+                'message' => 'Password must be at least 8 characters and include at least one uppercase letter and one number'
+            ],
+        ],
+        'else' => [
+            'node' => 'action',
+            'actionName' => 'log',
+            'arguments' => [
+                'message' => 'Password validation passed',
+            ],
         ],
     ],
 ];
 
+// Evaluate the rule set with the contexts
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
 // Build the rule set
 $ruleSet = $builder->build($config);
+$ruleSet1 = $builder->build($config);
 
 // Test with invalid form data
 $invalidFormData = new ArrayContext([
@@ -451,7 +498,7 @@ $invalidFormData = new ArrayContext([
 
 // Execute validation
 echo "Validating form data:\n";
-$ruleSet->execute($invalidFormData);
+$evaluator->execute(clone $ruleSet, $invalidFormData);
 // Output:
 // Validation error: username - Username must be 3-20 characters and contain only letters, numbers, and underscores
 // Validation error: email - Please enter a valid email address
@@ -466,8 +513,11 @@ $validFormData = new ArrayContext([
 
 // Execute validation
 echo "\nValidating valid form data:\n";
-$ruleSet->execute($validFormData);
-// No output (no validation errors)
+$evaluator->execute(clone $ruleSet1, $validFormData);
+// Output:
+// Log: Username validation passed
+// Log: Email validation passed
+// Log: Password validation passed
 ```
 
 ## Workflow State Transitions
@@ -484,20 +534,23 @@ use Maniaba\RuleEngine\Context\ArrayContext;
 $builder = new ArrayBuilder();
 
 // Register actions
-$builder->actions()->registerAction('transitionTo', function(ContextInterface $context, array $arguments = []) {
-    $newState = $arguments[0] ?? '';
+$builder->actions()->registerAction('transitionTo', function(ArrayContext $context, string $newState = '') {
     $currentState = $context->getField('currentState');
 
     echo "Transitioning from '{$currentState}' to '{$newState}'\n";
     return true;
 });
 
-$builder->actions()->registerAction('rejectTransition', function(ContextInterface $context, array $arguments = []) {
-    $reason = $arguments[0] ?? 'Invalid transition';
+$builder->actions()->registerAction('rejectTransition', function(ArrayContext $context, string $reason = 'Invalid transition') {
     $currentState = $context->getField('currentState');
     $requestedTransition = $context->getField('requestedTransition');
 
     echo "Rejected transition from '{$currentState}' to '{$requestedTransition}': {$reason}\n";
+    return true;
+});
+
+$builder->actions()->registerAction('log', function(ArrayContext $context, string $message) {
+    echo "Log: {$message}\n";
     return true;
 });
 
@@ -533,12 +586,16 @@ $config = [
         'then' => [
             'node' => 'action',
             'actionName' => 'transitionTo',
-            'arguments' => ['review'],
+            'arguments' => [
+                'newState' => 'review'
+            ],
         ],
         'else' => [
             'node' => 'action',
             'actionName' => 'rejectTransition',
-            'arguments' => ['Document must be complete before review'],
+            'arguments' => [
+                'reason' => 'Document must be complete before review'
+            ],
         ],
     ],
 
@@ -572,12 +629,16 @@ $config = [
         'then' => [
             'node' => 'action',
             'actionName' => 'transitionTo',
-            'arguments' => ['approved'],
+            'arguments' => [
+                'newState' => 'approved'
+            ],
         ],
         'else' => [
             'node' => 'action',
             'actionName' => 'rejectTransition',
-            'arguments' => ['Only managers can approve documents'],
+            'arguments' => [
+                'reason' => 'Only managers can approve documents'
+            ],
         ],
     ],
 
@@ -611,18 +672,28 @@ $config = [
         'then' => [
             'node' => 'action',
             'actionName' => 'transitionTo',
-            'arguments' => ['rejected'],
+            'arguments' => [
+                'newState' => 'rejected'
+            ],
         ],
         'else' => [
             'node' => 'action',
             'actionName' => 'rejectTransition',
-            'arguments' => ['Only managers or reviewers can reject documents'],
+            'arguments' => [
+                'reason' => 'Only managers or reviewers can reject documents'
+            ],
         ],
     ],
 ];
 
+// Evaluate the rule set with the contexts
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
 // Build the rule set
 $ruleSet = $builder->build($config);
+$ruleSet1 = $builder->build($config);
+$ruleSet2 = $builder->build($config);
+$ruleSet3 = $builder->build($config);
 
 // Test with different contexts
 $draftToReviewValid = new ArrayContext([
@@ -655,16 +726,20 @@ $reviewToApprovedInvalid = new ArrayContext([
 
 // Execute the rule set with different contexts
 echo "Valid draft to review transition:\n";
-$ruleSet->execute($draftToReviewValid);
+$evaluator->execute(clone $ruleSet, $draftToReviewValid);
+// Output: Transitioning from 'draft' to 'review'
 
 echo "\nInvalid draft to review transition:\n";
-$ruleSet->execute($draftToReviewInvalid);
+$evaluator->execute(clone $ruleSet1, $draftToReviewInvalid);
+// Output: Rejected transition from 'draft' to 'review': Document must be complete before review
 
 echo "\nValid review to approved transition:\n";
-$ruleSet->execute($reviewToApprovedValid);
+$evaluator->execute(clone $ruleSet2, $reviewToApprovedValid);
+// Output: Transitioning from 'review' to 'approved'
 
 echo "\nInvalid review to approved transition:\n";
-$ruleSet->execute($reviewToApprovedInvalid);
+$evaluator->execute(clone $ruleSet3, $reviewToApprovedInvalid);
+// Output: Rejected transition from 'review' to 'approved': Only managers can approve documents
 ```
 
 ## Next Steps
