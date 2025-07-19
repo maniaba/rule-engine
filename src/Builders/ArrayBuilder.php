@@ -152,9 +152,13 @@ class ArrayBuilder implements BuilderInterface
     }
 
     /**
-     * Kreira ConditionInterface na osnovu konfiguracije.
+     * Creates a ConditionInterface from the provided configuration.
      *
-     * @param array $config konfiguracija uslova
+     * @param array $config The condition configuration array
+     *
+     * @return ConditionInterface The created condition
+     *
+     * @throws BuilderException If the configuration is invalid
      */
     private function buildCondition(array $config): ConditionInterface
     {
@@ -206,10 +210,23 @@ class ArrayBuilder implements BuilderInterface
         }
     }
 
+    /**
+     * Builds either an action or a condition based on the configuration.
+     *
+     * This method is used for processing 'then' and 'else' branches in conditional nodes.
+     * It determines whether to build an action or a condition based on the node type.
+     *
+     * @param array  &$config The configuration array to process (passed by reference)
+     * @param string $key     The key to process ('then' or 'else')
+     *
+     * @return array The updated configuration array
+     *
+     * @throws BuilderException If multiple actions are found in a single action node
+     */
     private function buildActionOrCondition(array &$config, string $key): array
     {
         if (\array_key_exists($key, $config)) {
-            // Ako je '$key' čvor akcija, inače je uslov
+            // If '$key' is an action node, otherwise it's a condition
             if (isset($config[$key]['node']) && 'action' === $config[$key]['node']) {
                 $config[$key] = $this->buildActions($config[$key]);
 
@@ -226,9 +243,16 @@ class ArrayBuilder implements BuilderInterface
     }
 
     /**
-     * Kreira niz ActionInterface ili ConditionInterface na osnovu konfiguracije.
+     * Creates a list of ActionInterface instances from the provided configuration.
      *
-     * @return list<ActionInterface>
+     * This method processes action configurations and creates the corresponding action objects.
+     * If a single action node is provided, it's converted to an array for uniform processing.
+     *
+     * @param mixed $actionsConfig The actions configuration (must be an array)
+     *
+     * @return list<ActionInterface> The list of created action instances
+     *
+     * @throws BuilderException If the configuration is invalid
      */
     private function buildActions(mixed $actionsConfig): array
     {
@@ -236,7 +260,7 @@ class ArrayBuilder implements BuilderInterface
             throw new BuilderException('Actions configuration must be an array.');
         }
 
-        // Ako je jedan čvor, pretvaramo ga u niz za uniformnost
+        // If it's a single node, convert it to an array for uniform processing
         if (isset($actionsConfig['node'])) {
             $actionsConfig = [$actionsConfig];
         }
