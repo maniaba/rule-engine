@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Factories;
 
+use InvalidArgumentException;
 use Maniaba\RuleEngine\Conditions\ArrayContainsAllCondition;
 use Maniaba\RuleEngine\Conditions\ArrayContainsAnyCondition;
 use Maniaba\RuleEngine\Conditions\ArrayContainsCondition;
@@ -30,98 +31,98 @@ final class ConditionFactoryTest extends TestCase
     public function testCreateEqualsCondition(): void
     {
         $config = [
-            'operator' => 'equal',
+            'operator'    => 'equal',
             'contextName' => 'age',
-            'value' => 25,
+            'value'       => 25,
         ];
 
         $conditionFactory = new ConditionFactory();
 
         $condition = $conditionFactory->create($config);
 
-        self::assertInstanceOf(EqualsCondition::class, $condition);
+        $this->assertInstanceOf(EqualsCondition::class, $condition);
 
         $context = $this->createMockContext(true, 25);
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, 30);
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     public function testCreateNumericInRangeCondition(): void
     {
         $config = [
-            'operator' => 'numericInRange',
+            'operator'    => 'numericInRange',
             'contextName' => 'age',
-            'min' => 18,
-            'max' => 65,
+            'min'         => 18,
+            'max'         => 65,
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(NumericInRangeCondition::class, $condition);
+        $this->assertInstanceOf(NumericInRangeCondition::class, $condition);
 
         $context = $this->createMockContext(true, 25);
 
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, 70);
 
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     public function testCreateArrayContainsCondition(): void
     {
         $config = [
-            'operator' => 'arrayContains',
+            'operator'    => 'arrayContains',
             'contextName' => 'tags',
-            'value' => 'important',
+            'value'       => 'important',
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(ArrayContainsCondition::class, $condition);
+        $this->assertInstanceOf(ArrayContainsCondition::class, $condition);
 
         $context = $this->createMockContext(true, ['important', 'urgent']);
 
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, ['urgent2', ['another' => 'value']]);
 
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
 
         // arrayContains contains another array
         $config['value'] = ['another' => 'value'];
-        $condition = (new ConditionFactory())->create($config);
+        $condition       = (new ConditionFactory())->create($config);
 
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
     }
 
     public function testCreateGreaterThanCondition(): void
     {
         $config = [
-            'operator' => 'greaterThan',
+            'operator'    => 'greaterThan',
             'contextName' => 'score',
-            'value' => 100,
+            'value'       => 100,
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(GreaterThanCondition::class, $condition);
+        $this->assertInstanceOf(GreaterThanCondition::class, $condition);
 
         $context = $this->createMockContext(true, 150);
 
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
     }
 
     public function testThrowsExceptionOnMissingOperator(): void
     {
         $config = [
             'contextName' => 'age',
-            'value' => 25,
+            'value'       => 25,
         ];
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Operator is required.');
 
         (new ConditionFactory())->create($config);
@@ -131,10 +132,10 @@ final class ConditionFactoryTest extends TestCase
     {
         $config = [
             'operator' => 'equal',
-            'value' => 25,
+            'value'    => 25,
         ];
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Context name is required.');
 
         (new ConditionFactory())->create($config);
@@ -143,11 +144,11 @@ final class ConditionFactoryTest extends TestCase
     public function testThrowsExceptionOnMissingValue(): void
     {
         $config = [
-            'operator' => 'equal',
+            'operator'    => 'equal',
             'contextName' => 'age',
         ];
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Value is required.');
 
         (new ConditionFactory())->create($config);
@@ -156,12 +157,12 @@ final class ConditionFactoryTest extends TestCase
     public function testThrowsExceptionOnUnsupportedOperator(): void
     {
         $config = [
-            'operator' => 'unsupportedOperator',
+            'operator'    => 'unsupportedOperator',
             'contextName' => 'age',
-            'value' => 25,
+            'value'       => 25,
         ];
 
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unsupported operator: unsupportedOperator');
 
         (new ConditionFactory())->create($config);
@@ -170,153 +171,153 @@ final class ConditionFactoryTest extends TestCase
     public function testCreateGreaterThanOrEqualCondition(): void
     {
         $config = [
-            'operator' => 'greaterThanOrEqual',
+            'operator'    => 'greaterThanOrEqual',
             'contextName' => 'age',
-            'value' => 18,
+            'value'       => 18,
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(GreaterThanOrEqualCondition::class, $condition);
+        $this->assertInstanceOf(GreaterThanOrEqualCondition::class, $condition);
 
         $context = $this->createMockContext(true, 20);
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, 17);
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     public function testCreateLessThanOrEqualCondition(): void
     {
         $config = [
-            'operator' => 'lessThanOrEqual',
+            'operator'    => 'lessThanOrEqual',
             'contextName' => 'age',
-            'value' => 18,
+            'value'       => 18,
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(LessThanOrEqualCondition::class, $condition);
+        $this->assertInstanceOf(LessThanOrEqualCondition::class, $condition);
 
         $context = $this->createMockContext(true, 18);
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, 19);
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     public function testCreateStringContainCondition(): void
     {
         $config = [
-            'operator' => 'contains',
+            'operator'    => 'contains',
             'contextName' => 'description',
-            'value' => 'important',
+            'value'       => 'important',
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(StringContainCondition::class, $condition);
+        $this->assertInstanceOf(StringContainCondition::class, $condition);
 
         $context = $this->createMockContext(true, 'This is an important message.');
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, 'This is a regular message.');
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     public function testCreateArrayContainsAllCondition(): void
     {
         $config = [
-            'operator' => 'arrayContainsAll',
+            'operator'    => 'arrayContainsAll',
             'contextName' => 'tags',
-            'value' => ['urgent', 'important'],
+            'value'       => ['urgent', 'important'],
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(ArrayContainsAllCondition::class, $condition);
+        $this->assertInstanceOf(ArrayContainsAllCondition::class, $condition);
 
         $context = $this->createMockContext(true, ['urgent', 'important', 'todo']);
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, ['urgent']);
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     public function testCreateArrayContainsAnyCondition(): void
     {
         $config = [
-            'operator' => 'arrayContainsAny',
+            'operator'    => 'arrayContainsAny',
             'contextName' => 'tags',
-            'value' => ['urgent', 'important'],
+            'value'       => ['urgent', 'important'],
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(ArrayContainsAnyCondition::class, $condition);
+        $this->assertInstanceOf(ArrayContainsAnyCondition::class, $condition);
 
         $context = $this->createMockContext(true, ['urgent', 'todo']);
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, ['todo']);
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     public function testCreateEndsWithCondition(): void
     {
         $config = [
-            'operator' => 'endsWith',
+            'operator'    => 'endsWith',
             'contextName' => 'fileName',
-            'value' => '.pdf',
+            'value'       => '.pdf',
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(EndsWithCondition::class, $condition);
+        $this->assertInstanceOf(EndsWithCondition::class, $condition);
 
         $context = $this->createMockContext(true, 'document.pdf');
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, 'document.docx');
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     public function testCreateStartsWithCondition(): void
     {
         $config = [
-            'operator' => 'startsWith',
+            'operator'    => 'startsWith',
             'contextName' => 'userName',
-            'value' => 'admin',
+            'value'       => 'admin',
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(StartsWithCondition::class, $condition);
+        $this->assertInstanceOf(StartsWithCondition::class, $condition);
 
         $context = $this->createMockContext(true, 'adminUser');
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, 'userAdmin');
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     public function testCreateLessThanCondition(): void
     {
         $config = [
-            'operator' => 'lessThan',
+            'operator'    => 'lessThan',
             'contextName' => 'score',
-            'value' => 50,
+            'value'       => 50,
         ];
 
         $condition = (new ConditionFactory())->create($config);
 
-        self::assertInstanceOf(LessThanCondition::class, $condition);
+        $this->assertInstanceOf(LessThanCondition::class, $condition);
 
         $context = $this->createMockContext(true, 40);
-        self::assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
+        $this->assertTrue($condition->isSatisfied($context), 'Condition should be satisfied');
 
         $context = $this->createMockContext(true, 60);
-        self::assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
+        $this->assertFalse($condition->isSatisfied($context), 'Condition should not be satisfied');
     }
 
     private function createMockContext(bool $hasField, mixed $field): ContextInterface

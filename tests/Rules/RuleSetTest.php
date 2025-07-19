@@ -20,13 +20,13 @@ final class RuleSetTest extends TestCase
     public function testAddAndGetRules(): void
     {
         $ruleSet = new RuleSet();
-        $rule = $this->createMock(RuleInterface::class);
+        $rule    = $this->createMock(RuleInterface::class);
 
         $ruleSet->addRule($rule);
 
         $rules = $ruleSet->getRules();
-        self::assertCount(1, $rules, 'Trebao bi postojati jedan rule u RuleSet-u');
-        self::assertSame($rule, $rules[0], 'Dodan rule se ne podudara s onim dohvacenim iz RuleSet-a');
+        $this->assertCount(1, $rules, 'Trebao bi postojati jedan rule u RuleSet-u');
+        $this->assertSame($rule, $rules[0], 'Dodan rule se ne podudara s onim dohvacenim iz RuleSet-a');
     }
 
     public function testEvaluateWithNoRules(): void
@@ -36,8 +36,8 @@ final class RuleSetTest extends TestCase
 
         $results = $ruleSet->evaluate($context);
 
-        self::assertEmpty($results, 'Rezultati evaluacije trebaju biti prazni jer nema pravila');
-        self::assertEmpty($ruleSet->getFailedRules(), 'Ne bi trebalo biti padnutih pravila');
+        $this->assertEmpty($results, 'Rezultati evaluacije trebaju biti prazni jer nema pravila');
+        $this->assertEmpty($ruleSet->getFailedRules(), 'Ne bi trebalo biti padnutih pravila');
     }
 
     public function testEvaluateWithAllPassingRules(): void
@@ -59,14 +59,14 @@ final class RuleSetTest extends TestCase
 
         $results = $ruleSet->evaluate($context);
 
-        self::assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
+        $this->assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
 
         foreach ($results as $result) {
-            self::assertInstanceOf(EvaluationResult::class, $result, 'Svaki rezultat treba biti instanca EvaluationResult');
-            self::assertTrue($result->result, 'Rezultat evaluacije treba biti true jer pravilo prolazi');
+            $this->assertInstanceOf(EvaluationResult::class, $result, 'Svaki rezultat treba biti instanca EvaluationResult');
+            $this->assertTrue($result->result, 'Rezultat evaluacije treba biti true jer pravilo prolazi');
         }
 
-        self::assertEmpty($ruleSet->getFailedRules(), 'Ne bi trebalo biti padnutih pravila jer sva prolaze');
+        $this->assertEmpty($ruleSet->getFailedRules(), 'Ne bi trebalo biti padnutih pravila jer sva prolaze');
     }
 
     public function testEvaluateWithFailingRules(): void
@@ -87,16 +87,16 @@ final class RuleSetTest extends TestCase
 
         $results = $ruleSet->evaluate($context);
 
-        self::assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
+        $this->assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
 
         // Provjera rezultata
-        self::assertTrue($results[0]->result, 'Prvi rule treba proći evaluaciju');
-        self::assertFalse($results[1]->result, 'Drugi rule treba pasti evaluaciju');
+        $this->assertTrue($results[0]->result, 'Prvi rule treba proći evaluaciju');
+        $this->assertFalse($results[1]->result, 'Drugi rule treba pasti evaluaciju');
 
         // Provjera padnutih pravila
         $failedRules = $ruleSet->getFailedRules();
-        self::assertCount(1, $failedRules, 'Treba biti 1 palo pravilo');
-        self::assertSame($failingRule, $failedRules[0], 'Padnuto pravilo treba biti failingRule');
+        $this->assertCount(1, $failedRules, 'Treba biti 1 palo pravilo');
+        $this->assertSame($failingRule, $failedRules[0], 'Padnuto pravilo treba biti failingRule');
     }
 
     public function testExecuteCallsExecuteOnAllRules(): void
@@ -105,10 +105,10 @@ final class RuleSetTest extends TestCase
         $context = $this->createMock(ContextInterface::class);
 
         $rule1 = $this->createMock(RuleInterface::class);
-        $rule1->expects(self::once())->method('execute')->with($context);
+        $rule1->expects($this->once())->method('execute')->with($context);
 
         $rule2 = $this->createMock(RuleInterface::class);
-        $rule2->expects(self::once())->method('execute')->with($context);
+        $rule2->expects($this->once())->method('execute')->with($context);
 
         $ruleSet->addRule($rule1);
         $ruleSet->addRule($rule2);
