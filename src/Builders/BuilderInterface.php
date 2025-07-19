@@ -16,5 +16,3 @@ interface BuilderInterface
 
     public function conditions(): ConditionFactory;
 }
-
-

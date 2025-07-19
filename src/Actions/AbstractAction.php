@@ -10,5 +10,3 @@ abstract class AbstractAction implements ActionInterface
 {
     use FailureMessagesTrait;
 }
-
-

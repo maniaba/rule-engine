@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Builders;
 
-use InvalidArgumentException;
-use ReflectionException;
-use Tests\Maniaba\RuleEngine\Builders\ArrayBuilderTest;
 use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Conditions\AlwaysTrueCondition;
 use Maniaba\RuleEngine\Conditions\CollectionCondition;
@@ -18,6 +15,7 @@ use Maniaba\RuleEngine\Factories\ActionFactory;
 use Maniaba\RuleEngine\Factories\ConditionFactory;
 use Maniaba\RuleEngine\Rules\Rule;
 use Maniaba\RuleEngine\Rules\RuleSet;
+use Tests\Maniaba\RuleEngine\Builders\ArrayBuilderTest;
 
 /**
  * @see ArrayBuilderTest
@@ -29,12 +27,12 @@ class ArrayBuilder implements BuilderInterface
 
     public function build(mixed $config): RuleSet
     {
-        if (!is_array($config)) {
+        if (! \is_array($config)) {
             throw new BuilderException('Configuration must be an array.');
         }
 
         // check if we have multiple rules or just one or kex is not numeric
-        if (array_key_exists('node', $config) || !is_numeric(key($config))) {
+        if (\array_key_exists('node', $config) || ! is_numeric(key($config))) {
             // creating array of rules
             $config = [$config];
         }
@@ -49,14 +47,32 @@ class ArrayBuilder implements BuilderInterface
         return $ruleSet;
     }
 
+    public function conditions(): ConditionFactory
+    {
+        if (! isset($this->conditions)) {
+            $this->conditions = new ConditionFactory();
+        }
+
+        return $this->conditions;
+    }
+
+    public function actions(): ActionFactory
+    {
+        if (! isset($this->actions)) {
+            $this->actions = new ActionFactory();
+        }
+
+        return $this->actions;
+    }
+
     /**
      * Kreira Rule na osnovu konfiguracije.
      *
-     * @param array $config Konfiguracija za pravilo.
+     * @param array $config konfiguracija za pravilo
      */
     private function buildRule(array $config): Rule
     {
-        if (!array_key_exists('node', $config)) {
+        if (! \array_key_exists('node', $config)) {
             throw new BuilderException("Invalid node structure: 'node' key is missing.");
         }
 
@@ -78,7 +94,7 @@ class ArrayBuilder implements BuilderInterface
             case 'context':
                 try {
                     $context = $this->conditions()->create($config);
-                } catch (InvalidArgumentException $e) {
+                } catch (\InvalidArgumentException $e) {
                     throw new BuilderException("Invalid node structure: {$e->getMessage()}");
                 }
 
@@ -92,17 +108,17 @@ class ArrayBuilder implements BuilderInterface
     /**
      * Kreira ConditionInterface na osnovu konfiguracije.
      *
-     * @param array $config Konfiguracija uslova.
+     * @param array $config konfiguracija uslova
      */
     private function buildCondition(array $config): ConditionInterface
     {
-        if (!isset($config['node'])) {
+        if (! isset($config['node'])) {
             throw new BuilderException("Invalid node structure: 'node' key is missing.");
         }
 
         switch ($config['node']) {
             case 'not':
-                if (array_key_exists('condition', $config)) {
+                if (\array_key_exists('condition', $config)) {
                     $config['condition'] = $this->buildCondition($config['condition']);
                 }
                 $node = NotCondition::class;
@@ -110,14 +126,14 @@ class ArrayBuilder implements BuilderInterface
 
             case 'collection':
                 // Build nodes
-                if (array_key_exists('nodes', $config) && is_array($config['nodes'])) {
-                    $config['nodes'] = array_map(fn (array $node): ConditionInterface => $this->buildCondition($node), $config['nodes']);
+                if (\array_key_exists('nodes', $config) && \is_array($config['nodes'])) {
+                    $config['nodes'] = array_map(fn(array $node): ConditionInterface => $this->buildCondition($node), $config['nodes']);
                 }
                 $node = CollectionCondition::class;
                 break;
 
             case 'condition':
-                if (array_key_exists('if', $config)) {
+                if (\array_key_exists('if', $config)) {
                     $config['if'] = $this->buildCondition($config['if']);
                 }
                 $config = $this->buildActionOrCondition($config, 'then');
@@ -129,7 +145,7 @@ class ArrayBuilder implements BuilderInterface
             case 'context':
                 try {
                     return $this->conditions()->create($config);
-                } catch (InvalidArgumentException $e) {
+                } catch (\InvalidArgumentException $e) {
                     throw new BuilderException("Invalid node structure: {$e->getMessage()}");
                 }
 
@@ -139,18 +155,19 @@ class ArrayBuilder implements BuilderInterface
 
         try {
             return $node::factory($config);
-        } catch (InvalidArgumentException $e) {
+        } catch (\InvalidArgumentException $e) {
             throw new BuilderException("Invalid node structure: {$e->getMessage()}");
         }
     }
 
     private function buildActionOrCondition(array &$config, string $key): array
     {
-        if (array_key_exists($key, $config)) {
+        if (\array_key_exists($key, $config)) {
             // Ako je '$key' čvor akcija, inače je uslov
-            if (isset($config[$key]['node']) && $config[$key]['node'] === 'action') {
+            if (isset($config[$key]['node']) && 'action' === $config[$key]['node']) {
                 $config[$key] = $this->buildActions($config[$key]);
-                if (count($config[$key]) > 1) {
+
+                if (\count($config[$key]) > 1) {
                     throw new BuilderException("Multiple actions are not supported in one 'action' node.");
                 }
                 $config[$key] = end($config[$key]);
@@ -169,7 +186,7 @@ class ArrayBuilder implements BuilderInterface
      */
     private function buildActions(mixed $actionsConfig): array
     {
-        if (!is_array($actionsConfig)) {
+        if (! \is_array($actionsConfig)) {
             throw new BuilderException('Actions configuration must be an array.');
         }
 
@@ -181,15 +198,15 @@ class ArrayBuilder implements BuilderInterface
         return array_map(function ($config): ActionInterface|ConditionInterface {
             switch ($config['node']) {
                 case 'action':
-                    if (!array_key_exists('actionName', $config)) {
+                    if (! \array_key_exists('actionName', $config)) {
                         throw new BuilderException("Invalid node structure: 'actionName' key is missing in 'action' node.");
                     }
 
                     try {
                         return $this->actions->create($config);
-                    } catch (InvalidArgumentException $e) {
+                    } catch (\InvalidArgumentException $e) {
                         throw new BuilderException("Invalid node structure: {$e->getMessage()}");
-                    } catch (ReflectionException $e) {
+                    } catch (\ReflectionException $e) {
                         throw new BuilderException("Generic error: {$e->getMessage()}");
                     }
 
@@ -198,25 +215,4 @@ class ArrayBuilder implements BuilderInterface
             }
         }, $actionsConfig);
     }
-
-    public function conditions(): ConditionFactory
-    {
-        if (!isset($this->conditions)) {
-            $this->conditions = new ConditionFactory();
-        }
-
-        return $this->conditions;
-    }
-
-    public function actions(): ActionFactory
-    {
-        if (!isset($this->actions)) {
-            $this->actions = new ActionFactory();
-        }
-
-        return $this->actions;
-    }
 }
-
-
-

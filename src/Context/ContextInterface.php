@@ -10,5 +10,3 @@ interface ContextInterface
 
     public function hasField(string $field): bool;
 }
-
-

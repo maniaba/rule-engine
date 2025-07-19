@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\Conditions;
 
-use InvalidArgumentException;
-use PHPUnit\Framework\Attributes\Group;
-use stdClass;
-use Tests\Support\TestCase;
 use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Conditions\CollectionCondition;
 use Maniaba\RuleEngine\Conditions\ConditionInterface;
 use Maniaba\RuleEngine\Conditions\IfElseCondition;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Enums\CollectionConditionType;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Support\TestCase;
 
 /**
  * @internal
@@ -26,20 +24,22 @@ final class IfElseConditionTest extends TestCase
         $mockContext = $this->createMock(ContextInterface::class);
 
         $mockIfCondition = $this->createMock(ConditionInterface::class);
-        $mockIfCondition->expects($this->once())
+        $mockIfCondition->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $mockThenAction = $this->createMock(ActionInterface::class);
-        $mockThenAction->expects($this->once())
+        $mockThenAction->expects(self::once())
             ->method('execute')
-            ->with($mockContext);
+            ->with($mockContext)
+        ;
 
         $ifElseCondition = new IfElseCondition($mockIfCondition, $mockThenAction);
         $ifElseCondition->execute($mockContext);
 
-        $this->assertNull($ifElseCondition->getFailureMessage());
+        self::assertNull($ifElseCondition->getFailureMessage());
     }
 
     public function testIfConditionNotSatisfiedExecutesElseAction(): void
@@ -47,23 +47,25 @@ final class IfElseConditionTest extends TestCase
         $mockContext = $this->createMock(ContextInterface::class);
 
         $mockIfCondition = $this->createMock(ConditionInterface::class);
-        $mockIfCondition->expects($this->once())
+        $mockIfCondition->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $mockElseAction = $this->createMock(ActionInterface::class);
-        $mockElseAction->expects($this->once())
+        $mockElseAction->expects(self::once())
             ->method('execute')
-            ->with($mockContext);
+            ->with($mockContext)
+        ;
 
         $mockThenAction = $this->createMock(ActionInterface::class);
-        $mockThenAction->expects($this->never())->method('execute');
+        $mockThenAction->expects(self::never())->method('execute');
 
         $ifElseCondition = new IfElseCondition($mockIfCondition, $mockThenAction, $mockElseAction);
         $ifElseCondition->execute($mockContext);
 
-        $this->assertNull($ifElseCondition->getFailureMessage());
+        self::assertNull($ifElseCondition->getFailureMessage());
     }
 
     public function testIfConditionNotSatisfiedWithoutElseSetsFailureMessage(): void
@@ -71,27 +73,29 @@ final class IfElseConditionTest extends TestCase
         $mockContext = $this->createMock(ContextInterface::class);
 
         $mockIfCondition = $this->createMock(ConditionInterface::class);
-        $mockIfCondition->expects($this->once())
+        $mockIfCondition->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
-        $mockIfCondition->expects($this->once())
+        $mockIfCondition->expects(self::once())
             ->method('getFailureMessage')
-            ->willReturn('Condition failed.');
+            ->willReturn('Condition failed.')
+        ;
 
         $mockThenAction = $this->createMock(ActionInterface::class);
-        $mockThenAction->expects($this->never())->method('execute');
+        $mockThenAction->expects(self::never())->method('execute');
 
         $ifElseCondition = new IfElseCondition($mockIfCondition, $mockThenAction);
         $ifElseCondition->execute($mockContext);
 
-        $this->assertSame('Condition failed.', $ifElseCondition->getFailureMessage());
+        self::assertSame('Condition failed.', $ifElseCondition->getFailureMessage());
     }
 
     public function testFactoryThrowsExceptionForMissingIfKey(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("'if' key is missing in 'condition' node.");
 
         IfElseCondition::factory([
@@ -101,11 +105,11 @@ final class IfElseConditionTest extends TestCase
 
     public function testFactoryThrowsExceptionForInvalidIfCondition(): void
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage("'if' must be instance of ConditionInterface.");
 
         IfElseCondition::factory([
-            'if'   => new stdClass(),
+            'if' => new \stdClass(),
             'then' => $this->createMock(ActionInterface::class),
         ]);
     }
@@ -113,16 +117,16 @@ final class IfElseConditionTest extends TestCase
     public function testFactoryCreatesValidIfElseCondition(): void
     {
         $mockIfCondition = $this->createMock(ConditionInterface::class);
-        $mockThenAction  = $this->createMock(ActionInterface::class);
-        $mockElseAction  = $this->createMock(ActionInterface::class);
+        $mockThenAction = $this->createMock(ActionInterface::class);
+        $mockElseAction = $this->createMock(ActionInterface::class);
 
         $condition = IfElseCondition::factory([
-            'if'   => $mockIfCondition,
+            'if' => $mockIfCondition,
             'then' => $mockThenAction,
             'else' => $mockElseAction,
         ]);
 
-        $this->assertInstanceOf(IfElseCondition::class, $condition);
+        self::assertInstanceOf(IfElseCondition::class, $condition);
     }
 
     public function testComplexIfConditionWithNestedConditions(): void
@@ -130,10 +134,11 @@ final class IfElseConditionTest extends TestCase
         $mockContext = $this->createMock(ContextInterface::class);
 
         $mockNestedCondition = $this->createMock(ConditionInterface::class);
-        $mockNestedCondition->expects($this->once())
+        $mockNestedCondition->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $mockIfCondition = new IfElseCondition(
             $mockNestedCondition,
@@ -141,12 +146,12 @@ final class IfElseConditionTest extends TestCase
         );
 
         $mockThenAction = $this->createMock(ActionInterface::class);
-        $mockThenAction->expects($this->once())->method('execute')->with($mockContext);
+        $mockThenAction->expects(self::once())->method('execute')->with($mockContext);
 
         $ifElseCondition = new IfElseCondition($mockIfCondition, $mockThenAction);
         $ifElseCondition->execute($mockContext);
 
-        $this->assertNull($ifElseCondition->getFailureMessage());
+        self::assertNull($ifElseCondition->getFailureMessage());
     }
 
     public function testIfConditionWithCollectionConditionAndOrLogic(): void
@@ -155,28 +160,32 @@ final class IfElseConditionTest extends TestCase
 
         // Mockovi za pojedinačne uslove
         $condition1 = $this->createMock(ConditionInterface::class);
-        $condition1->expects($this->once())
+        $condition1->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $condition2 = $this->createMock(ConditionInterface::class);
-        $condition2->expects($this->once())
+        $condition2->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $condition3 = $this->createMock(ConditionInterface::class);
-        $condition3->expects($this->once())
+        $condition3->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(false);
+            ->willReturn(false)
+        ;
 
         $condition4 = $this->createMock(ConditionInterface::class);
-        $condition4->expects($this->once())
+        $condition4->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         // AND kolekcija: Svi uslovi moraju biti zadovoljeni
         $andCondition = new CollectionCondition(CollectionConditionType::AND, [$condition1, $condition2]);
@@ -189,15 +198,16 @@ final class IfElseConditionTest extends TestCase
 
         // Mock za ThenAction
         $thenAction = $this->createMock(ActionInterface::class);
-        $thenAction->expects($this->once())
+        $thenAction->expects(self::once())
             ->method('execute')
-            ->with($mockContext);
+            ->with($mockContext)
+        ;
 
         $ifElseCondition = new IfElseCondition($ifCondition, $thenAction);
         $ifElseCondition->execute($mockContext);
 
         // Provera
-        $this->assertNull($ifElseCondition->getFailureMessage(), 'Failure message should be null because conditions are satisfied.');
+        self::assertNull($ifElseCondition->getFailureMessage(), 'Failure message should be null because conditions are satisfied.');
     }
 
     public function testIfConditionWithMixedLogicAndFailureMessages(): void
@@ -206,35 +216,41 @@ final class IfElseConditionTest extends TestCase
 
         // Mock za pojedinačne uslove
         $condition1 = $this->createMock(ConditionInterface::class);
-        $condition1->expects($this->once())
+        $condition1->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(false);
-        $condition1->expects($this->once())
+            ->willReturn(false)
+        ;
+        $condition1->expects(self::once())
             ->method('getFailureMessage')
-            ->willReturn('Condition 1 failed.');
+            ->willReturn('Condition 1 failed.')
+        ;
 
         $condition2 = $this->createMock(ConditionInterface::class);
-        $condition2->expects($this->once())
+        $condition2->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         // AND kolekcija: Svi uslovi moraju biti zadovoljeni
         $condition3 = $this->createMock(ConditionInterface::class);
-        $condition3->expects($this->once())
+        $condition3->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(false);
-        $condition3->expects($this->once())
+            ->willReturn(false)
+        ;
+        $condition3->expects(self::once())
             ->method('getFailureMessage')
-            ->willReturn('Condition 3 failed.');
+            ->willReturn('Condition 3 failed.')
+        ;
 
         $condition4 = $this->createMock(ConditionInterface::class);
-        $condition4->expects($this->once())
+        $condition4->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true);
+            ->willReturn(true)
+        ;
 
         $andCondition = new CollectionCondition(
             CollectionConditionType::AND,
@@ -243,31 +259,37 @@ final class IfElseConditionTest extends TestCase
 
         // OR kolekcija: Dovoljno je da jedan uslov bude zadovoljen
         $condition5 = $this->createMock(ConditionInterface::class);
-        $condition5->expects($this->once())
+        $condition5->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(false);
-        $condition5->expects($this->once())
+            ->willReturn(false)
+        ;
+        $condition5->expects(self::once())
             ->method('getFailureMessage')
-            ->willReturn('Condition 5 failed.');
+            ->willReturn('Condition 5 failed.')
+        ;
 
         $condition6 = $this->createMock(ConditionInterface::class);
-        $condition6->expects($this->once())
+        $condition6->expects(self::once())
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(false);
-        $condition6->expects($this->once())
+            ->willReturn(false)
+        ;
+        $condition6->expects(self::once())
             ->method('getFailureMessage')
-            ->willReturn('Condition 6 failed.');
+            ->willReturn('Condition 6 failed.')
+        ;
 
         $condition7 = $this->createMock(ConditionInterface::class);
-        $condition7->expects($this->exactly(1))
+        $condition7->expects(self::exactly(1))
             ->method('isSatisfied')
             ->with($mockContext)
-            ->willReturn(true);
-        $condition7->expects($this->never())
+            ->willReturn(true)
+        ;
+        $condition7->expects(self::never())
             ->method('getFailureMessage')
-            ->willReturn(null);
+            ->willReturn(null)
+        ;
 
         $orCondition = new CollectionCondition(
             CollectionConditionType::OR,
@@ -282,8 +304,9 @@ final class IfElseConditionTest extends TestCase
 
         // Mock za ThenAction
         $thenAction = $this->createMock(ActionInterface::class);
-        $thenAction->expects($this->never())
-            ->method('execute');
+        $thenAction->expects(self::never())
+            ->method('execute')
+        ;
 
         $ifElseCondition = new IfElseCondition($ifCondition, $thenAction);
         $ifElseCondition->execute($mockContext);
@@ -296,8 +319,6 @@ final class IfElseConditionTest extends TestCase
             'Condition 6 failed.',
         ];
 
-        $this->assertSame($expectedFailureMessages, $ifElseCondition->getFailureMessage(), 'Failure messages do not match the expected output.');
+        self::assertSame($expectedFailureMessages, $ifElseCondition->getFailureMessage(), 'Failure messages do not match the expected output.');
     }
 }
-
-

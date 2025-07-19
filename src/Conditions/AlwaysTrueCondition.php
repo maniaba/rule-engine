@@ -10,7 +10,7 @@ final class AlwaysTrueCondition extends AbstractCondition
 {
     public static function factory(array $data): ConditionInterface
     {
-        return new AlwaysTrueCondition();
+        return new self();
     }
 
     protected function defaultFailureMessage(): string
@@ -23,5 +23,3 @@ final class AlwaysTrueCondition extends AbstractCondition
         return true;
     }
 }
-
-

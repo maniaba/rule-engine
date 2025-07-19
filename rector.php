@@ -81,6 +81,7 @@ return static function (RectorConfig $rectorConfig): void {
         $phpstanConfigs = [__DIR__.DIRECTORY_SEPARATOR.'phpstan.neon.dist'];
 
         $strictRulesPath = __DIR__.DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, ['vendor', 'phpstan', 'phpstan-strict-rules', 'rules.neon']);
+
         if (is_file($strictRulesPath)) {
             $phpstanConfigs[] = $strictRulesPath;
         }

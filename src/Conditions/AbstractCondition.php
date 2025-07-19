@@ -13,12 +13,13 @@ abstract class AbstractCondition implements ConditionInterface
 
     protected ContextInterface $context;
 
-    public function isSatisfied(ContextInterface $context): bool
+    final public function isSatisfied(ContextInterface $context): bool
     {
         $this->context = $context;
 
         $isSatisfied = $this->evaluateCondition($context);
-        if (!$isSatisfied && $this->failureMessage === null) {
+
+        if (! $isSatisfied && null === $this->failureMessage) {
             $this->setFailureMessage($this->defaultFailureMessage());
         }
 
@@ -29,5 +30,3 @@ abstract class AbstractCondition implements ConditionInterface
 
     abstract protected function defaultFailureMessage(): string;
 }
-
-

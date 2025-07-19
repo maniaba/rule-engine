@@ -9,25 +9,23 @@ use Maniaba\RuleEngine\Context\ContextInterface;
 interface ConditionInterface
 {
     /**
-     * Factory
+     * Factory.
      */
-    public static function factory(array $data): ConditionInterface;
+    public static function factory(array $data): self;
 
     /**
      * Evaluira uvjet na temelju konteksta.
      *
-     * @param ContextInterface $context Kontekst podataka.
+     * @param ContextInterface $context kontekst podataka
      *
-     * @return bool True ako je uvjet zadovoljen, false inače.
+     * @return bool true ako je uvjet zadovoljen, false inače
      */
     public function isSatisfied(ContextInterface $context): bool;
 
     /**
      * Vraća poruku koja objašnjava zašto uslov nije zadovoljio.
      *
-     * @return list<string>|string|null Poruka o neuspjehu.
+     * @return null|list<string>|string poruka o neuspjehu
      */
-    public function getFailureMessage(): array|string|null;
+    public function getFailureMessage(): null|array|string;
 }
-
-

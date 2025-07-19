@@ -16,14 +16,29 @@ abstract class AbstractManager implements WorkflowManagerInterface
 {
     private EvaluatorInterface $evaluator;
 
-    public function builder(array|string $config): RuleSet
+    final public function builder(array|string $config): RuleSet
     {
-        $builder = is_string($config) ? new JsonBuilder() : new ArrayBuilder();
+        $builder = \is_string($config) ? new JsonBuilder() : new ArrayBuilder();
 
         $builder->conditions()->registerConditions($this->registerConditions());
         $builder->actions()->registerActions($this->registerActions());
 
         return $builder->build($config);
+    }
+
+    final public function getErrors(): EvaluatorErrors
+    {
+        return $this->evaluator->getEvaluationErrors();
+    }
+
+    final public function evaluator(): EvaluatorInterface
+    {
+        if (! isset($this->evaluator)) {
+            $evaluatorClass = $this->evaluatorClass();
+            $this->evaluator = new $evaluatorClass();
+        }
+
+        return $this->evaluator;
     }
 
     /**
@@ -36,25 +51,8 @@ abstract class AbstractManager implements WorkflowManagerInterface
      */
     abstract protected function registerActions(): array;
 
-    public function getErrors(): EvaluatorErrors
-    {
-        return $this->evaluator->getEvaluationErrors();
-    }
-
-    public function evaluator(): EvaluatorInterface
-    {
-        if (!isset($this->evaluator)) {
-            $evaluatorClass  = $this->evaluatorClass();
-            $this->evaluator = new $evaluatorClass();
-        }
-
-        return $this->evaluator;
-    }
-
     /**
      * @return class-string<EvaluatorInterface>
      */
     abstract protected function evaluatorClass(): string;
 }
-
-

@@ -10,13 +10,10 @@ use Maniaba\RuleEngine\Rules\RuleSet;
 
 final class FailFastEvaluator extends AbstractEvaluator
 {
-    /**
-     * {@inheritDoc}
-     */
     public function execute(RuleSet $ruleSet, ContextInterface $context): void
     {
         foreach ($ruleSet->getRules() as $rule) {
-            if (!$rule->evaluate($context)) {
+            if (! $rule->evaluate($context)) {
                 $this->failedRules[] = $rule;
                 break;
             }
@@ -30,19 +27,16 @@ final class FailFastEvaluator extends AbstractEvaluator
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function evaluate(RuleSet $ruleSet, ContextInterface $context): array
     {
         $results = [];
 
         foreach ($ruleSet->getRules() as $rule) {
-            $result           = $rule->evaluate($context);
+            $result = $rule->evaluate($context);
             $evaluationResult = new EvaluationResult($rule, $result, $rule->getFailureMessage());
-            $results[]        = $evaluationResult;
+            $results[] = $evaluationResult;
 
-            if (!$result) {
+            if (! $result) {
                 $this->failedRules[] = $rule;
                 break;
             }
@@ -51,5 +45,3 @@ final class FailFastEvaluator extends AbstractEvaluator
         return $results;
     }
 }
-
-

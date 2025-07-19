@@ -6,8 +6,6 @@ namespace Maniaba\RuleEngine\Enums;
 
 enum CollectionConditionType: string
 {
-    case OR  = 'or';
+    case OR = 'or';
     case AND = 'and';
 }
-
-

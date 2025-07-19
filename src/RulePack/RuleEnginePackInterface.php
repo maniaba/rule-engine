@@ -16,6 +16,7 @@ interface RuleEnginePackInterface
 {
     /**
      * @description Return a key-to-class map for **conditions**.
+     *
      * @example ['fieldValue' => FieldValueCondition::class]
      *
      * @return array<string, callable|class-string<ConditionInterface>>
@@ -24,6 +25,7 @@ interface RuleEnginePackInterface
 
     /**
      * @description Return a key-to-class|callable map for **actions**.
+     *
      * @example ['updateIssueValue' => UpdateIssueValueAction::class]
      *
      * @return array<string, callable|class-string<ActionInterface>>
@@ -35,5 +37,3 @@ interface RuleEnginePackInterface
      */
     public function evaluator(): EvaluatorInterface;
 }
-
-

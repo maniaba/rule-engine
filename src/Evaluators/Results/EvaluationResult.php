@@ -14,9 +14,6 @@ final readonly class EvaluationResult
     public function __construct(
         public RuleInterface $rule,
         public bool $result,
-        public array|string|null $failureMessage,
-    ) {
-    }
+        public null|array|string $failureMessage,
+    ) {}
 }
-
-

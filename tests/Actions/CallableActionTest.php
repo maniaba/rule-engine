@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Actions;
 
-use PHPUnit\Framework\Attributes\Group;
-use RuntimeException;
-use Tests\Support\TestCase;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Context\ArrayContext;
 use Maniaba\RuleEngine\Context\ContextInterface;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Support\TestCase;
 
 /**
  * Testiranje CallableAction klase.
@@ -21,8 +20,8 @@ final class CallableActionTest extends TestCase
 {
     public function testExecutesCallableWithContext(): void
     {
-        $context  = $this->createContext([]);
-        $var      = 'foo';
+        $context = self::createContext([]);
+        $var = 'foo';
         $callable = static function (ContextInterface $ctx) use (&$var): bool {
             $var = 'result';
 
@@ -32,18 +31,13 @@ final class CallableActionTest extends TestCase
         $action = new CallableAction($callable);
         $result = $action->execute($context);
 
-        $this->assertFalse($result, 'Expected result to be false');
-        $this->assertSame('result', $var, 'Expected var to be "result"');
-    }
-
-    private function createContext(array $args): ContextInterface
-    {
-        return new ArrayContext($args);
+        self::assertFalse($result, 'Expected result to be false');
+        self::assertSame('result', $var, 'Expected var to be "result"');
     }
 
     public function testExecutesCallableWithDifferentContext(): void
     {
-        $context = $this->createContext([
+        $context = self::createContext([
             'foo' => 'bar',
         ]);
         $testValue = null;
@@ -55,31 +49,34 @@ final class CallableActionTest extends TestCase
         });
         $result = $action->execute($context);
 
-        $this->assertTrue($result, 'Expected result to be true');
-        $this->assertSame('bar', $testValue, 'Expected testValue to be "bar"');
+        self::assertTrue($result, 'Expected result to be true');
+        self::assertSame('bar', $testValue, 'Expected testValue to be "bar"');
     }
 
     public function testHandlesCallableReturningNull(): void
     {
-        $context  = $this->createContext([]);
-        $callable = static fn (ContextInterface $ctx): bool => true;
+        $context = self::createContext([]);
+        $callable = static fn(ContextInterface $ctx): bool => true;
 
         $action = new CallableAction($callable);
         $result = $action->execute($context);
 
-        $this->assertTrue($result);
+        self::assertTrue($result);
     }
 
     public function testHandlesCallableThrowingException(): void
     {
-        $this->expectException(RuntimeException::class);
+        $this->expectException(\RuntimeException::class);
 
-        $context  = $this->createContext([]);
-        $callable = static fn (ContextInterface $ctx) => throw new RuntimeException('Error');
+        $context = self::createContext([]);
+        $callable = static fn(ContextInterface $ctx) => throw new \RuntimeException(\Error::class);
 
         $action = new CallableAction($callable);
         $action->execute($context);
     }
+
+    private static function createContext(array $args): ContextInterface
+    {
+        return new ArrayContext($args);
+    }
 }
-
-

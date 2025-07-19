@@ -16,13 +16,13 @@ trait MockContextTrait
         $mockContext = $this->createMock(ContextInterface::class);
 
         $mockContext->method('hasField')
-            ->willReturnCallback(static fn (string $field): bool => array_key_exists($field, $fields));
+            ->willReturnCallback(static fn(string $field): bool => \array_key_exists($field, $fields))
+        ;
 
         $mockContext->method('getField')
-            ->willReturnCallback(static fn (string $field) => $fields[$field] ?? null);
+            ->willReturnCallback(static fn(string $field) => $fields[$field] ?? null)
+        ;
 
         return $mockContext;
     }
 }
-
-

@@ -11,9 +11,9 @@ use Tests\Maniaba\RuleEngine\Context\ArrayContextTest;
  */
 final class ArrayContext implements ContextInterface
 {
-    public function __construct(private array $data)
-    {
-    }
+    public function __construct(
+        private array $data,
+    ) {}
 
     public function getField(string $field): mixed
     {
@@ -22,9 +22,6 @@ final class ArrayContext implements ContextInterface
 
     public function hasField(string $field): bool
     {
-        return array_key_exists($field, $this->data);
+        return \array_key_exists($field, $this->data);
     }
 }
-
-
-

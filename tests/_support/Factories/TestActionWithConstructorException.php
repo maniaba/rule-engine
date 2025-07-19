@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Support\Factories;
 
-
 use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Context\ContextInterface;
 
-class TestActionWithConstructorException implements ActionInterface
+final class TestActionWithConstructorException implements ActionInterface
 {
     public function execute(ContextInterface $context): bool
     {

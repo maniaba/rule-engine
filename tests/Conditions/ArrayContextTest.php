@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Conditions;
 
+use Maniaba\RuleEngine\Context\ArrayContext;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use stdClass;
 use Tests\Support\TestCase;
-use Maniaba\RuleEngine\Context\ArrayContext;
 
 /**
  * @internal
@@ -23,14 +22,14 @@ final class ArrayContextTest extends TestCase
     {
         $context = new ArrayContext([$field => $value]);
 
-        $this->assertSame($expected, $context->getField($field), 'Field value mismatch.');
+        self::assertSame($expected, $context->getField($field), 'Field value mismatch.');
 
-        $this->assertTrue($context->hasField($field), 'Field not found.');
+        self::assertTrue($context->hasField($field), 'Field not found.');
     }
 
     public static function provideGetField(): iterable
     {
-        $std      = new stdClass();
+        $std = new \stdClass();
         $std->foo = 'bar';
 
         yield 'foo -> bar' => ['foo', 'bar', 'bar'];
@@ -58,9 +57,7 @@ final class ArrayContextTest extends TestCase
     {
         $context = new ArrayContext(['foo' => 'bar']);
 
-        $this->assertTrue($context->hasField('foo'));
-        $this->assertFalse($context->hasField('baz'));
+        self::assertTrue($context->hasField('foo'));
+        self::assertFalse($context->hasField('baz'));
     }
 }
-
-

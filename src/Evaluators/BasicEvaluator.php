@@ -40,10 +40,9 @@ final class BasicEvaluator extends AbstractEvaluator
         $ruleSet->execute($context);
 
         $failedRules = $ruleSet->getFailedRules();
-        if ($failedRules !== []) {
+
+        if ([] !== $failedRules) {
             $this->failedRules = array_merge($this->failedRules, $failedRules);
         }
     }
 }
-
-

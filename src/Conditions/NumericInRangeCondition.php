@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Conditions;
 
-use InvalidArgumentException;
 use Maniaba\RuleEngine\Context\ContextInterface;
 
 final class NumericInRangeCondition extends AbstractCondition
@@ -12,26 +11,28 @@ final class NumericInRangeCondition extends AbstractCondition
     /**
      * Konstruktor.
      *
-     * @param string    $contextName Naziv polja iz konteksta.
-     * @param float|int $min         Minimalna dozvoljena vrednost.
-     * @param float|int $max         Maksimalna dozvoljena vrednost.
+     * @param string    $contextName naziv polja iz konteksta
+     * @param float|int $min         minimalna dozvoljena vrednost
+     * @param float|int $max         maksimalna dozvoljena vrednost
      */
-    public function __construct(private readonly string $contextName, private readonly float|int $min, private readonly float|int $max)
-    {
-    }
+    public function __construct(
+        private readonly string $contextName,
+        private readonly float|int $min,
+        private readonly float|int $max,
+    ) {}
 
     public static function factory(array $data): ConditionInterface
     {
-        if (!isset($data['min']) || !isset($data['max']) || !is_numeric($data['min']) || !is_numeric($data['max'])) {
-            throw new InvalidArgumentException('Min and max values are required.');
+        if (! isset($data['min']) || ! isset($data['max']) || ! is_numeric($data['min']) || ! is_numeric($data['max'])) {
+            throw new \InvalidArgumentException('Min and max values are required.');
         }
         $contextName = $data['contextName'] ?? null;
 
-        if ($contextName === null) {
-            throw new InvalidArgumentException('Context name is required.');
+        if (null === $contextName) {
+            throw new \InvalidArgumentException('Context name is required.');
         }
 
-        return new NumericInRangeCondition($contextName, $data['min'], $data['max']);
+        return new self($contextName, $data['min'], $data['max']);
     }
 
     /**
@@ -39,7 +40,7 @@ final class NumericInRangeCondition extends AbstractCondition
      */
     protected function defaultFailureMessage(): string
     {
-        return sprintf(
+        return \sprintf(
             "Field '%s' must be between %.2f and %.2f.",
             $this->contextName,
             $this->min,
@@ -50,22 +51,22 @@ final class NumericInRangeCondition extends AbstractCondition
     /**
      * Proverava da li je vrednost unutar opsega.
      *
-     * @param ContextInterface $context Kontekst podataka.
+     * @param ContextInterface $context kontekst podataka
      *
-     * @return bool True ako je vrednost unutar opsega, false inače.
+     * @return bool true ako je vrednost unutar opsega, false inače
      */
     protected function evaluateCondition(ContextInterface $context): bool
     {
-        if (!$context->hasField($this->contextName)) {
-            $this->setFailureMessage(sprintf('Field "%s" does not exist.', $this->contextName));
+        if (! $context->hasField($this->contextName)) {
+            $this->setFailureMessage(\sprintf('Field "%s" does not exist.', $this->contextName));
 
             return false;
         }
 
         $value = $context->getField($this->contextName);
 
-        if (!is_numeric($value)) {
-            $this->setFailureMessage(sprintf('Field "%s" is not numeric.', $this->contextName));
+        if (! is_numeric($value)) {
+            $this->setFailureMessage(\sprintf('Field "%s" is not numeric.', $this->contextName));
 
             return false;
         }
@@ -73,5 +74,3 @@ final class NumericInRangeCondition extends AbstractCondition
         return $value >= $this->min && $value <= $this->max;
     }
 }
-
-

@@ -14,12 +14,12 @@ use Maniaba\RuleEngine\Context\ContextInterface;
  *
  * @see RuleTest
  *
- * @property-read list<ActionInterface> $actions
- * @property-read list<ActionInterface> $elseActions
+ * @property list<ActionInterface> $actions
+ * @property list<ActionInterface> $elseActions
  */
 final class Rule implements RuleInterface
 {
-    private array $executionErrors  = [];
+    private array $executionErrors = [];
     private ?bool $evaluationResult = null;
 
     public function __construct(
@@ -29,8 +29,7 @@ final class Rule implements RuleInterface
         /** @var list<ActionInterface> $elseActions */
         private readonly array $elseActions = [],
         private int $priority = 0,
-    ) {
-    }
+    ) {}
 
     /**
      * Izvršava akcije na temelju rezultata evaluacije.
@@ -41,13 +40,13 @@ final class Rule implements RuleInterface
 
         if ($result) {
             foreach ($this->actions as $action) {
-                if (!$action->execute($context)) {
+                if (! $action->execute($context)) {
                     $this->collectActionErrors($action);
                 }
             }
         } else {
             foreach ($this->elseActions as $action) {
-                if (!$action->execute($context)) {
+                if (! $action->execute($context)) {
                     $this->collectActionErrors($action);
                 }
             }
@@ -55,23 +54,9 @@ final class Rule implements RuleInterface
     }
 
     /**
-     * Prikuplja greške iz akcije.
+     * @return null|list<string>|string
      */
-    private function collectActionErrors(ActionInterface $action): void
-    {
-        if ($action instanceof AbstractAction) {
-            $errors = $action->getFailureMessage();
-            if ($errors !== null) {
-                $errors                = is_array($errors) ? $errors : [$errors];
-                $this->executionErrors = array_merge($this->executionErrors, $errors);
-            }
-        }
-    }
-
-    /**
-     * @return list<string>|string|null
-     */
-    public function getFailureMessage(): array|string|null
+    public function getFailureMessage(): null|array|string
     {
         return $this->condition->getFailureMessage();
     }
@@ -96,8 +81,21 @@ final class Rule implements RuleInterface
 
     public function getExecutionErrors(): ?array
     {
-        return $this->executionErrors !== [] ? $this->executionErrors : null;
+        return [] !== $this->executionErrors ? $this->executionErrors : null;
+    }
+
+    /**
+     * Prikuplja greške iz akcije.
+     */
+    private function collectActionErrors(ActionInterface $action): void
+    {
+        if ($action instanceof AbstractAction) {
+            $errors = $action->getFailureMessage();
+
+            if (null !== $errors) {
+                $errors = \is_array($errors) ? $errors : [$errors];
+                $this->executionErrors = array_merge($this->executionErrors, $errors);
+            }
+        }
     }
 }
-
-

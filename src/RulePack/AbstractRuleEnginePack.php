@@ -15,14 +15,14 @@ abstract class AbstractRuleEnginePack implements RuleEnginePackInterface
 {
     private EvaluatorInterface $evaluator;
 
-    public function getErrors(): EvaluatorErrors
+    final public function getErrors(): EvaluatorErrors
     {
         return $this->evaluator->getEvaluationErrors();
     }
 
-    public function execute(array|string $config, ContextInterface $context): bool
+    final public function execute(array|string $config, ContextInterface $context): bool
     {
-        if ($config === [] || $config === '') {
+        if ([] === $config || '' === $config) {
             return true; // No rules to evaluate
         }
 
@@ -36,14 +36,14 @@ abstract class AbstractRuleEnginePack implements RuleEnginePackInterface
         // Execute actions
         $this->evaluator()->execute($ruleSet, $context);
 
-        return !$this->evaluator()->hasErrors();
+        return ! $this->evaluator()->hasErrors();
     }
 
     // execute
 
-    public function builder(array|string $config): RuleSet
+    final public function builder(array|string $config): RuleSet
     {
-        $builder = is_string($config) ? new JsonBuilder() : new ArrayBuilder();
+        $builder = \is_string($config) ? new JsonBuilder() : new ArrayBuilder();
 
         $builder->conditions()->registerConditions($this->conditions());
         $builder->actions()->registerActions($this->actions());
@@ -51,22 +51,22 @@ abstract class AbstractRuleEnginePack implements RuleEnginePackInterface
         return $builder->build($config);
     }
 
-    public function evaluate(array|string $config, ContextInterface $context): bool
+    final public function evaluate(array|string $config, ContextInterface $context): bool
     {
-        if ($config === [] || $config === '') {
+        if ([] === $config || '' === $config) {
             return true; // No rules to evaluate
         }
 
         $ruleSet = $this->builder($config);
         $this->evaluator()->evaluate($ruleSet, $context);
 
-        return !$this->evaluator()->hasErrors();
+        return ! $this->evaluator()->hasErrors();
     }
 
-    public function evaluator(): EvaluatorInterface
+    final public function evaluator(): EvaluatorInterface
     {
-        if (!isset($this->evaluator)) {
-            $evaluatorClass  = $this->evaluatorClass();
+        if (! isset($this->evaluator)) {
+            $evaluatorClass = $this->evaluatorClass();
             $this->evaluator = new $evaluatorClass();
         }
 
@@ -78,5 +78,3 @@ abstract class AbstractRuleEnginePack implements RuleEnginePackInterface
      */
     abstract protected function evaluatorClass(): string;
 }
-
-

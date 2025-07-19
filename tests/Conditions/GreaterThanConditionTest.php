@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Conditions;
 
-use PHPUnit\Framework\Attributes\Group;
-use Tests\Support\TestCase;
 use Maniaba\RuleEngine\Conditions\GreaterThanCondition;
 use Maniaba\RuleEngine\Context\ContextInterface;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Support\TestCase;
 
 /**
  * @internal
@@ -17,36 +17,36 @@ final class GreaterThanConditionTest extends TestCase
 {
     public function testEvaluateConditionPassesWhenValueIsGreater(): void
     {
-        $contextName   = 'testField';
+        $contextName = 'testField';
         $expectedValue = 10;
-        $actualValue   = 15;
+        $actualValue = 15;
 
         $mockContext = $this->createMock(ContextInterface::class);
         $mockContext->method('hasField')->with($contextName)->willReturn(true);
         $mockContext->method('getField')->with($contextName)->willReturn($actualValue);
 
         $condition = new GreaterThanCondition($contextName, $expectedValue);
-        $result    = $condition->isSatisfied($mockContext);
+        $result = $condition->isSatisfied($mockContext);
 
-        $this->assertTrue($result);
-        $this->assertEmpty($condition->getFailureMessage());
+        self::assertTrue($result);
+        self::assertEmpty($condition->getFailureMessage());
     }
 
     public function testEvaluateConditionFailsWhenValueIsNotGreater(): void
     {
-        $contextName   = 'testField';
+        $contextName = 'testField';
         $expectedValue = 20;
-        $actualValue   = 15;
+        $actualValue = 15;
 
         $mockContext = $this->createMock(ContextInterface::class);
         $mockContext->method('hasField')->with($contextName)->willReturn(true);
         $mockContext->method('getField')->with($contextName)->willReturn($actualValue);
 
         $condition = new GreaterThanCondition($contextName, $expectedValue);
-        $result    = $condition->isSatisfied($mockContext);
+        $result = $condition->isSatisfied($mockContext);
 
-        $this->assertFalse($result);
-        $this->assertSame(
+        self::assertFalse($result);
+        self::assertSame(
             "Field 'testField' is not greater than to the expected value '20'.",
             $condition->getFailureMessage(),
         );
@@ -54,17 +54,17 @@ final class GreaterThanConditionTest extends TestCase
 
     public function testEvaluateConditionFailsWhenFieldDoesNotExist(): void
     {
-        $contextName   = 'missingField';
+        $contextName = 'missingField';
         $expectedValue = 10;
 
         $mockContext = $this->createMock(ContextInterface::class);
         $mockContext->method('hasField')->with($contextName)->willReturn(false);
 
         $condition = new GreaterThanCondition($contextName, $expectedValue);
-        $result    = $condition->isSatisfied($mockContext);
+        $result = $condition->isSatisfied($mockContext);
 
-        $this->assertFalse($result);
-        $this->assertSame(
+        self::assertFalse($result);
+        self::assertSame(
             'Field "missingField" does not exist.',
             $condition->getFailureMessage(),
         );
@@ -72,23 +72,21 @@ final class GreaterThanConditionTest extends TestCase
 
     public function testEvaluateConditionFailsWhenValueIsNull(): void
     {
-        $contextName   = 'testField';
+        $contextName = 'testField';
         $expectedValue = 15;
-        $actualValue   = null;
+        $actualValue = null;
 
         $mockContext = $this->createMock(ContextInterface::class);
         $mockContext->method('hasField')->with($contextName)->willReturn(true);
         $mockContext->method('getField')->with($contextName)->willReturn($actualValue);
 
         $condition = new GreaterThanCondition($contextName, $expectedValue);
-        $result    = $condition->isSatisfied($mockContext);
+        $result = $condition->isSatisfied($mockContext);
 
-        $this->assertFalse($result);
-        $this->assertSame(
+        self::assertFalse($result);
+        self::assertSame(
             'Field "testField" is not comparable.',
             $condition->getFailureMessage(),
         );
     }
 }
-
-

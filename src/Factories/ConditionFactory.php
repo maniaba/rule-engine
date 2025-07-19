@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Factories;
 
-use InvalidArgumentException;
 use Maniaba\RuleEngine\Conditions\ArrayContainsAllCondition;
 use Maniaba\RuleEngine\Conditions\ArrayContainsAnyCondition;
 use Maniaba\RuleEngine\Conditions\ArrayContainsCondition;
@@ -25,18 +24,18 @@ final class ConditionFactory
      * @var array<string, class-string<ConditionInterface>>
      */
     private array $conditions = [
-        'equal'              => EqualsCondition::class,
+        'equal' => EqualsCondition::class,
         'greaterThanOrEqual' => GreaterThanOrEqualCondition::class,
-        'lessThanOrEqual'    => LessThanOrEqualCondition::class,
-        'contains'           => StringContainCondition::class,
-        'arrayContains'      => ArrayContainsCondition::class,
-        'arrayContainsAll'   => ArrayContainsAllCondition::class,
-        'arrayContainsAny'   => ArrayContainsAnyCondition::class,
-        'endsWith'           => EndsWithCondition::class,
-        'startsWith'         => StartsWithCondition::class,
-        'greaterThan'        => GreaterThanCondition::class,
-        'lessThan'           => LessThanCondition::class,
-        'numericInRange'     => NumericInRangeCondition::class,
+        'lessThanOrEqual' => LessThanOrEqualCondition::class,
+        'contains' => StringContainCondition::class,
+        'arrayContains' => ArrayContainsCondition::class,
+        'arrayContainsAll' => ArrayContainsAllCondition::class,
+        'arrayContainsAny' => ArrayContainsAnyCondition::class,
+        'endsWith' => EndsWithCondition::class,
+        'startsWith' => StartsWithCondition::class,
+        'greaterThan' => GreaterThanCondition::class,
+        'lessThan' => LessThanCondition::class,
+        'numericInRange' => NumericInRangeCondition::class,
     ];
 
     private array $customConditions = [];
@@ -44,21 +43,22 @@ final class ConditionFactory
     /**
      * Creates a condition instance based on the provided configuration.
      *
-     * @param array $config The configuration array containing the required 'operator' and other parameters.
+     * @param array $config the configuration array containing the required 'operator' and other parameters
      *
-     * @return ConditionInterface The created condition instance.
+     * @return ConditionInterface the created condition instance
      *
-     * @throws InvalidArgumentException If the 'operator' is missing or unsupported.
+     * @throws \InvalidArgumentException if the 'operator' is missing or unsupported
      */
     public function create(array $config): ConditionInterface
     {
         $operator = $config['operator'] ?? null;
-        if ($operator === null) {
-            throw new InvalidArgumentException('Operator is required.');
+
+        if (null === $operator) {
+            throw new \InvalidArgumentException('Operator is required.');
         }
 
-        if (!array_key_exists($operator, $this->conditions) && !array_key_exists($operator, $this->customConditions)) {
-            throw new InvalidArgumentException("Unsupported operator: {$operator}");
+        if (! \array_key_exists($operator, $this->conditions) && ! \array_key_exists($operator, $this->customConditions)) {
+            throw new \InvalidArgumentException("Unsupported operator: {$operator}");
         }
 
         $class = $this->conditions[$operator] ?? $this->customConditions[$operator];
@@ -69,7 +69,7 @@ final class ConditionFactory
     /**
      * Unregisters a condition based on the provided operator.
      *
-     * @param string $operator The operator identifying the condition to unregister.
+     * @param string $operator the operator identifying the condition to unregister
      */
     public function unregisterCondition(string $operator): void
     {
@@ -88,7 +88,7 @@ final class ConditionFactory
     /**
      * Registers a list of conditions by associating operators with their respective conditions.
      *
-     * @param array<string, class-string<ConditionInterface>> $conditions An associative array where keys are operators and values are condition definitions.
+     * @param array<string, class-string<ConditionInterface>> $conditions an associative array where keys are operators and values are condition definitions
      */
     public function registerConditions(array $conditions): void
     {
@@ -100,25 +100,23 @@ final class ConditionFactory
     /**
      * Registruje uslov za datog operatora sa odgovarajućom klasom uslova.
      *
-     * @param string                           $operator  Operator koji se registruje.
-     * @param class-string<ConditionInterface> $condition Naziv klase koja implementira uslov.
+     * @param string                           $operator  operator koji se registruje
+     * @param class-string<ConditionInterface> $condition naziv klase koja implementira uslov
      */
     public function registerCondition(string $operator, string $condition): void
     {
-        if (!class_exists($condition)) {
-            throw new InvalidArgumentException('Condition class does not exist.');
+        if (! class_exists($condition)) {
+            throw new \InvalidArgumentException('Condition class does not exist.');
         }
 
-        if (!is_subclass_of($condition, ConditionInterface::class)) {
-            throw new InvalidArgumentException('Condition must implement ' . ConditionInterface::class);
+        if (! is_subclass_of($condition, ConditionInterface::class)) {
+            throw new \InvalidArgumentException('Condition must implement '.ConditionInterface::class);
         }
 
-        if (array_key_exists($operator, $this->customConditions)) {
-            throw new InvalidArgumentException("Operator {$operator} is already registered.");
+        if (\array_key_exists($operator, $this->customConditions)) {
+            throw new \InvalidArgumentException("Operator {$operator} is already registered.");
         }
 
         $this->customConditions[$operator] = $condition;
     }
 }
-
-

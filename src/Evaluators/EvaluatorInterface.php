@@ -15,23 +15,23 @@ interface EvaluatorInterface
     /**
      * Evaluira skup pravila u RuleSet-u.
      *
-     * @param RuleSet          $ruleSet Skup pravila za evaluaciju.
-     * @param ContextInterface $context Kontekst podataka.
+     * @param RuleSet          $ruleSet skup pravila za evaluaciju
+     * @param ContextInterface $context kontekst podataka
      *
-     * @return list<EvaluationResult> Lista rezultata evaluacije.
+     * @return list<EvaluationResult> lista rezultata evaluacije
      */
     public function evaluate(RuleSet $ruleSet, ContextInterface $context): array;
 
     /**
      * Izvršava skup pravila u RuleSet-u.
      *
-     * @param RuleSet          $ruleSet Skup pravila za izvršenje.
-     * @param ContextInterface $context Kontekst podataka.
+     * @param RuleSet          $ruleSet skup pravila za izvršenje
+     * @param ContextInterface $context kontekst podataka
      */
     public function execute(RuleSet $ruleSet, ContextInterface $context): void;
 
     /**
-     * @return list<RuleInterface> Lista pravila koja nisu prošla evaluaciju.
+     * @return list<RuleInterface> lista pravila koja nisu prošla evaluaciju
      */
     public function getFailedRules(): array;
 
@@ -39,5 +39,3 @@ interface EvaluatorInterface
 
     public function hasErrors(): bool;
 }
-
-

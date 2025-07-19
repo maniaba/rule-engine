@@ -10,12 +10,11 @@ use Maniaba\RuleEngine\Context\ContextInterface;
 final class TestAction implements ActionInterface
 {
     public function __construct(
-        private readonly float|int|string|null $field,
+        private readonly null|float|int|string $field,
         private ?string $nulla,
         private readonly float|int|string $value = 12,
         private ?string $valueNonSigned = null,
-    ) {
-    }
+    ) {}
 
     public function execute(ContextInterface $context): bool
     {

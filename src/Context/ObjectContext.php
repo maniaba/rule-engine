@@ -6,9 +6,9 @@ namespace Maniaba\RuleEngine\Context;
 
 final readonly class ObjectContext implements ContextInterface
 {
-    public function __construct(private object $object)
-    {
-    }
+    public function __construct(
+        private object $object,
+    ) {}
 
     public function getField(string $field): mixed
     {
@@ -20,5 +20,3 @@ final readonly class ObjectContext implements ContextInterface
         return property_exists($this->object, $field);
     }
 }
-
-

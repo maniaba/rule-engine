@@ -29,17 +29,17 @@ final class RuleSet implements RuleSetInterface
     /**
      * Evaluira sva pravila u RuleSet-u.
      *
-     * @return list<EvaluationResult> Lista rezultata evaluacije pravila.
+     * @return list<EvaluationResult> lista rezultata evaluacije pravila
      */
     public function evaluate(ContextInterface $context): array
     {
         $results = [];
 
         foreach ($this->rules as $rule) {
-            $result    = $rule->evaluate($context);
+            $result = $rule->evaluate($context);
             $results[] = new EvaluationResult($rule, $result, $rule->getFailureMessage());
 
-            if (!$result) {
+            if (! $result) {
                 $this->failedRules[] = $rule;
             }
         }
@@ -71,5 +71,3 @@ final class RuleSet implements RuleSetInterface
         return $this->failedRules;
     }
 }
-
-

@@ -6,6 +6,6 @@ namespace Tests\Support\Enums;
 
 enum EnumIntTest: int
 {
-    case ACTIVE   = 1;
+    case ACTIVE = 1;
     case INACTIVE = 0;
 }

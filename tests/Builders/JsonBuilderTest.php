@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Tests\Builders;
 
 use CodeIgniter\Files\File;
-use JsonException;
-use PHPUnit\Framework\Attributes\Group;
-use Tests\Support\Actions\DummyArgumentsAction;
-use Tests\Support\TestCase;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Builders\JsonBuilder;
 use Maniaba\RuleEngine\Rules\RuleSet;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Support\Actions\DummyArgumentsAction;
+use Tests\Support\TestCase;
 
 /**
  * Testiranje JsonBuilder klase.
@@ -32,29 +31,14 @@ final class JsonBuilderTest extends TestCase
 
         $ruleSet = $builder->parseFile($file);
 
-        $this->assertInstanceOf(RuleSet::class, $ruleSet);
-    }
-
-    private static function createTempJsonFile(): File
-    {
-        $tempFile = tempnam(sys_get_temp_dir(), 'json');
-        helper('filesystem');
-        write_file($tempFile, json_encode([
-            'node'       => 'action',
-            'actionName' => 'actionName1',
-            'arguments'  => [
-                'arguments' => 'testField',
-            ],
-        ]));
-
-        return new File($tempFile);
+        self::assertInstanceOf(RuleSet::class, $ruleSet);
     }
 
     // wrong json
 
     public function testParseFileThrowsExceptionOnInvalidJson(): void
     {
-        $this->expectException(JsonException::class);
+        $this->expectException(\JsonException::class);
 
         $builder = new JsonBuilder();
 
@@ -65,7 +49,7 @@ final class JsonBuilderTest extends TestCase
     {
         $builder = new JsonBuilder();
 
-        $dummyAction = new CallableAction(static fn (): null => null);
+        $dummyAction = new CallableAction(static fn(): null => null);
         $builder->actions()->registerAction('actionName1', $dummyAction);
         $builder->actions()->registerAction('actionName2', $dummyAction);
         $builder->actions()->registerAction('rejectDeposit', $dummyAction);
@@ -74,5 +58,19 @@ final class JsonBuilderTest extends TestCase
 
         return $builder->build(json_encode(self::configBuilder()));
     }
-}
 
+    private static function createTempJsonFile(): File
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), 'json');
+        helper('filesystem');
+        write_file($tempFile, json_encode([
+            'node' => 'action',
+            'actionName' => 'actionName1',
+            'arguments' => [
+                'arguments' => 'testField',
+            ],
+        ]));
+
+        return new File($tempFile);
+    }
+}

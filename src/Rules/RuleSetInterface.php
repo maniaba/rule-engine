@@ -16,7 +16,7 @@ interface RuleSetInterface
     /**
      * Evaluira sva pravila u RuleSet-u.
      *
-     * @return array Lista rezultata evaluacije pravila.
+     * @return array lista rezultata evaluacije pravila
      */
     public function evaluate(ContextInterface $context): array;
 
@@ -34,5 +34,3 @@ interface RuleSetInterface
 
     public function getFailedRules(): array;
 }
-
-

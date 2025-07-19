@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Evaluators;
 
-use PHPUnit\Framework\Attributes\Group;
-use Tests\Support\TestCase;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Evaluators\BasicEvaluator;
 use Maniaba\RuleEngine\Evaluators\Results\EvaluationResult;
 use Maniaba\RuleEngine\Rules\RuleInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Support\TestCase;
 
 /**
  * @see BasicEvaluator
+ *
  * @internal
  */
 #[Group('Others')]
@@ -22,21 +23,21 @@ final class BasicEvaluatorTest extends TestCase
     public function testEvaluateEmptyRuleSet(): void
     {
         $evaluator = new BasicEvaluator();
-        $context   = $this->createMock(ContextInterface::class);
+        $context = $this->createMock(ContextInterface::class);
 
         // Koristimo stvarni RuleSet bez ikakvih pravila
         $ruleSet = new RuleSet();
 
         $results = $evaluator->evaluate($ruleSet, $context);
 
-        $this->assertEmpty($results, 'Rezultati trebaju biti prazni jer nema pravila');
-        $this->assertEmpty($evaluator->getFailedRules(), 'Nema padnutih pravila jer ih nema uopšte');
+        self::assertEmpty($results, 'Rezultati trebaju biti prazni jer nema pravila');
+        self::assertEmpty($evaluator->getFailedRules(), 'Nema padnutih pravila jer ih nema uopšte');
     }
 
     public function testEvaluateAllPassingRules(): void
     {
         $evaluator = new BasicEvaluator();
-        $context   = $this->createMock(ContextInterface::class);
+        $context = $this->createMock(ContextInterface::class);
 
         $ruleSet = new RuleSet();
 
@@ -54,20 +55,20 @@ final class BasicEvaluatorTest extends TestCase
 
         $results = $evaluator->evaluate($ruleSet, $context);
 
-        $this->assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
+        self::assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
 
         foreach ($results as $result) {
-            $this->assertInstanceOf(EvaluationResult::class, $result);
-            $this->assertTrue($result->result, 'Rezultat treba biti true jer pravilo prolazi');
+            self::assertInstanceOf(EvaluationResult::class, $result);
+            self::assertTrue($result->result, 'Rezultat treba biti true jer pravilo prolazi');
         }
 
-        $this->assertEmpty($evaluator->getFailedRules(), 'Ne bi trebalo biti padnutih pravila');
+        self::assertEmpty($evaluator->getFailedRules(), 'Ne bi trebalo biti padnutih pravila');
     }
 
     public function testEvaluateWithSomeFailingRules(): void
     {
         $evaluator = new BasicEvaluator();
-        $context   = $this->createMock(ContextInterface::class);
+        $context = $this->createMock(ContextInterface::class);
 
         $ruleSet = new RuleSet();
 
@@ -84,28 +85,28 @@ final class BasicEvaluatorTest extends TestCase
 
         $results = $evaluator->evaluate($ruleSet, $context);
 
-        $this->assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
-        $this->assertTrue($results[0]->result, 'Prvo pravilo treba proći');
-        $this->assertFalse($results[1]->result, 'Drugo pravilo treba pasti');
+        self::assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
+        self::assertTrue($results[0]->result, 'Prvo pravilo treba proći');
+        self::assertFalse($results[1]->result, 'Drugo pravilo treba pasti');
 
         $failedRules = $evaluator->getFailedRules();
-        $this->assertCount(1, $failedRules, 'Treba biti 1 palo pravilo');
-        $this->assertSame($failingRule, $failedRules[0], 'Palo pravilo se ne poklapa');
+        self::assertCount(1, $failedRules, 'Treba biti 1 palo pravilo');
+        self::assertSame($failingRule, $failedRules[0], 'Palo pravilo se ne poklapa');
     }
 
     public function testExecuteCallsExecuteOnRuleSetRules(): void
     {
         $evaluator = new BasicEvaluator();
-        $context   = $this->createMock(ContextInterface::class);
+        $context = $this->createMock(ContextInterface::class);
 
         $ruleSet = new RuleSet();
 
         // Dva pravila, treba provjeriti da li se execute poziva na oba
         $rule1 = $this->createMock(RuleInterface::class);
-        $rule1->expects($this->once())->method('execute')->with($context);
+        $rule1->expects(self::once())->method('execute')->with($context);
 
         $rule2 = $this->createMock(RuleInterface::class);
-        $rule2->expects($this->once())->method('execute')->with($context);
+        $rule2->expects(self::once())->method('execute')->with($context);
 
         $ruleSet->addRule($rule1);
         $ruleSet->addRule($rule2);
@@ -115,5 +116,3 @@ final class BasicEvaluatorTest extends TestCase
         // Ako se test ne "buni", znači da je execute pozvan očekivani broj puta (once) na svakom pravilu.
     }
 }
-
-

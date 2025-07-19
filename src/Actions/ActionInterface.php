@@ -11,11 +11,9 @@ interface ActionInterface
     /**
      * Izvršava akciju.
      *
-     * @param ContextInterface $context Kontekst podataka.
+     * @param ContextInterface $context kontekst podataka
      *
-     * @return bool Rezultat akcije.
+     * @return bool rezultat akcije
      */
     public function execute(ContextInterface $context): bool;
 }
-
-

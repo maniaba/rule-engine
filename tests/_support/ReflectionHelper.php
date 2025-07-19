@@ -2,52 +2,26 @@
 
 declare(strict_types=1);
 
-
 namespace Tests\Support;
-
-use Closure;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
-use ReflectionObject;
-use ReflectionProperty;
 
 trait ReflectionHelper
 {
-
     /**
      * Find a private method invoker.
      *
      * @param object|string $obj    object or class name
      * @param string        $method method name
      *
-     * @return Closure(mixed ...$args): mixed
+     * @return \Closure(mixed ...$args): mixed
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
-    public static function getPrivateMethodInvoker($obj, $method)
+    public static function getPrivateMethodInvoker(object|string $obj, string $method): \Closure
     {
-        $refMethod = new ReflectionMethod($obj, $method);
-        $obj       = (gettype($obj) === 'object') ? $obj : null;
+        $refMethod = new \ReflectionMethod($obj, $method);
+        $obj = (\gettype($obj) === 'object') ? $obj : null;
 
-        return static fn (...$args): mixed => $refMethod->invokeArgs($obj, $args);
-    }
-
-    /**
-     * Find an accessible property.
-     *
-     * @param object|string $obj
-     * @param string        $property
-     *
-     * @return ReflectionProperty
-     *
-     * @throws ReflectionException
-     */
-    private static function getAccessibleRefProperty($obj, $property)
-    {
-        $refClass = is_object($obj) ? new ReflectionObject($obj) : new ReflectionClass($obj);
-
-        return $refClass->getProperty($property);
+        return static fn(...$args): mixed => $refMethod->invokeArgs($obj, $args);
     }
 
     /**
@@ -57,13 +31,13 @@ trait ReflectionHelper
      * @param string        $property property name
      * @param mixed         $value    value
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
-    public static function setPrivateProperty($obj, $property, $value): void
+    public static function setPrivateProperty(object|string $obj, string $property, mixed $value): void
     {
         $refProperty = self::getAccessibleRefProperty($obj, $property);
 
-        if (is_object($obj)) {
+        if (\is_object($obj)) {
             $refProperty->setValue($obj, $value);
         } else {
             $refProperty->setValue(null, $value);
@@ -76,14 +50,24 @@ trait ReflectionHelper
      * @param object|string $obj      object or class name
      * @param string        $property property name
      *
-     * @return mixed
-     *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
-    public static function getPrivateProperty($obj, $property)
+    public static function getPrivateProperty(object|string $obj, string $property): mixed
     {
         $refProperty = self::getAccessibleRefProperty($obj, $property);
 
-        return is_string($obj) ? $refProperty->getValue() : $refProperty->getValue($obj);
+        return \is_string($obj) ? $refProperty->getValue() : $refProperty->getValue($obj);
+    }
+
+    /**
+     * Find an accessible property.
+     *
+     * @throws \ReflectionException
+     */
+    private static function getAccessibleRefProperty(object|string $obj, string $property): \ReflectionProperty
+    {
+        $refClass = \is_object($obj) ? new \ReflectionObject($obj) : new \ReflectionClass($obj);
+
+        return $refClass->getProperty($property);
     }
 }

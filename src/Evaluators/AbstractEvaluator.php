@@ -10,23 +10,18 @@ abstract class AbstractEvaluator implements EvaluatorInterface
 {
     protected array $failedRules = [];
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getFailedRules(): array
+    final public function getFailedRules(): array
     {
         return $this->failedRules;
     }
 
-    public function getEvaluationErrors(): EvaluatorErrors
+    final public function getEvaluationErrors(): EvaluatorErrors
     {
         return new EvaluatorErrors($this->failedRules);
     }
 
-    public function hasErrors(): bool
+    final public function hasErrors(): bool
     {
-        return $this->failedRules !== [];
+        return [] !== $this->failedRules;
     }
 }
-
-

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Rules;
 
-use PHPUnit\Framework\Attributes\Group;
-use Tests\Support\TestCase;
 use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Conditions\ConditionInterface;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Rules\Rule;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\Support\TestCase;
 
 /**
  * Testiranje Rule klase.
@@ -24,10 +24,10 @@ final class RuleTest extends TestCase
         $condition = $this->createMock(ConditionInterface::class);
         $condition->method('isSatisfied')->willReturn(true);
 
-        $rule    = new Rule($condition);
+        $rule = new Rule($condition);
         $context = $this->createMock(ContextInterface::class);
 
-        $this->assertTrue($rule->evaluate($context), 'Očekuje se da evaluate vrati true ako je condition zadovoljen');
+        self::assertTrue($rule->evaluate($context), 'Očekuje se da evaluate vrati true ako je condition zadovoljen');
     }
 
     public function testEvaluateReturnsFalseWhenConditionIsNotSatisfied(): void
@@ -35,10 +35,10 @@ final class RuleTest extends TestCase
         $condition = $this->createMock(ConditionInterface::class);
         $condition->method('isSatisfied')->willReturn(false);
 
-        $rule    = new Rule($condition);
+        $rule = new Rule($condition);
         $context = $this->createMock(ContextInterface::class);
 
-        $this->assertFalse($rule->evaluate($context), 'Očekuje se da evaluate vrati false ako condition nije zadovoljen');
+        self::assertFalse($rule->evaluate($context), 'Očekuje se da evaluate vrati false ako condition nije zadovoljen');
     }
 
     public function testExecuteRunsActionsIfConditionIsSatisfied(): void
@@ -47,15 +47,15 @@ final class RuleTest extends TestCase
         $condition->method('isSatisfied')->willReturn(true);
 
         $action1 = $this->createMock(ActionInterface::class);
-        $action1->expects($this->exactly(1))->method('execute');
+        $action1->expects(self::exactly(1))->method('execute');
 
         $action2 = $this->createMock(ActionInterface::class);
-        $action2->expects($this->once())->method('execute');
+        $action2->expects(self::once())->method('execute');
 
         $elseAction = $this->createMock(ActionInterface::class);
-        $elseAction->expects($this->never())->method('execute');
+        $elseAction->expects(self::never())->method('execute');
 
-        $rule    = new Rule($condition, [$action1, $action2], [$elseAction]);
+        $rule = new Rule($condition, [$action1, $action2], [$elseAction]);
         $context = $this->createMock(ContextInterface::class);
 
         $rule->execute($context);
@@ -67,18 +67,18 @@ final class RuleTest extends TestCase
         $condition->method('isSatisfied')->willReturn(false);
 
         $action1 = $this->createMock(ActionInterface::class);
-        $action1->expects($this->never())->method('execute');
+        $action1->expects(self::never())->method('execute');
 
         $action2 = $this->createMock(ActionInterface::class);
-        $action2->expects($this->never())->method('execute');
+        $action2->expects(self::never())->method('execute');
 
         $elseAction1 = $this->createMock(ActionInterface::class);
-        $elseAction1->expects($this->once())->method('execute');
+        $elseAction1->expects(self::once())->method('execute');
 
         $elseAction2 = $this->createMock(ActionInterface::class);
-        $elseAction2->expects($this->once())->method('execute');
+        $elseAction2->expects(self::once())->method('execute');
 
-        $rule    = new Rule($condition, [$action1, $action2], [$elseAction1, $elseAction2]);
+        $rule = new Rule($condition, [$action1, $action2], [$elseAction1, $elseAction2]);
         $context = $this->createMock(ContextInterface::class);
 
         $rule->execute($context);
@@ -87,12 +87,12 @@ final class RuleTest extends TestCase
     public function testGetAndSetPriority(): void
     {
         $condition = $this->createMock(ConditionInterface::class);
-        $rule      = new Rule($condition, []);
+        $rule = new Rule($condition, []);
 
-        $this->assertSame(0, $rule->getPriority(), 'Default priority treba biti 0');
+        self::assertSame(0, $rule->getPriority(), 'Default priority treba biti 0');
 
         $rule->setPriority(10);
-        $this->assertSame(10, $rule->getPriority(), 'Postavljena priority vrijednost nije ispravna');
+        self::assertSame(10, $rule->getPriority(), 'Postavljena priority vrijednost nije ispravna');
     }
 
     public function testGetFailureMessage(): void
@@ -102,8 +102,6 @@ final class RuleTest extends TestCase
 
         $rule = new Rule($condition);
 
-        $this->assertSame('Nije prošao uslov', $rule->getFailureMessage(), 'Failure message nije ispravno vraćen');
+        self::assertSame('Nije prošao uslov', $rule->getFailureMessage(), 'Failure message nije ispravno vraćen');
     }
 }
-
-

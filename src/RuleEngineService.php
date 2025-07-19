@@ -34,5 +34,3 @@ final class RuleEngineService
         return $this->builder->build($rules);
     }
 }
-
-

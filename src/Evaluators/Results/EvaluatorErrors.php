@@ -10,26 +10,14 @@ final class EvaluatorErrors
 {
     private array $errors = [
         'evaluationErrors' => [],
-        'executionErrors'  => [],
+        'executionErrors' => [],
     ];
 
-    public function __construct(private readonly array $failedRules)
-    {
+    public function __construct(
+        private readonly array $failedRules,
+    ) {
         foreach ($this->failedRules as $rule) {
             $this->addRuleError($rule);
-        }
-    }
-
-    private function addRuleError(RuleInterface $rule): void
-    {
-        if ($rule->getFailureMessage() !== null) {
-            $ruleErrors                       = is_array($rule->getFailureMessage()) ? $rule->getFailureMessage() : [$rule->getFailureMessage()];
-            $this->errors['evaluationErrors'] = array_merge($this->errors['evaluationErrors'], $ruleErrors);
-        }
-
-        if ($rule->getExecutionErrors() !== null) {
-            $ruleErrors                      = is_array($rule->getExecutionErrors()) ? $rule->getExecutionErrors() : [$rule->getExecutionErrors()];
-            $this->errors['executionErrors'] = array_merge($this->errors['executionErrors'], $ruleErrors);
         }
     }
 
@@ -40,7 +28,7 @@ final class EvaluatorErrors
 
     public function allErrors(): ?array
     {
-        if ($this->errors['evaluationErrors'] === [] && $this->errors['executionErrors'] === []) {
+        if ([] === $this->errors['evaluationErrors'] && [] === $this->errors['executionErrors']) {
             return null;
         }
 
@@ -59,8 +47,19 @@ final class EvaluatorErrors
 
     public function hasErrors(): bool
     {
-        return $this->errors['evaluationErrors'] !== [] || $this->errors['executionErrors'] !== [];
+        return [] !== $this->errors['evaluationErrors'] || [] !== $this->errors['executionErrors'];
+    }
+
+    private function addRuleError(RuleInterface $rule): void
+    {
+        if ($rule->getFailureMessage() !== null) {
+            $ruleErrors = \is_array($rule->getFailureMessage()) ? $rule->getFailureMessage() : [$rule->getFailureMessage()];
+            $this->errors['evaluationErrors'] = array_merge($this->errors['evaluationErrors'], $ruleErrors);
+        }
+
+        if ($rule->getExecutionErrors() !== null) {
+            $ruleErrors = \is_array($rule->getExecutionErrors()) ? $rule->getExecutionErrors() : [$rule->getExecutionErrors()];
+            $this->errors['executionErrors'] = array_merge($this->errors['executionErrors'], $ruleErrors);
+        }
     }
 }
-
-

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Evaluators;
 
-use Tests\Maniaba\RuleEngine\Evaluators\PriorityEvaluatorTest;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Evaluators\Results\EvaluationResult;
 use Maniaba\RuleEngine\Rules\RuleInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
+use Tests\Maniaba\RuleEngine\Evaluators\PriorityEvaluatorTest;
 
 /**
  * @see PriorityEvaluatorTest
@@ -20,12 +20,12 @@ final class PriorityEvaluator extends AbstractEvaluator
         $rules = $ruleSet->getRules();
 
         // Sortiramo pravila po prioritetu (veći prioritet ide prvi)
-        usort($rules, static fn (RuleInterface $a, RuleInterface $b): int => $b->getPriority() <=> $a->getPriority());
+        usort($rules, static fn(RuleInterface $a, RuleInterface $b): int => $b->getPriority() <=> $a->getPriority());
 
         $results = [];
 
         foreach ($rules as $rule) {
-            $result    = $rule->evaluate($context);
+            $result = $rule->evaluate($context);
             $results[] = new EvaluationResult($rule, $result, $rule->getFailureMessage());
         }
 
@@ -39,13 +39,10 @@ final class PriorityEvaluator extends AbstractEvaluator
         $rules = $ruleSet->getRules();
 
         // Sortiramo pravila po prioritetu (veći prioritet ide prvi)
-        usort($rules, static fn (RuleInterface $a, RuleInterface $b): int => $b->getPriority() <=> $a->getPriority());
+        usort($rules, static fn(RuleInterface $a, RuleInterface $b): int => $b->getPriority() <=> $a->getPriority());
 
         foreach ($rules as $rule) {
             $rule->execute($context);
         }
     }
 }
-
-
-

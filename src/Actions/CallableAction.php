@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Maniaba\RuleEngine\Actions;
 
-use Closure;
-use Tests\Maniaba\RuleEngine\Actions\CallableActionTest;
 use Maniaba\RuleEngine\Context\ContextInterface;
+use Tests\Maniaba\RuleEngine\Actions\CallableActionTest;
 
 /**
  * @see CallableActionTest
  */
 final class CallableAction implements ActionInterface
 {
-    private readonly Closure $callable;
+    private readonly \Closure $callable;
     private readonly array $arguments;
 
     /**
@@ -21,7 +20,7 @@ final class CallableAction implements ActionInterface
      */
     public function __construct(callable $callable, ...$arguments)
     {
-        $this->callable  = $callable;
+        $this->callable = $callable;
         $this->arguments = $arguments;
     }
 
@@ -31,6 +30,3 @@ final class CallableAction implements ActionInterface
         return ($this->callable)($context, ...$this->arguments);
     }
 }
-
-
-

@@ -11,22 +11,23 @@ final class LessThanOrEqualCondition extends AbstractCondition
 {
     use ContextNameValueDefaultFactoryTrait;
 
-    public function __construct(private readonly string $contextName, private readonly mixed $value)
-    {
-    }
+    public function __construct(
+        private readonly string $contextName,
+        private readonly mixed $value,
+    ) {}
 
     protected function evaluateCondition(ContextInterface $context): bool
     {
-        if (!$context->hasField($this->contextName)) {
-            $this->setFailureMessage(sprintf('Field "%s" does not exist.', $this->contextName));
+        if (! $context->hasField($this->contextName)) {
+            $this->setFailureMessage(\sprintf('Field "%s" does not exist.', $this->contextName));
 
             return false;
         }
 
         $actualValue = $context->getField($this->contextName);
 
-        if (!is_numeric($actualValue)) {
-            $this->setFailureMessage(sprintf('Field "%s" is not comparable.', $this->contextName));
+        if (! is_numeric($actualValue)) {
+            $this->setFailureMessage(\sprintf('Field "%s" is not comparable.', $this->contextName));
 
             return false;
         }
@@ -39,5 +40,3 @@ final class LessThanOrEqualCondition extends AbstractCondition
         return "Field '{$this->contextName}' is not less than or equal to the expected value '{$this->value}'.";
     }
 }
-
-
