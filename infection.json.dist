@@ -2,8 +2,6 @@
 	"source": {
 		"directories": [
 			"src/"
-		],
-		"excludes": [
 		]
 	},
 	"logs": {

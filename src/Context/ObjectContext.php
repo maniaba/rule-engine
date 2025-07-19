@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace Maniaba\RuleEngine\Context;
 
 use JsonException;
+use Stringable;
 
-final class ObjectContext implements ContextInterface
+final class ObjectContext implements ContextInterface, Stringable
 {
     public function __construct(
         private object $object,
