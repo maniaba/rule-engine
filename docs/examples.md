@@ -134,19 +134,30 @@ use Maniaba\RuleEngine\Context\ArrayContext;
 $builder = new ArrayBuilder();
 
 // Register actions
-$builder->actions()->registerAction('applyDiscount', function(ContextInterface $context, array $arguments = []) {
-    $percentage = $arguments[0] ?? 0;
+$builder->actions()->registerAction('applyDiscount', function (ArrayContext $context, int $percentage, string $message = '') {
     $totalAmount = $context->getField('totalAmount');
     $discountAmount = $totalAmount * ($percentage / 100);
 
     echo "Applied {$percentage}% discount: \${$discountAmount}\n";
-    echo "Final price: \$" . ($totalAmount - $discountAmount) . "\n";
+    $finalPrice = $totalAmount - $discountAmount;
+    echo "Final price: \$" . ($finalPrice) . "\n";
+
+    if ($message !== '') {
+        echo "Message: {$message}\n";
+    }
+
+    $context->setField('totalAmount', $finalPrice);
 
     return true;
 });
 
 $builder->actions()->registerAction('noDiscount', function() {
     echo "No discount applied\n";
+    return true;
+});
+
+$builder->actions()->registerAction('log', function (ArrayContext $context, string $message) {
+    echo "Log: {$message}\n";
     return true;
 });
 
@@ -164,7 +175,16 @@ $rules = [
         'then' => [
             'node' => 'action',
             'actionName' => 'applyDiscount',
-            'arguments' => [15],
+            'arguments' => [
+                'percentage' => 15,
+            ],
+        ],
+        'else' => [
+            'node' => 'action',
+            'actionName' => 'log',
+            'arguments' => [
+                'message' => 'Customer is not VIP, no discount applied.',
+            ],
         ],
     ],
 
@@ -180,7 +200,16 @@ $rules = [
         'then' => [
             'node' => 'action',
             'actionName' => 'applyDiscount',
-            'arguments' => [10],
+            'arguments' => [
+                'percentage' => 10,
+            ],
+        ],
+        'else' => [
+            'node' => 'action',
+            'actionName' => 'log',
+            'arguments' => [
+                'message' => 'Order amount is less than $100, no discount applied.',
+            ],
         ],
     ],
 
@@ -196,7 +225,17 @@ $rules = [
         'then' => [
             'node' => 'action',
             'actionName' => 'applyDiscount',
-            'arguments' => [5],
+            'arguments' => [
+                'percentage' => 5,
+                'message' => 'First-time customer discount applied.',
+            ],
+        ],
+        'else' => [
+            'node' => 'action',
+            'actionName' => 'log',
+            'arguments' => [
+                'message' => 'No discount for returning customers.',
+            ],
         ],
     ],
 
@@ -223,17 +262,26 @@ $rules = [
         ],
         'then' => [
             'node' => 'action',
+            'actionName' => 'log',
+            'arguments' => [
+                'message' => 'No discount applicable due to low order amount or exclusion.',
+            ],
+        ],
+        'else' => [
+            'node' => 'action',
             'actionName' => 'noDiscount',
         ],
     ],
 ];
 
-// Set rule priorities (higher number = higher priority)
+// Evaluate the rule set with the contexts
+$evaluator = new Maniaba\RuleEngine\Evaluators\BasicEvaluator();
+
+// Build the rule set
 $ruleSet = $builder->build($rules);
-$ruleSet->getRules()[0]->setPriority(30); // VIP rule has highest priority
-$ruleSet->getRules()[1]->setPriority(20); // Order amount rule has medium priority
-$ruleSet->getRules()[2]->setPriority(10); // First purchase rule has lower priority
-$ruleSet->getRules()[3]->setPriority(0);  // Default rule has lowest priority
+$ruleSet1 = $builder->build($rules);
+$ruleSet2 = $builder->build($rules);
+$ruleSet3 = $builder->build($rules);
 
 // Test with different contexts
 $vipContext = new ArrayContext([
@@ -259,23 +307,23 @@ $firstPurchaseContext = new ArrayContext([
 
 $excludedContext = new ArrayContext([
     'customerType' => 'regular',
-    'totalAmount' => 200,
+    'totalAmount' => 40,
     'isFirstPurchase' => false,
     'isDiscountExcluded' => true,
 ]);
 
 // Execute the rule set with different contexts
 echo "VIP Customer:\n";
-$ruleSet->execute($vipContext); // Output: Applied 15% discount
+$evaluator->execute(clone $ruleSet, $vipContext); // Output: Applied 15% discount: $18, Final price: $102, Applied 10% discount: $10.2, Final price: $91.8, Log: No discount for returning customers., No discount applied
 
 echo "\nLarge Order:\n";
-$ruleSet->execute($largeOrderContext); // Output: Applied 10% discount
+$evaluator->execute(clone $ruleSet1, $largeOrderContext); // Output: Log: Customer is not VIP, no discount applied., Applied 10% discount: $15, Final price: $135, Log: No discount for returning customers., No discount applied
 
 echo "\nFirst Purchase:\n";
-$ruleSet->execute($firstPurchaseContext); // Output: Applied 5% discount
+$evaluator->execute(clone $ruleSet2, $firstPurchaseContext); // Output: Log: Customer is not VIP, no discount applied., Log: Order amount is less than $100, no discount applied., Applied 5% discount: $3.75, Final price: $71.25, Message: First-time customer discount applied., No discount applied
 
 echo "\nExcluded Item:\n";
-$ruleSet->execute($excludedContext); // Output: No discount applied
+$evaluator->execute(clone $ruleSet3, $excludedContext); // Output: Log: Customer is not VIP, no discount applied., Log: Order amount is less than $100, no discount applied., Log: No discount for returning customers., Log: No discount applicable due to low order amount or exclusion.
 ```
 
 ## Form Validation
