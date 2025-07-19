@@ -166,7 +166,7 @@ trait BuilderTestDemoConfigTrait
     abstract protected function getBuilder(): RuleSet;
 
     /**
-     * @return array{array, mixed, mixed}
+     * @return array{CollectionCondition, mixed, mixed}
      *
      * @throws ReflectionException
      */

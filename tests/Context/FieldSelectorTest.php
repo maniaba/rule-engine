@@ -268,15 +268,15 @@ final class FieldSelectorTest extends TestCase
      */
     public static function provideInvalidSelectorsThrowExceptions(): iterable
     {
-        yield 'nepostojeći indeks' => ['users[99]'];
+        yield 'non-existent index' => ['users[99]'];
 
-        yield 'nepostojeći ključ' => ['users[id:9999]'];
+        yield 'non-existent key' => ['users[id:9999]'];
 
-        yield 'neispravan filter' => ['users[invalidFilter]']; // Nepoznat format
+        yield 'invalid filter' => ['users[invalidFilter]']; // Unknown format
 
-        yield 'nepoznati operator' => ['users[id:<>5]']; // Operator <> nije podržan
+        yield 'unknown operator' => ['users[id:<>5]']; // Operator <> is not supported
 
-        yield 'nepostojeći property' => ['nonexistent[key:value]'];
+        yield 'non-existent property' => ['nonexistent[key:value]'];
     }
 
     public function testDeepNestedAccess(): void

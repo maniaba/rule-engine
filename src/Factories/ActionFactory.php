@@ -198,7 +198,7 @@ final class ActionFactory
                     $argumentType      = self::gettype($arguments[$name]);
 
                     // Check if the type is nullable or matches the argument type
-                    if (! \in_array($parameterTypeName, [null, 'mixed'], true) && (! ($parameterType && $parameterType->allowsNull() && null === $arguments[$name]) && $parameterTypeName !== $argumentType)) {
+                    if (! \in_array($parameterTypeName, [null, 'mixed'], true) && (! ($parameterType !== null && $parameterType->allowsNull() && null === $arguments[$name]) && $parameterTypeName !== $argumentType)) {
                         throw new InvalidArgumentException("Invalid type for argument: '{$name}'. Expected: {$parameterTypeName}, got: " . $argumentType);
                     }
                 }
