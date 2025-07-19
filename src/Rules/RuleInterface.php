@@ -6,32 +6,48 @@ namespace Maniaba\RuleEngine\Rules;
 
 use Maniaba\RuleEngine\Context\ContextInterface;
 
+/**
+ * Interface for rule objects in the rule engine.
+ *
+ * Rules are the core components that define conditions to evaluate and actions to execute
+ * based on the evaluation results.
+ */
 interface RuleInterface
 {
     /**
-     * Evaluira pravilo na temelju konteksta.
+     * Evaluates the rule based on the provided context.
      *
-     * @param ContextInterface $context kontekst podataka
+     * @param ContextInterface $context The context data to evaluate against
      *
-     * @return bool true ako je pravilo zadovoljeno, false inače
+     * @return bool True if the rule is satisfied, false otherwise
      */
     public function evaluate(ContextInterface $context): bool;
 
     /**
-     * Izvršava akcije na temelju rezultata evaluacije.
+     * Executes actions based on the evaluation result.
      *
-     * @param ContextInterface $context kontekst podataka
+     * @param ContextInterface $context The context data to use for execution
      */
     public function execute(ContextInterface $context): void;
 
     /**
-     * Dohvata prioritet pravila.
+     * Gets the priority of the rule.
      *
-     * @return int prioritet pravila (veći broj = veći prioritet)
+     * @return int The rule priority (higher number = higher priority)
      */
     public function getPriority(): int;
 
+    /**
+     * Gets the failure message when the rule evaluation fails.
+     *
+     * @return array|string|null The failure message(s) or null if no failure occurred
+     */
     public function getFailureMessage(): array|string|null;
 
+    /**
+     * Gets any errors that occurred during rule execution.
+     *
+     * @return array|string|null The execution error(s) or null if no errors occurred
+     */
     public function getExecutionErrors(): array|string|null;
 }
