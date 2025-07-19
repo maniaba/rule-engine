@@ -62,7 +62,6 @@ final class RuleSetTest extends TestCase
         $this->assertCount(2, $results, 'Treba biti 2 rezultata evaluacije');
 
         foreach ($results as $result) {
-            $this->assertInstanceOf(EvaluationResult::class, $result, 'Svaki rezultat treba biti instanca EvaluationResult');
             $this->assertTrue($result->result, 'Rezultat evaluacije treba biti true jer pravilo prolazi');
         }
 

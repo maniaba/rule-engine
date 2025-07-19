@@ -20,7 +20,7 @@ use Tests\Support\TestCase;
 /**
  * @internal
  *
- * @description Testiranje ArrayBuilder klase. Testira da izgradi RuleSet na osnovu konfiguracije iz niza self::configBuilder().
+ * @description Testing the ArrayBuilder class. Tests building a RuleSet based on configuration from the self::configBuilder() array.
  */
 #[Group('Others')]
 final class ArrayBuilderTest extends TestCase
@@ -39,7 +39,7 @@ final class ArrayBuilderTest extends TestCase
     {
         $builder = new ArrayBuilder();
 
-        // Nedostaje 'node' ključ
+        // Missing 'node' key
         $config = [
             'if' => [
                 'node'        => 'context',
