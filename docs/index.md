@@ -6,30 +6,6 @@ The Rule Engine is a flexible and extensible framework for defining and evaluati
 
 ---
 
-## Table of Contents
-
-1. [Getting Started](#getting-started)
-
-2. [Key Concepts](#key-concepts)
-    - [Conditions](#conditions)
-    - [Actions](#actions)
-
-3. [Rule Structure](#rule-structure)
-    - [Node Types](#node-types)
-    - [Example Rule Configuration](#example-rule-configuration)
-
-4. [Configuration and Usage](#configuration-and-usage)
-
-5. [Advanced Topics](#advanced-topics)
-    - [Custom Conditions](#custom-conditions)
-    - [Custom Actions](#custom-actions)
-
-6. [Best Practices](#best-practices)
-
-7. [Frequently Asked Questions (FAQ)](#frequently-asked-questions)
-
----
-
 ## Getting Started
 
 To get started with the Rule Engine:
@@ -232,7 +208,7 @@ final class CustomCondition implements ConditionInterface
         return new self($data['contextName'], $data['expectedValue']);
     }
 
-    public function isSatisfied(ContextInterface $context): bool
+    public function isSatisfied(ArrayContext $context): bool
     {
         return $context->getField($this->contextName) === $this->expectedValue;
     }
@@ -271,6 +247,7 @@ final class NotifyAction implements ActionInterface
 
 ---
 
+<a id="frequently-asked-questions"></a>
 ## Frequently Asked Questions (FAQ)
 
 ### Q: Can I nest conditions?

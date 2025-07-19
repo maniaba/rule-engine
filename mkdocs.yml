@@ -3,7 +3,7 @@ site_description: The Rule Engine is a flexible and extensible framework for def
 
 theme:
   name: material
-  logo: assets/flame.svg
+  logo: assets/rule-engine.svg
   favicon: assets/favicon.ico
   icon:
     repo: fontawesome/brands/github
@@ -73,12 +73,10 @@ extra_javascript:
 nav:
   - Home: index.md
   - Installation: installation.md
-  - Configuration:
-      - Overview: configuration.md
+  - Configuration: configuration.md
   - Usage:
       - Basic usage: basic-usage.md
       - Advanced usage: advanced-usage.md
       - Examples: examples.md
-  - Events: events.md
   - Validation: validation.md
   - Troubleshooting: troubleshooting.md

@@ -28,7 +28,6 @@ require 'vendor/autoload.php';
 
 use Maniaba\RuleEngine\Builders\ArrayBuilder;
 use Maniaba\RuleEngine\Context\ArrayContext;
-use Maniaba\RuleEngine\Context\ContextInterface;
 
 // Create a simple rule configuration
 $config = [

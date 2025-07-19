@@ -72,7 +72,7 @@ use Maniaba\RuleEngine\Builders\ArrayBuilder;
 use YourNamespace\Conditions\CustomBusinessCondition;
 
 $builder = new ArrayBuilder();
-$builder->conditions()->register('customBusiness', CustomBusinessCondition::class);
+$builder->conditions()->registerCondition('customBusiness', CustomBusinessCondition::class);
 
 // Now you can use it in your configuration
 $config = [

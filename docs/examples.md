@@ -361,6 +361,10 @@ $builder->actions()->registerAction('log', function(ArrayContext $context, strin
     return true;
 });
 
+// Register context operators
+$builder->conditions()->registerCondition('stringLength', StringLengthCondition::class);
+$builder->conditions()->registerCondition('matches', MatchesCondition::class);
+
 // Define validation rules
 $config = [
     // Username validation
