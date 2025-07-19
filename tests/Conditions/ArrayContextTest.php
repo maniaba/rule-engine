@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Conditions;
 
 use Maniaba\RuleEngine\Context\ArrayContext;
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use stdClass;
@@ -14,7 +13,6 @@ use Tests\Support\TestCase;
 /**
  * @internal
  */
-#[CoversClass(ArrayContext::class)]
 #[Group('Others')]
 final class ArrayContextTest extends TestCase
 {

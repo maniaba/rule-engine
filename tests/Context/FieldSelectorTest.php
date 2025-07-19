@@ -182,15 +182,15 @@ final class FieldSelectorTest extends TestCase
      */
     public static function provideEqualityFilter(): iterable
     {
-        yield 'korisnik s id=2' => ['users[id:2]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'user with id=2' => ['users[id:2]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
 
-        yield 'korisnik s imenom Alice' => ['users[name:Alice]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'user with name Alice' => ['users[name:Alice]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
 
-        yield 'log s level=error' => ['logs[level:error]', ['id' => 2, 'level' => 'error', 'message' => 'Database connection failed.']];
+        yield 'log with level=error' => ['logs[level:error]', ['id' => 2, 'level' => 'error', 'message' => 'Database connection failed.']];
     }
 
     /**
-     * Testira numerička filtriranja (>, >=, <, <=).
+     * Tests numeric filtering (>, >=, <, <=).
      */
     #[DataProvider('provideNumericComparisons')]
     public function testNumericComparisons(string $selector, array $expected): void
@@ -200,24 +200,24 @@ final class FieldSelectorTest extends TestCase
     }
 
     /**
-     * Data provider za testiranje filtriranja po numeričkim usporedbama.
-     * Testiramo `>`, `>=`, `<`, `<=`.
+     * Data provider for testing filtering by numeric comparisons.
+     * We test `>`, `>=`, `<`, `<=`.
      *
      * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideNumericComparisons(): iterable
     {
-        yield 'prvi korisnik s age>=30' => ['users[age:>=30]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'first user with age>=30' => ['users[age:>=30]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
 
-        yield 'prvi korisnik s age>25' => ['users[age:>25]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'first user with age>25' => ['users[age:>25]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
 
-        yield 'prvi korisnik s age<30' => ['users[age:<30]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'first user with age<30' => ['users[age:<30]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
 
-        yield 'prvi korisnik s age<=35' => ['users[age:<=35]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'first user with age<=35' => ['users[age:<=35]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
     }
 
     /**
-     * Testira filtriranje po boolean vrijednostima.
+     * Tests filtering by boolean values.
      */
     #[DataProvider('provideBooleanFilter')]
     public function testBooleanFilter(string $selector, array $expected): void
@@ -227,21 +227,21 @@ final class FieldSelectorTest extends TestCase
     }
 
     /**
-     * Data provider za testiranje filtriranja po boolean vrijednostima.
+     * Data provider for testing filtering by boolean values.
      *
      * @return Generator<string, array{string, array}, mixed, void>
      */
     public static function provideBooleanFilter(): iterable
     {
-        yield 'prvi korisnik s active=true' => ['users[active:true]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
+        yield 'first user with active=true' => ['users[active:true]', ['id' => 1, 'name' => 'Alice', 'age' => 25, 'active' => true]];
 
-        yield 'prvi korisnik s active=false' => ['users[active:false]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
+        yield 'first user with active=false' => ['users[active:false]', ['id' => 2, 'name' => 'Bob', 'age' => 30, 'active' => false]];
     }
 
     /**
-     * Testira dohvaćanje duboko ugniježdenih vrijednosti (chaining).
+     * Tests retrieving deeply nested values (chaining).
      *
-     * Primjer: Dohvaćamo poruku loga s level=error.
+     * Example: We retrieve the message of a log with level=error.
      */
     public function testChainedSelectors(): void
     {
@@ -262,7 +262,7 @@ final class FieldSelectorTest extends TestCase
     }
 
     /**
-     * Data provider za negativne slučajeve gdje očekujemo iznimku.
+     * Data provider for negative cases where we expect an exception.
      *
      * @return Generator<string, array{string}, mixed, void>
      */
