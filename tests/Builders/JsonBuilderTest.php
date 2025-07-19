@@ -63,8 +63,8 @@ final class JsonBuilderTest extends TestCase
     private static function createTempJsonFile(): File
     {
         $tempFile = tempnam(sys_get_temp_dir(), 'json');
-        helper('filesystem');
-        write_file($tempFile, json_encode([
+
+        file_put_contents($tempFile, json_encode([
             'node'       => 'action',
             'actionName' => 'actionName1',
             'arguments'  => [

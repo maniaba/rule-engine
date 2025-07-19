@@ -20,22 +20,48 @@ use ReflectionException;
 use Tests\Builders\ArrayBuilderTest;
 
 /**
+ * Builder that constructs rule sets from array configurations.
+ *
+ * This builder is responsible for:
+ * - Creating rule sets from array configurations
+ * - Building individual rules with conditions and actions
+ * - Managing factories for conditions and actions
+ *
+ * The array configuration format supports nested structures for complex rules,
+ * conditions, and actions.
+ *
  * @see ArrayBuilderTest
  */
 class ArrayBuilder implements BuilderInterface
 {
+    /**
+     * Factory for creating actions from configuration.
+     */
     private ActionFactory $actions;
+
+    /**
+     * Factory for creating conditions from configuration.
+     */
     private ConditionFactory $conditions;
 
+    /**
+     * Builds a rule set from the provided configuration.
+     *
+     * @param mixed $config The configuration to build from (must be an array)
+     *
+     * @return RuleSet The constructed rule set
+     *
+     * @throws BuilderException If the configuration is invalid
+     */
     public function build(mixed $config): RuleSet
     {
         if (! \is_array($config)) {
             throw new BuilderException('Configuration must be an array.');
         }
 
-        // check if we have multiple rules or just one or kex is not numeric
+        // Check if we have multiple rules or just one or key is not numeric
         if (\array_key_exists('node', $config) || ! is_numeric(key($config))) {
-            // creating array of rules
+            // Creating array of rules
             $config = [$config];
         }
 
@@ -49,6 +75,13 @@ class ArrayBuilder implements BuilderInterface
         return $ruleSet;
     }
 
+    /**
+     * Gets the condition factory used by this builder.
+     *
+     * Creates a new factory instance if one doesn't exist yet.
+     *
+     * @return ConditionFactory The condition factory
+     */
     public function conditions(): ConditionFactory
     {
         if (! isset($this->conditions)) {
@@ -58,6 +91,13 @@ class ArrayBuilder implements BuilderInterface
         return $this->conditions;
     }
 
+    /**
+     * Gets the action factory used by this builder.
+     *
+     * Creates a new factory instance if one doesn't exist yet.
+     *
+     * @return ActionFactory The action factory
+     */
     public function actions(): ActionFactory
     {
         if (! isset($this->actions)) {
@@ -68,9 +108,13 @@ class ArrayBuilder implements BuilderInterface
     }
 
     /**
-     * Kreira Rule na osnovu konfiguracije.
+     * Creates a Rule from the provided configuration.
      *
-     * @param array $config konfiguracija za pravilo
+     * @param array $config The rule configuration array
+     *
+     * @return Rule The created rule
+     *
+     * @throws BuilderException If the configuration is invalid
      */
     private function buildRule(array $config): Rule
     {

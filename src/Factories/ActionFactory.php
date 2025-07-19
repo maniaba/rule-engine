@@ -12,11 +12,20 @@ use Maniaba\RuleEngine\Context\ContextInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunction;
+use ReflectionParameter;
 use ReflectionUnionType;
 use Tests\Factories\ActionFactoryTest;
 use Throwable;
 
 /**
+ * Factory for creating action objects based on configuration.
+ *
+ * This factory manages a registry of actions that can be created from configuration arrays.
+ * It supports creating actions from:
+ * - Action class names
+ * - Action instances
+ * - Callable functions
+ *
  * @see ActionFactoryTest
  */
 final class ActionFactory
@@ -112,11 +121,20 @@ final class ActionFactory
         $this->actions[$name] = $action;
     }
 
+    /**
+     * Creates a CallableAction from a callable function.
+     *
+     * @param callable $action     The callable to wrap in a CallableAction
+     * @param string   $actionName The name of the action (used for error messages)
+     * @param array    $arguments  The arguments to pass to the callable
+     *
+     * @return CallableAction The created action
+     */
     private function makeCallable(callable $action, string $actionName, array $arguments): CallableAction
     {
         $reflection = new ReflectionFunction($action);
 
-        // remove 'context' name from  getParameters
+        // Remove 'context' parameter as it will be provided during execution
         $parameters = array_filter($reflection->getParameters(), static fn ($parameter): bool => $parameter->getName() !== 'context');
 
         $arguments = self::testParameters($parameters, $arguments, $actionName);
@@ -124,6 +142,23 @@ final class ActionFactory
         return new CallableAction($action, ...$arguments);
     }
 
+    /**
+     * Validates and prepares arguments for a callable or class constructor.
+     *
+     * This method:
+     * 1. Filters arguments to only include those that match parameter names
+     * 2. Validates argument types against parameter types
+     * 3. Applies default values for optional parameters
+     * 4. Checks that all required parameters have values
+     *
+     * @param list<ReflectionParameter> $parameters Reflection parameters to validate against
+     * @param array                     $arguments  Arguments provided for the callable or constructor
+     * @param string                    $actionName Name of the action (for error messages)
+     *
+     * @return array Validated and prepared arguments
+     *
+     * @throws InvalidArgumentException If arguments are missing or of invalid types
+     */
     private static function testParameters(array $parameters, array $arguments, string $actionName): array
     {
         $arguments = array_intersect_key($arguments, array_flip(array_map(static fn ($p) => $p->getName(), $parameters)));
@@ -154,7 +189,7 @@ final class ActionFactory
                     $parameterTypeName = $parameterType?->getName();
                     $argumentType      = self::gettype($arguments[$name]);
 
-                    // Provjerite da li je tip nullable ili odgovara tipu argumenta
+                    // Check if the type is nullable or matches the argument type
                     if (! \in_array($parameterTypeName, [null, 'mixed'], true) && (! ($parameterType?->allowsNull() && null === $arguments[$name]) && $parameterTypeName !== $argumentType)) {
                         throw new InvalidArgumentException("Invalid type for argument: '{$name}'. Expected: {$parameterTypeName}, got: " . $argumentType);
                     }
@@ -175,15 +210,25 @@ final class ActionFactory
         return $arguments;
     }
 
+    /**
+     * Gets the normalized type name of a value.
+     *
+     * This method converts PHP's gettype() output to match the type names used in reflection.
+     * For example, 'integer' becomes 'int', 'boolean' becomes 'bool', etc.
+     *
+     * @param mixed $value The value to get the type of
+     *
+     * @return string The normalized type name
+     */
     private static function gettype(mixed $value): string
     {
         $result = \gettype($value);
 
-        // Mapirajte gettype izlaz u odgovarajuće nazive refleksije
+        // Map gettype output to corresponding reflection type names
         $typeMap = [
             'integer' => 'int',
             'boolean' => 'bool',
-            'double'  => 'float', // gettype() vraća 'double' za float
+            'double'  => 'float', // gettype() returns 'double' for float
         ];
 
         if (\array_key_exists($result, $typeMap)) {
@@ -193,9 +238,26 @@ final class ActionFactory
         return $result;
     }
 
+    /**
+     * Creates an action instance from a class name.
+     *
+     * This method uses reflection to:
+     * 1. Check the constructor parameters
+     * 2. Validate the provided arguments
+     * 3. Instantiate the action class with the correct arguments
+     *
+     * @param string $action     The fully qualified class name of the action
+     * @param string $actionName The name of the action (for error messages)
+     * @param array  $arguments  The arguments to pass to the constructor
+     *
+     * @return ActionInterface The created action instance
+     *
+     * @throws InvalidArgumentException If the action creation fails
+     * @throws ReflectionException      If reflection fails
+     */
     private function makeActionClass(string $action, string $actionName, array $arguments): ActionInterface
     {
-        // reflection get constructor parameters and check if all required parameters are passed and correct type
+        // Use reflection to get constructor parameters and validate arguments
         $reflection  = new ReflectionClass($action);
         $constructor = $reflection->getConstructor();
 
