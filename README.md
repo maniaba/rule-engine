@@ -3,6 +3,7 @@
 [![PHPUnit](https://github.com/maniaba/rule-engine/actions/workflows/phpunit.yml/badge.svg)](https://github.com/maniaba/rule-engine/actions/workflows/phpunit.yml)
 [![PHPStan](https://github.com/maniaba/rule-engine/actions/workflows/phpstan.yml/badge.svg)](https://github.com/maniaba/rule-engine/actions/workflows/phpstan.yml)
 [![Psalm](https://github.com/maniaba/rule-engine/actions/workflows/psalm.yml/badge.svg)](https://github.com/maniaba/rule-engine/actions/workflows/psalm.yml)
+[![Coverage Status](https://coveralls.io/repos/github/maniaba/rule-engine/badge.svg?branch=develop)](https://coveralls.io/github/maniaba/rule-engine?branch=develop)
 [![Docs](https://github.com/maniaba/rule-engine/actions/workflows/docs.yml/badge.svg)](https://github.com/maniaba/rule-engine/actions/workflows/docs.yml)
 
 ![PHP](https://img.shields.io/badge/PHP-%5E8.1-blue)
