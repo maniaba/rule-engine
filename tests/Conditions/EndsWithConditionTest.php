@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Tests\Conditions;
 
 use Maniaba\RuleEngine\Conditions\EndsWithCondition;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-#[Group('Others')]
 final class EndsWithConditionTest extends TestCase
 {
     use MockContextTrait;

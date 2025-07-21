@@ -11,14 +11,12 @@ use Maniaba\RuleEngine\Conditions\ConditionInterface;
 use Maniaba\RuleEngine\Conditions\IfElseCondition;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Enums\CollectionConditionType;
-use PHPUnit\Framework\Attributes\Group;
 use stdClass;
 use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-#[Group('Others')]
 final class IfElseConditionTest extends TestCase
 {
     public function testIfConditionSatisfiedExecutesThenAction(): void

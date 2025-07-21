@@ -9,7 +9,6 @@ use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Builders\JsonBuilder;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
-use PHPUnit\Framework\Attributes\Group;
 use SplFileInfo;
 use Tests\Support\Actions\DummyArgumentsAction;
 use Tests\Support\TestCase;
@@ -19,7 +18,6 @@ use Tests\Support\TestCase;
  *
  * @internal
  */
-#[Group('Others')]
 final class JsonBuilderTest extends TestCase
 {
     use BuilderTestDemoConfigTrait;

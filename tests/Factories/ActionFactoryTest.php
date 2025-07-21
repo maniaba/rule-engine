@@ -8,7 +8,6 @@ use InvalidArgumentException;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Factories\ActionFactory;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\Factories\TestAction;
 use Tests\Support\Factories\TestActionWithConstructorException;
 use Tests\Support\TestCase;
@@ -16,7 +15,6 @@ use Tests\Support\TestCase;
 /**
  * @internal
  */
-#[Group('Others')]
 final class ActionFactoryTest extends TestCase
 {
     private ActionFactory $actionFactory;

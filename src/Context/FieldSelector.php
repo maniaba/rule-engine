@@ -69,7 +69,7 @@ final class FieldSelector
                 // Try magic __get method as last resort
                 try {
                     $data = $data->__get($key);
-                } catch (Throwable $e) {
+                } catch (Throwable) {
                     throw new InvalidArgumentException("Key '{$key}' does not exist or is not accessible via __get method.");
                 }
             } else {
@@ -141,7 +141,7 @@ final class FieldSelector
         if (method_exists($item, '__get')) {
             try {
                 return $item->__get($key);
-            } catch (Throwable $e) {
+            } catch (Throwable) {
                 return null;
             }
         }

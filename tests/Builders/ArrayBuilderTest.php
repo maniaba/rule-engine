@@ -13,7 +13,6 @@ use Maniaba\RuleEngine\Conditions\NotCondition;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Exceptions\BuilderException;
 use Maniaba\RuleEngine\Rules\RuleSet;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\Actions\DummyArgumentsAction;
 use Tests\Support\TestCase;
 
@@ -22,7 +21,6 @@ use Tests\Support\TestCase;
  *
  * @description Testing the ArrayBuilder class. Tests building a RuleSet based on configuration from the self::configBuilder() array.
  */
-#[Group('Others')]
 final class ArrayBuilderTest extends TestCase
 {
     use BuilderTestDemoConfigTrait;

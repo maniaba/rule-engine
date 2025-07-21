@@ -11,13 +11,11 @@ use Maniaba\RuleEngine\Conditions\NotCondition;
 use Maniaba\RuleEngine\Context\ArrayContext;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Enums\CollectionConditionType;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-#[Group('Others')]
 final class NotConditionTest extends TestCase
 {
     use MockContextTrait;

@@ -6,13 +6,11 @@ namespace Tests\Conditions;
 
 use Maniaba\RuleEngine\Conditions\GreaterThanCondition;
 use Maniaba\RuleEngine\Context\ContextInterface;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-#[Group('Others')]
 final class GreaterThanConditionTest extends TestCase
 {
     public function testEvaluateConditionPassesWhenValueIsGreater(): void

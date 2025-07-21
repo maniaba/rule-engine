@@ -8,7 +8,6 @@ use Generator;
 use InvalidArgumentException;
 use Maniaba\RuleEngine\Context\FieldSelector;
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\Attributes\Group;
 use stdClass;
 use Tests\Support\Enums\EnumIntTest;
 use Tests\Support\Enums\SimpleEnum;
@@ -17,7 +16,6 @@ use Tests\Support\TestCase;
 /**
  * @internal
  */
-#[Group('Others')]
 final class FieldSelectorTest extends TestCase
 {
     /**
