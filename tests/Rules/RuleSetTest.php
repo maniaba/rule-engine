@@ -7,13 +7,11 @@ namespace Tests\Rules;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Rules\RuleInterface;
 use Maniaba\RuleEngine\Rules\RuleSet;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-#[Group('Others')]
 final class RuleSetTest extends TestCase
 {
     public function testAddAndGetRules(): void

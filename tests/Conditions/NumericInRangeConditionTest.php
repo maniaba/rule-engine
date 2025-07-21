@@ -6,13 +6,11 @@ namespace Tests\Conditions;
 
 use InvalidArgumentException;
 use Maniaba\RuleEngine\Conditions\NumericInRangeCondition;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-#[Group('Others')]
 final class NumericInRangeConditionTest extends TestCase
 {
     use MockContextTrait;

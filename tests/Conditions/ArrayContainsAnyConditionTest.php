@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Tests\Conditions;
 
 use Maniaba\RuleEngine\Conditions\ArrayContainsAnyCondition;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-#[Group('Others')]
 final class ArrayContainsAnyConditionTest extends TestCase
 {
     use MockContextTrait;

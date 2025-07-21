@@ -8,7 +8,6 @@ use Maniaba\RuleEngine\Actions\ActionInterface;
 use Maniaba\RuleEngine\Conditions\ConditionInterface;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Rules\Rule;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\TestCase;
 
 /**
@@ -16,7 +15,6 @@ use Tests\Support\TestCase;
  *
  * @internal
  */
-#[Group('Others')]
 final class RuleTest extends TestCase
 {
     public function testEvaluateReturnsTrueWhenConditionIsSatisfied(): void

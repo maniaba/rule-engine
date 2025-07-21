@@ -19,13 +19,11 @@ use Maniaba\RuleEngine\Conditions\StartsWithCondition;
 use Maniaba\RuleEngine\Conditions\StringContainCondition;
 use Maniaba\RuleEngine\Context\ContextInterface;
 use Maniaba\RuleEngine\Factories\ConditionFactory;
-use PHPUnit\Framework\Attributes\Group;
 use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-#[Group('Others')]
 final class ConditionFactoryTest extends TestCase
 {
     public function testCreateEqualsCondition(): void

@@ -8,14 +8,12 @@ use InvalidArgumentException;
 use Maniaba\RuleEngine\Conditions\CollectionCondition;
 use Maniaba\RuleEngine\Conditions\ConditionInterface;
 use Maniaba\RuleEngine\Enums\CollectionConditionType;
-use PHPUnit\Framework\Attributes\Group;
 use stdClass;
 use Tests\Support\TestCase;
 
 /**
  * @internal
  */
-#[Group('Others')]
 final class CollectionConditionTest extends TestCase
 {
     use MockContextTrait;

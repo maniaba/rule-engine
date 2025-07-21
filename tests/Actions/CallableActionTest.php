@@ -8,7 +8,6 @@ use Error;
 use Maniaba\RuleEngine\Actions\CallableAction;
 use Maniaba\RuleEngine\Context\ArrayContext;
 use Maniaba\RuleEngine\Context\ContextInterface;
-use PHPUnit\Framework\Attributes\Group;
 use RuntimeException;
 use Tests\Support\TestCase;
 
@@ -17,7 +16,6 @@ use Tests\Support\TestCase;
  *
  * @internal
  */
-#[Group('Others')]
 final class CallableActionTest extends TestCase
 {
     public function testExecutesCallableWithContext(): void

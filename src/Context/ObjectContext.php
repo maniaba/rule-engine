@@ -7,6 +7,9 @@ namespace Maniaba\RuleEngine\Context;
 use JsonException;
 use Stringable;
 
+/**
+ * @see ObjectContextTest
+ */
 final class ObjectContext implements ContextInterface, Stringable
 {
     public function __construct(
