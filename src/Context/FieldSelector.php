@@ -110,8 +110,8 @@ final class FieldSelector
 
             foreach ($array as $item) {
                 $itemValue = \is_array($item)
-                    ? $item[$key] ?? null :
-                    (property_exists($item, $key) ? $item->{$key} : null);
+                    ? $item[$key] ?? null
+                    : self::getObjectProperty($item, $key);
 
                 if (null === $itemValue) {
                     continue;
@@ -126,6 +126,27 @@ final class FieldSelector
         }
 
         throw new InvalidArgumentException("Invalid array filter '{$filter}'.");
+    }
+
+    private static function getObjectProperty(object $item, string $key): mixed
+    {
+        if (property_exists($item, $key)) {
+            return $item->{$key};
+        }
+
+        if (method_exists($item, 'get' . ucfirst($key))) {
+            return $item->{'get' . ucfirst($key)}();
+        }
+
+        if (method_exists($item, '__get')) {
+            try {
+                return $item->__get($key);
+            } catch (Throwable $e) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     private static function castValue(string $value): mixed
