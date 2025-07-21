@@ -59,11 +59,12 @@ final class ObjectContextTest extends TestCase
 
     public function testToStringThrowsOnJsonError(): void
     {
-        $obj = (object) ['invalid' => INF];
+        $obj     = (object) ['invalid' => INF];
         $context = new ObjectContext($obj);
         $this->expectException(JsonException::class);
         $cast = (string) $context;
 
+        /** @phpstan-ignore-next-line  */
         $this->assertNotFalse($cast, 'Expected to throw JsonException on invalid JSON conversion');
     }
 }
