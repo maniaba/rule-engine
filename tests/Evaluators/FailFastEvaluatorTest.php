@@ -183,7 +183,7 @@ final class FailFastEvaluatorTest extends TestCase
                 ->with($this->context)
                 ->willReturn($evaluationResult);
 
-            $rule->expects($this->any())
+            $rule
                 ->method('getFailureMessage')
                 ->willReturn($failureMessage);
 
