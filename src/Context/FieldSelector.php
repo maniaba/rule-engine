@@ -7,6 +7,7 @@ namespace Maniaba\RuleEngine\Context;
 use BackedEnum;
 use InvalidArgumentException;
 use stdClass;
+use Throwable;
 use UnitEnum;
 
 /**
@@ -62,9 +63,15 @@ final class FieldSelector
                 $data = $data->{$key};
             } elseif (\is_object($data) && method_exists($data, 'get' . ucfirst($key))) {
                 $data = $data->{'get' . ucfirst($key)}();
-            } elseif (($data instanceof stdClass || is_object($data)) && property_exists($data, $key)
-            ) {
+            } elseif (($data instanceof stdClass || is_object($data)) && property_exists($data, $key)) {
                 $data = $data->{$key};
+            } elseif (\is_object($data) && method_exists($data, '__get')) {
+                // Try magic __get method as last resort
+                try {
+                    $data = $data->__get($key);
+                } catch (Throwable $e) {
+                    throw new InvalidArgumentException("Key '{$key}' does not exist or is not accessible via __get method.");
+                }
             } else {
                 throw new InvalidArgumentException("Key '{$key}' does not exist.");
             }
